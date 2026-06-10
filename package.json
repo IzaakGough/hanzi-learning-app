@@ -1,0 +1,18 @@
+{
+  "name": "hanzi-learning-app",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace @hanzi-learning-app/api\" \"npm run dev --workspace @hanzi-learning-app/web\"",
+    "build": "npm run build --workspace @hanzi-learning-app/shared && npm run build --workspace @hanzi-learning-app/api && npm run build --workspace @hanzi-learning-app/web",
+    "typecheck": "npm run typecheck --workspace @hanzi-learning-app/shared && npm run typecheck --workspace @hanzi-learning-app/api && npm run typecheck --workspace @hanzi-learning-app/web",
+    "lint": "npm run lint --workspace @hanzi-learning-app/shared && npm run lint --workspace @hanzi-learning-app/api && npm run lint --workspace @hanzi-learning-app/web"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
