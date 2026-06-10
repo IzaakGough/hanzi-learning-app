@@ -1,0 +1,21 @@
+{
+  "importType": "known_words",
+  "version": 1,
+  "sourceName": "pleco-words-normalized",
+  "items": [
+    {
+      "simplified": "你好",
+      "pinyinDisplay": "ni3 hao3",
+      "meaningPrimary": "hello",
+      "source": "pleco_import",
+      "sourceRef": "Words"
+    },
+    {
+      "simplified": "中国",
+      "pinyinDisplay": "zhong1 guo2",
+      "meaningPrimary": "China",
+      "source": "pleco_import",
+      "sourceRef": "Words"
+    }
+  ]
+}

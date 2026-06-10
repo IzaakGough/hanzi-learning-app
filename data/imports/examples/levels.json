@@ -1,0 +1,31 @@
+{
+  "importType": "levels",
+  "version": 1,
+  "sourceName": "mandarin-blueprint-levels-normalized",
+  "items": [
+    {
+      "course": "mandarin-blueprint",
+      "sequenceNumber": 21,
+      "title": "Level 21",
+      "characters": [
+        { "hanzi": "学" },
+        { "hanzi": "生" }
+      ],
+      "words": [
+        { "simplified": "学生" },
+        { "simplified": "学习" }
+      ]
+    },
+    {
+      "course": "mandarin-blueprint",
+      "sequenceNumber": 22,
+      "title": "Level 22",
+      "characters": [
+        { "hanzi": "习" }
+      ],
+      "words": [
+        { "simplified": "练习" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "importType": "pinyin_mappings",
+  "version": 1,
+  "sourceName": "mandarin-blueprint-pinyin-mappings",
+  "items": [
+    {
+      "kind": "initial",
+      "symbol": "n",
+      "mappedValue": "Nurse"
+    },
+    {
+      "kind": "final",
+      "symbol": "i",
+      "mappedValue": "Igloo"
+    },
+    {
+      "kind": "tone",
+      "symbol": "3",
+      "mappedValue": "Living Room"
+    },
+    {
+      "kind": "initial",
+      "symbol": "null",
+      "mappedValue": "Null Actor"
+    },
+    {
+      "kind": "final",
+      "symbol": "null",
+      "mappedValue": "Null Set"
+    }
+  ]
+}

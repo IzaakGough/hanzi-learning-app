@@ -1,0 +1,21 @@
+{
+  "importType": "known_characters",
+  "version": 1,
+  "sourceName": "pleco-characters-normalized",
+  "items": [
+    {
+      "hanzi": "你",
+      "pinyinDisplay": "ni3",
+      "meaningPrimary": "you",
+      "source": "pleco_import",
+      "sourceRef": "Characters"
+    },
+    {
+      "hanzi": "好",
+      "pinyinDisplay": "hao3",
+      "meaningPrimary": "good",
+      "source": "pleco_import",
+      "sourceRef": "Characters"
+    }
+  ]
+}
