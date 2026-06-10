@@ -1,0 +1,178 @@
+export interface MigrationDefinition {
+  id: string;
+  description: string;
+  sql: string;
+}
+
+export const migrations: MigrationDefinition[] = [
+  {
+    id: "001_initial_schema",
+    description: "Create core tables for characters, words, levels, props, mappings, and imports",
+    sql: `
+      CREATE TABLE IF NOT EXISTS schema_migrations (
+        id TEXT PRIMARY KEY,
+        description TEXT NOT NULL,
+        applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS imports (
+        id TEXT PRIMARY KEY,
+        import_type TEXT NOT NULL,
+        source_name TEXT NOT NULL,
+        source_ref TEXT,
+        status TEXT NOT NULL CHECK (status IN ('started', 'completed', 'failed')),
+        summary_json TEXT,
+        error_message TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS levels (
+        id TEXT PRIMARY KEY,
+        course TEXT NOT NULL,
+        sequence_number INTEGER NOT NULL,
+        title TEXT,
+        notes TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(course, sequence_number)
+      );
+
+      CREATE TABLE IF NOT EXISTS characters (
+        id TEXT PRIMARY KEY,
+        hanzi TEXT NOT NULL UNIQUE,
+        pinyin_display TEXT,
+        pinyin_initial TEXT,
+        pinyin_final TEXT,
+        tone TEXT,
+        meaning_primary TEXT,
+        meanings_other_json TEXT,
+        status TEXT NOT NULL CHECK (status IN ('blocked', 'ready', 'learned', 'archived')),
+        blocked_reason TEXT,
+        learned_at TEXT,
+        archived_at TEXT,
+        source TEXT NOT NULL CHECK (source IN ('pleco_import', 'curriculum_import', 'manual', 'derived')),
+        source_ref TEXT,
+        level_id TEXT,
+        notes TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(level_id) REFERENCES levels(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS words (
+        id TEXT PRIMARY KEY,
+        simplified TEXT NOT NULL UNIQUE,
+        pinyin_display TEXT,
+        meaning_primary TEXT,
+        meanings_other_json TEXT,
+        status TEXT NOT NULL CHECK (status IN ('blocked', 'ready', 'learned', 'archived')),
+        blocked_reason TEXT,
+        learned_at TEXT,
+        archived_at TEXT,
+        source TEXT NOT NULL CHECK (source IN ('pleco_import', 'curriculum_import', 'manual', 'derived')),
+        source_ref TEXT,
+        level_id TEXT,
+        notes TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(level_id) REFERENCES levels(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS word_characters (
+        word_id TEXT NOT NULL,
+        character_id TEXT NOT NULL,
+        sort_order INTEGER NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(word_id, sort_order),
+        UNIQUE(word_id, character_id, sort_order),
+        FOREIGN KEY(word_id) REFERENCES words(id) ON DELETE CASCADE,
+        FOREIGN KEY(character_id) REFERENCES characters(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS level_characters (
+        level_id TEXT NOT NULL,
+        character_id TEXT NOT NULL,
+        sort_order INTEGER NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(level_id, sort_order),
+        UNIQUE(level_id, character_id),
+        FOREIGN KEY(level_id) REFERENCES levels(id) ON DELETE CASCADE,
+        FOREIGN KEY(character_id) REFERENCES characters(id) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS level_words (
+        level_id TEXT NOT NULL,
+        word_id TEXT NOT NULL,
+        sort_order INTEGER NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(level_id, sort_order),
+        UNIQUE(level_id, word_id),
+        FOREIGN KEY(level_id) REFERENCES levels(id) ON DELETE CASCADE,
+        FOREIGN KEY(word_id) REFERENCES words(id) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS props (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL UNIQUE,
+        type TEXT NOT NULL CHECK (type IN ('component', 'known_character')),
+        shape_ref TEXT,
+        meaning_or_image TEXT NOT NULL,
+        notes TEXT,
+        is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1)),
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS character_decompositions (
+        id TEXT PRIMARY KEY,
+        character_id TEXT NOT NULL,
+        status TEXT NOT NULL CHECK (status IN ('candidate', 'approved', 'rejected')),
+        source TEXT NOT NULL CHECK (source IN ('pleco_import', 'curriculum_import', 'manual', 'derived')),
+        source_ref TEXT,
+        notes TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(character_id) REFERENCES characters(id) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS character_decomposition_parts (
+        id TEXT PRIMARY KEY,
+        decomposition_id TEXT NOT NULL,
+        prop_id TEXT,
+        character_id TEXT,
+        literal_text TEXT,
+        sort_order INTEGER NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CHECK (
+          prop_id IS NOT NULL
+          OR character_id IS NOT NULL
+          OR literal_text IS NOT NULL
+        ),
+        FOREIGN KEY(decomposition_id) REFERENCES character_decompositions(id) ON DELETE CASCADE,
+        FOREIGN KEY(prop_id) REFERENCES props(id),
+        FOREIGN KEY(character_id) REFERENCES characters(id)
+      );
+
+      CREATE TABLE IF NOT EXISTS pinyin_mappings (
+        id TEXT PRIMARY KEY,
+        kind TEXT NOT NULL CHECK (kind IN ('initial', 'final', 'tone')),
+        symbol TEXT NOT NULL,
+        mapped_value TEXT NOT NULL,
+        notes TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(kind, symbol)
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_characters_level_id ON characters(level_id);
+      CREATE INDEX IF NOT EXISTS idx_characters_status ON characters(status);
+      CREATE INDEX IF NOT EXISTS idx_words_level_id ON words(level_id);
+      CREATE INDEX IF NOT EXISTS idx_words_status ON words(status);
+      CREATE INDEX IF NOT EXISTS idx_word_characters_character_id ON word_characters(character_id);
+      CREATE INDEX IF NOT EXISTS idx_decompositions_character_id ON character_decompositions(character_id);
+      CREATE INDEX IF NOT EXISTS idx_decomposition_parts_decomposition_id ON character_decomposition_parts(decomposition_id);
+      CREATE INDEX IF NOT EXISTS idx_pinyin_mappings_kind ON pinyin_mappings(kind);
+    `
+  }
+];

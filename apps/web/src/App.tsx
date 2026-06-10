@@ -55,7 +55,11 @@ export function App() {
           </div>
           <div>
             <dt>Healthcheck</dt>
-            <dd>{health ? `${health.status} (${health.service})` : error ?? "Loading..."}</dd>
+            <dd>
+              {health
+                ? `${health.status} (${health.service}) @ ${health.databasePath}`
+                : error ?? "Loading..."}
+            </dd>
           </div>
         </dl>
       </section>

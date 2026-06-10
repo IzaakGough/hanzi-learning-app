@@ -5,16 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "db:migrate": "tsx src/db/migrate.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@hanzi-learning-app/shared": "0.1.0",
+    "better-sqlite3": "^12.1.1",
     "cors": "^2.8.5",
     "express": "^5.1.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "tsx": "^4.20.6",
