@@ -111,6 +111,22 @@ export interface PinyinMappingRecord extends BaseEntity {
   notes: string | null;
 }
 
+export interface MappingAdminInput {
+  kind: MappingKind;
+  symbol: string;
+  mappedValue: string;
+  notes: string | null;
+}
+
+export interface PropAdminInput {
+  name: string;
+  type: PropType;
+  shapeRef: string | null;
+  meaningOrImage: string;
+  notes: string | null;
+  isActive: boolean;
+}
+
 export interface ImportRecord extends BaseEntity {
   importType: string;
   sourceName: string;
@@ -158,6 +174,15 @@ export interface ImportRunSummary {
   status: "completed" | "failed";
   diagnostics: ImportDiagnostic[];
   appliedCounts: ImportAppliedCounts;
+}
+
+function nullableTrimmedString(input: unknown) {
+  if (typeof input !== "string") {
+    return input;
+  }
+
+  const value = input.trim();
+  return value.length === 0 ? null : value;
 }
 
 function uniqueBy<T>(
@@ -310,6 +335,34 @@ export const normalizedImportSchema = z.discriminatedUnion("importType", [
   pinyinMappingsImportSchema
 ]);
 
+export const mappingKindSchema = z.enum(["initial", "final", "tone"]);
+export const propTypeSchema = z.enum(["component", "known_character"]);
+
+export const mappingAdminInputSchema = z.object({
+  kind: mappingKindSchema,
+  symbol: z.string().trim().min(1),
+  mappedValue: z.string().trim().min(1),
+  notes: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  )
+});
+
+export const propAdminInputSchema = z.object({
+  name: z.string().trim().min(1),
+  type: propTypeSchema,
+  shapeRef: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
+  meaningOrImage: z.string().trim().min(1),
+  notes: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
+  isActive: z.boolean()
+});
+
 export type KnownCharacterImportItem = z.infer<typeof knownCharacterImportItemSchema>;
 export type KnownCharactersImport = z.infer<typeof knownCharactersImportSchema>;
 export type KnownWordImportItem = z.infer<typeof knownWordImportItemSchema>;
@@ -319,6 +372,8 @@ export type LevelsImport = z.infer<typeof levelsImportSchema>;
 export type PinyinMappingImportItem = z.infer<typeof pinyinMappingImportItemSchema>;
 export type PinyinMappingsImport = z.infer<typeof pinyinMappingsImportSchema>;
 export type NormalizedImport = z.infer<typeof normalizedImportSchema>;
+export type MappingAdminInputPayload = z.infer<typeof mappingAdminInputSchema>;
+export type PropAdminInputPayload = z.infer<typeof propAdminInputSchema>;
 
 export function parseKnownCharactersImport(input: unknown) {
   return knownCharactersImportSchema.parse(input);
@@ -338,4 +393,12 @@ export function parsePinyinMappingsImport(input: unknown) {
 
 export function parseNormalizedImport(input: unknown) {
   return normalizedImportSchema.parse(input);
+}
+
+export function parseMappingAdminInput(input: unknown) {
+  return mappingAdminInputSchema.parse(input);
+}
+
+export function parsePropAdminInput(input: unknown) {
+  return propAdminInputSchema.parse(input);
 }

@@ -174,5 +174,13 @@ export const migrations: MigrationDefinition[] = [
       CREATE INDEX IF NOT EXISTS idx_decomposition_parts_decomposition_id ON character_decomposition_parts(decomposition_id);
       CREATE INDEX IF NOT EXISTS idx_pinyin_mappings_kind ON pinyin_mappings(kind);
     `
+  },
+  {
+    id: "002_prop_search_indexes",
+    description: "Add prop search indexes for admin UI",
+    sql: `
+      CREATE INDEX IF NOT EXISTS idx_props_name ON props(name);
+      CREATE INDEX IF NOT EXISTS idx_props_meaning_or_image ON props(meaning_or_image);
+    `
   }
 ];

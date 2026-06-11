@@ -182,3 +182,16 @@ A fresh agent should read, in order:
 4. current repo state
 
 This document should only contain implementation-level clarifications, not product redesign.
+
+## 13. Null Initial And Null Final Mapping Encoding
+
+For pinyin mapping admin/import work:
+
+- represent a zero-initial or zero-final row with `symbol = "null"`
+- keep `mappedValue` as a normal required mnemonic value
+- do not encode zero-initial or zero-final as SQL `NULL` in `pinyin_mappings.mapped_value`
+
+Reason:
+
+- the existing normalized example fixture already uses the string sentinel
+- it keeps the mapping table shape simple for imports, admin CRUD, and future lookup logic
