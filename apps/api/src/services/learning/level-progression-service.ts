@@ -7,6 +7,7 @@ import {
   type LearningLevelState,
   type LearningWordState
 } from "@hanzi-learning-app/shared";
+import { seedReviewStateForLearnedItem } from "../reviews/review-service.js";
 
 interface LevelRow {
   id: string;
@@ -427,11 +428,13 @@ function markItemLearned(
 export function markCharacterLearned(database: Database.Database, id: string) {
   syncLearningStatuses(database);
   markItemLearned(database, "characters", id);
+  seedReviewStateForLearnedItem(database, { itemKind: "character", itemId: id });
   return getCurrentLevelProgress(database);
 }
 
 export function markWordLearned(database: Database.Database, id: string) {
   syncLearningStatuses(database);
   markItemLearned(database, "words", id);
+  seedReviewStateForLearnedItem(database, { itemKind: "word", itemId: id });
   return getCurrentLevelProgress(database);
 }

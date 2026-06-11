@@ -256,3 +256,24 @@ Reason:
 - ticket `010` needs a real approval workflow to exercise
 - this keeps v1 aligned with the no-auto-approval rule
 - it avoids introducing a broader structural-decomposition import pipeline before it has a ticket
+
+## 18. Uncalibrated FSRS Seed State
+
+For ticket `011` and the initial review engine:
+
+- when a character or word becomes `learned`, create its review-state row immediately
+- seed the row as uncalibrated:
+  - `scheduler_type = fsrs`
+  - `due_at = learned_at`
+  - `stability = NULL`
+  - `difficulty = NULL`
+  - `last_reviewed_at = NULL`
+  - `review_count = 0`
+  - `lapse_count = 0`
+- the first real review grade initializes stability and difficulty
+- do not synthesize mature review history for imported known items
+
+Reason:
+
+- imported known items need to enter review without pretending they already have calibrated FSRS history
+- later review UI work can treat `NULL` stability/difficulty as a first-review state explicitly

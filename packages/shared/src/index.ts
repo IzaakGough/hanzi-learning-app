@@ -43,6 +43,17 @@ export enum AudioStatus {
   Failed = "failed"
 }
 
+export enum SchedulerType {
+  Fsrs = "fsrs"
+}
+
+export enum ReviewGrade {
+  Again = "again",
+  Hard = "hard",
+  Good = "good",
+  Easy = "easy"
+}
+
 export type MappingKind = "initial" | "final" | "tone";
 export type PropType = "component" | "known_character";
 
@@ -304,6 +315,77 @@ export interface CurrentLevelProgressResponse {
   learnedCharacterCount: number;
   learnedWordCount: number;
   totalLevelCount: number;
+}
+
+export type ReviewItemKind = "character" | "word";
+
+export interface ReviewStateRecord extends BaseEntity {
+  schedulerType: SchedulerType;
+  dueAt: string;
+  stability: number | null;
+  difficulty: number | null;
+  lastReviewedAt: string | null;
+  reviewCount: number;
+  lapseCount: number;
+}
+
+export interface CharacterReviewStateRecord extends ReviewStateRecord {
+  characterId: string;
+}
+
+export interface WordReviewStateRecord extends ReviewStateRecord {
+  wordId: string;
+}
+
+export interface ReviewEventRecord extends BaseEntity {
+  itemKind: ReviewItemKind;
+  itemId: string;
+  schedulerType: SchedulerType;
+  grade: ReviewGrade;
+  reviewedAt: string;
+  dueAtBefore: string | null;
+  dueAtAfter: string;
+  stabilityBefore: number | null;
+  stabilityAfter: number | null;
+  difficultyBefore: number | null;
+  difficultyAfter: number | null;
+  elapsedDays: number;
+  reviewCountAfter: number;
+  lapseCountAfter: number;
+}
+
+export interface DueCharacterReviewItem {
+  id: string;
+  hanzi: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  learnedAt: string | null;
+  reviewState: CharacterReviewStateRecord;
+}
+
+export interface DueWordReviewItem {
+  id: string;
+  simplified: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  learnedAt: string | null;
+  reviewState: WordReviewStateRecord;
+}
+
+export interface CharacterReviewQueueResponse {
+  items: DueCharacterReviewItem[];
+}
+
+export interface WordReviewQueueResponse {
+  items: DueWordReviewItem[];
+}
+
+export interface ReviewSubmissionResult {
+  itemKind: ReviewItemKind;
+  itemId: string;
+  grade: ReviewGrade;
+  reviewState: CharacterReviewStateRecord | WordReviewStateRecord;
+  event: ReviewEventRecord;
 }
 
 export interface LexicalEditInput {
@@ -623,6 +705,17 @@ export const decompositionPartResolutionInputSchema = z.discriminatedUnion("acti
   })
 ]);
 
+export const reviewGradeSchema = z.enum([
+  ReviewGrade.Again,
+  ReviewGrade.Hard,
+  ReviewGrade.Good,
+  ReviewGrade.Easy
+]);
+
+export const reviewGradeInputSchema = z.object({
+  grade: reviewGradeSchema
+});
+
 export type KnownCharacterImportItem = z.infer<typeof knownCharacterImportItemSchema>;
 export type KnownCharactersImport = z.infer<typeof knownCharactersImportSchema>;
 export type KnownWordImportItem = z.infer<typeof knownWordImportItemSchema>;
@@ -637,6 +730,7 @@ export type PropAdminInputPayload = z.infer<typeof propAdminInputSchema>;
 export type LexicalEditInputPayload = z.infer<typeof lexicalEditInputSchema>;
 export type DecompositionCandidateCreateInputPayload = z.infer<typeof decompositionCandidateCreateInputSchema>;
 export type DecompositionPartResolutionInputPayload = z.infer<typeof decompositionPartResolutionInputSchema>;
+export type ReviewGradeInputPayload = z.infer<typeof reviewGradeInputSchema>;
 
 export function parseKnownCharactersImport(input: unknown) {
   return knownCharactersImportSchema.parse(input);
@@ -676,4 +770,8 @@ export function parseDecompositionCandidateCreateInput(input: unknown) {
 
 export function parseDecompositionPartResolutionInput(input: unknown) {
   return decompositionPartResolutionInputSchema.parse(input);
+}
+
+export function parseReviewGradeInput(input: unknown) {
+  return reviewGradeInputSchema.parse(input);
 }

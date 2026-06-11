@@ -197,5 +197,63 @@ export const migrations: MigrationDefinition[] = [
       ALTER TABLE words ADD COLUMN meaning_source TEXT CHECK (meaning_source IN ('pleco_import', 'curriculum_import', 'manual', 'derived'));
       ALTER TABLE words ADD COLUMN meaning_source_ref TEXT;
     `
+  },
+  {
+    id: "004_review_state_and_events",
+    description: "Add FSRS review state tables and review event log",
+    sql: `
+      CREATE TABLE IF NOT EXISTS character_review_state (
+        id TEXT PRIMARY KEY,
+        character_id TEXT NOT NULL UNIQUE,
+        scheduler_type TEXT NOT NULL CHECK (scheduler_type IN ('fsrs')),
+        due_at TEXT NOT NULL,
+        stability REAL,
+        difficulty REAL,
+        last_reviewed_at TEXT,
+        review_count INTEGER NOT NULL DEFAULT 0,
+        lapse_count INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(character_id) REFERENCES characters(id) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS word_review_state (
+        id TEXT PRIMARY KEY,
+        word_id TEXT NOT NULL UNIQUE,
+        scheduler_type TEXT NOT NULL CHECK (scheduler_type IN ('fsrs')),
+        due_at TEXT NOT NULL,
+        stability REAL,
+        difficulty REAL,
+        last_reviewed_at TEXT,
+        review_count INTEGER NOT NULL DEFAULT 0,
+        lapse_count INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(word_id) REFERENCES words(id) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS review_events (
+        id TEXT PRIMARY KEY,
+        item_kind TEXT NOT NULL CHECK (item_kind IN ('character', 'word')),
+        item_id TEXT NOT NULL,
+        scheduler_type TEXT NOT NULL CHECK (scheduler_type IN ('fsrs')),
+        grade TEXT NOT NULL CHECK (grade IN ('again', 'hard', 'good', 'easy')),
+        reviewed_at TEXT NOT NULL,
+        due_at_before TEXT,
+        due_at_after TEXT NOT NULL,
+        stability_before REAL,
+        stability_after REAL,
+        difficulty_before REAL,
+        difficulty_after REAL,
+        elapsed_days REAL NOT NULL,
+        review_count_after INTEGER NOT NULL,
+        lapse_count_after INTEGER NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_character_review_state_due_at ON character_review_state(due_at);
+      CREATE INDEX IF NOT EXISTS idx_word_review_state_due_at ON word_review_state(due_at);
+      CREATE INDEX IF NOT EXISTS idx_review_events_item ON review_events(item_kind, item_id, reviewed_at DESC);
+    `
   }
 ];

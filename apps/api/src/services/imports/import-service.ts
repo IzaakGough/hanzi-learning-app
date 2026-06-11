@@ -18,6 +18,7 @@ import {
 import { seedExampleApprovedDecompositions } from "./approved-decomposition-fixture-service.js";
 import { seedExampleDecompositionCandidates } from "./decomposition-candidate-fixture-service.js";
 import { runLexicalEnrichment } from "./lexical-enrichment-service.js";
+import { ensureReviewStatesForLearnedItems } from "../reviews/review-service.js";
 
 interface CharacterRow {
   id: string;
@@ -1109,6 +1110,10 @@ function applyExampleDecompositionCandidates(context: ImportRunContext) {
   seedExampleDecompositionCandidates(context.database);
 }
 
+function applyReviewStateSeeding(context: ImportRunContext) {
+  ensureReviewStatesForLearnedItems(context.database);
+}
+
 export function runNormalizedImport(
   database: Database.Database,
   payload: NormalizedImport
@@ -1158,6 +1163,7 @@ export function runNormalizedImport(
     applyLexicalEnrichment(context);
     applyExampleApprovedDecompositions(context);
     applyExampleDecompositionCandidates(context);
+    applyReviewStateSeeding(context);
     failIfErrors(context, payload.importType);
   });
 

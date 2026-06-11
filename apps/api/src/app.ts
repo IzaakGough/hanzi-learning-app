@@ -8,6 +8,7 @@ import {
   parseLexicalEditInput,
   parseMappingAdminInput,
   parsePropAdminInput,
+  parseReviewGradeInput,
   type HealthcheckResponse
 } from "@hanzi-learning-app/shared";
 import { databaseFilePath } from "./db/config.js";
@@ -53,6 +54,14 @@ import {
   listDecompositionWorkspace,
   resolveDecompositionPart
 } from "./services/decomposition/decomposition-service.js";
+import {
+  gradeCharacterReview,
+  gradeWordReview,
+  listDueCharacterReviews,
+  listDueWordReviews,
+  ReviewItemNotEligibleError,
+  ReviewItemNotFoundError
+} from "./services/reviews/review-service.js";
 
 export function createApp(database: Database.Database) {
   const app = express();
@@ -130,6 +139,32 @@ export function createApp(database: Database.Database) {
 
   app.get("/decompositions/workspace", (_request, response) => {
     response.json(listDecompositionWorkspace(database));
+  });
+
+  app.get("/reviews/characters/due", (_request, response) => {
+    response.json(listDueCharacterReviews(database));
+  });
+
+  app.get("/reviews/words/due", (_request, response) => {
+    response.json(listDueWordReviews(database));
+  });
+
+  app.post("/reviews/characters/:id/grade", (request, response) => {
+    try {
+      const input = parseReviewGradeInput(request.body);
+      response.json(gradeCharacterReview(database, request.params.id, input.grade));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/reviews/words/:id/grade", (request, response) => {
+    try {
+      const input = parseReviewGradeInput(request.body);
+      response.json(gradeWordReview(database, request.params.id, input.grade));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
   });
 
   app.post("/characters/:id/decomposition-candidates", (request, response) => {
@@ -239,6 +274,11 @@ function sendRouteError(
     return;
   }
 
+  if (error instanceof ReviewItemNotFoundError) {
+    response.status(404).json({ error: error.message });
+    return;
+  }
+
   if (error instanceof MappingConflictError || error instanceof PropConflictError) {
     response.status(409).json({ error: error.message });
     return;
@@ -255,6 +295,11 @@ function sendRouteError(
   }
 
   if (error instanceof DecompositionApprovalBlockedError) {
+    response.status(422).json({ error: error.message });
+    return;
+  }
+
+  if (error instanceof ReviewItemNotEligibleError) {
     response.status(422).json({ error: error.message });
     return;
   }

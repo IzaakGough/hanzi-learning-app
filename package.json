@@ -18,6 +18,7 @@
     "search:verify": "npm run search:verify --workspace @hanzi-learning-app/api",
     "decomposition:verify": "npm run decomposition:verify --workspace @hanzi-learning-app/api",
     "learning:verify": "npm run learning:verify --workspace @hanzi-learning-app/api",
+    "reviews:verify": "npm run reviews:verify --workspace @hanzi-learning-app/api",
     "normalize:pleco:characters": "node ./scripts/normalize-pleco-characters.mjs",
     "normalize:pleco:words": "node ./scripts/normalize-pleco-words.mjs",
     "normalize:notion:levels": "node ./scripts/normalize-notion-levels.mjs",
