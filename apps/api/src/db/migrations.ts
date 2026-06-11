@@ -365,5 +365,26 @@ export const migrations: MigrationDefinition[] = [
       CREATE INDEX IF NOT EXISTS idx_sentence_generation_jobs_word_id
         ON sentence_generation_jobs(word_id, created_at DESC);
     `
+  },
+  {
+    id: "008_audio_generation_jobs",
+    description: "Add async audio generation job tracking for approved sentences",
+    sql: `
+      CREATE TABLE IF NOT EXISTS audio_generation_jobs (
+        id TEXT PRIMARY KEY,
+        sentence_id TEXT NOT NULL,
+        status TEXT NOT NULL CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
+        error_message TEXT,
+        completed_at TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(sentence_id) REFERENCES sentences(id) ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_audio_generation_jobs_status_created_at
+        ON audio_generation_jobs(status, created_at);
+      CREATE INDEX IF NOT EXISTS idx_audio_generation_jobs_sentence_id
+        ON audio_generation_jobs(sentence_id, created_at DESC);
+    `
   }
 ];

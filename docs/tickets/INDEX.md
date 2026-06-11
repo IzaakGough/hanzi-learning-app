@@ -1,7 +1,7 @@
 # Ticket Index
 
 ## Next Up
-- `018-audio-generation.md`
+- `019-custom-items-archive-and-review-reset.md`
 
 ## Tickets
 - [x] `001-project-scaffold.md`
@@ -21,7 +21,7 @@
 - [x] `015-content-queue-hub.md`
 - [x] `016-sentence-generation-and-approval.md`
 - [x] `017-manual-sentence-entry-and-sentence-bank.md`
-- [ ] `018-audio-generation.md`
+- [x] `018-audio-generation.md`
 - [ ] `019-custom-items-archive-and-review-reset.md`
 - [ ] `020-backup-export-and-reset-tools.md`
 - [ ] `021-v1-validation-and-polish.md`

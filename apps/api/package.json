@@ -15,6 +15,7 @@
     "learning:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-learning.ts",
     "reviews:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-reviews.ts",
     "sentences:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-sentences.ts",
+    "audio:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-audio.ts",
     "queue:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-queue.ts",
     "dashboard:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-dashboard.ts",
     "build": "tsc -p tsconfig.json",

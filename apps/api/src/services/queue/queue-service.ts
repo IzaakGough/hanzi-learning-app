@@ -16,6 +16,9 @@ import {
   type QueueUnresolvedPropItem
 } from "@hanzi-learning-app/shared";
 import {
+  queueSentenceAudioGeneration
+} from "../audio/audio-generation-service.js";
+import {
   approveDecompositionCandidate,
   listDecompositionWorkspace,
   resolveDecompositionPart
@@ -529,6 +532,7 @@ export function applyQueueAction(
   } else if (item.type === QueueItemType.SentenceCandidate) {
     if (input.action === "approve_sentence_candidate") {
       approveSentenceCandidate(database, item.sentence.id);
+      queueSentenceAudioGeneration(database, item.sentence.id);
     } else if (input.action === "reject_sentence_candidate") {
       rejectSentenceCandidate(database, item.sentence.id);
     } else if (input.action === "edit_and_approve_sentence_candidate") {
@@ -537,6 +541,7 @@ export function applyQueueAction(
         translation: input.translation,
         pinyinFull: input.pinyinFull
       });
+      queueSentenceAudioGeneration(database, item.sentence.id);
     } else if (input.action === "regenerate_sentence_candidate") {
       rejectSentenceCandidate(database, item.sentence.id);
       const linkedWordId = item.sentence.linkedWords[0]?.id;
@@ -549,6 +554,12 @@ export function applyQueueAction(
     } else {
       throw new QueueActionNotSupportedError("Sentence candidate items only support moderation actions.");
     }
+  } else if (item.type === QueueItemType.AudioFailure) {
+    if (input.action !== "regenerate_audio") {
+      throw new QueueActionNotSupportedError("Audio failure items only support audio regeneration.");
+    }
+
+    queueSentenceAudioGeneration(database, item.sentence.id, { forceRegenerate: true });
   } else {
     throw new QueueActionNotSupportedError(`Queue actions for ${item.type} are not implemented yet.`);
   }

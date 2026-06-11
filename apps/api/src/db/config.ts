@@ -13,3 +13,5 @@ export const databaseFilePath = process.env.HANZI_DB_PATH
   : defaultDatabaseFilePath;
 
 export const databaseDirectory = path.dirname(databaseFilePath);
+export const mediaDirectory = path.join(databaseDirectory, "media");
+export const sentenceAudioDirectory = path.join(mediaDirectory, "audio", "sentences");

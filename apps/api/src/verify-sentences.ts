@@ -219,7 +219,10 @@ async function main() {
         pinyinFull: "ni3 hao3, ni3 ma5?"
       }, 201);
       assert.equal(manualSentence.approvalStatus, SentenceApprovalStatus.Approved);
-      assert.equal(manualSentence.audioStatus, AudioStatus.None);
+      assert.equal(
+        [AudioStatus.Pending, AudioStatus.Ready].includes(manualSentence.audioStatus),
+        true
+      );
       assert.deepEqual(
         manualSentence.linkedWords.map((word) => word.id),
         ["word-nihao", "word-nima"]

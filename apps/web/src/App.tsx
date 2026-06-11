@@ -15,6 +15,7 @@ import {
   type LearningLevelState,
   type LearningWordState,
   type QueueDecompositionCandidateItem,
+  type QueueAudioFailureItem,
   type QueueListItem,
   type QueueListResponse,
   type QueueMissingLexicalDataItem,
@@ -87,6 +88,7 @@ interface QueueHubSectionProps {
   onRejectSentence: (item: QueueSentenceCandidateItem) => void;
   onEditApproveSentence: (item: QueueSentenceCandidateItem, values: SentenceCandidateEditValues) => void;
   onRegenerateSentence: (item: QueueSentenceCandidateItem) => void;
+  onRegenerateAudio: (item: QueueAudioFailureItem) => void;
 }
 
 interface SentenceCandidateEditValues {
@@ -141,6 +143,34 @@ function formatStatusLabel(status: ItemStatus) {
 
 function formatBlockedReason(reason: string) {
   return reason.replaceAll("_", " ");
+}
+
+function getAudioUrl(audioPath: string | null) {
+  if (!audioPath) {
+    return null;
+  }
+
+  if (audioPath.startsWith("http://") || audioPath.startsWith("https://")) {
+    return audioPath;
+  }
+
+  return `${apiBaseUrl}${audioPath}`;
+}
+
+function formatSentenceAudioStatus(sentence: SentenceDisplayRecord) {
+  if (sentence.audioStatus === "ready" && sentence.audioPath) {
+    return "Audio ready";
+  }
+
+  if (sentence.audioStatus === "pending") {
+    return "Audio queued";
+  }
+
+  if (sentence.audioStatus === "failed") {
+    return "Audio failed";
+  }
+
+  return "Audio unavailable";
 }
 
 function formatDecomposition(detail: CharacterDetailRecord | null) {
@@ -271,11 +301,20 @@ function SentenceBank(props: { sentences: SentenceDisplayRecord[] }) {
               <p className="section-kicker">Approved Sentence</p>
               <h3>{sentence.text}</h3>
             </div>
-            <span className="summary-chip">
-              {sentence.audioStatus === "ready" ? "Audio ready" : "Audio unavailable"}
-            </span>
+            <span className="summary-chip">{formatSentenceAudioStatus(sentence)}</span>
           </div>
           <p className="item-note">{formatNullable(sentence.translation)}</p>
+          {sentence.audioStatus === "ready" && sentence.audioPath ? (
+            <audio controls preload="none" src={getAudioUrl(sentence.audioPath) ?? undefined}>
+              Your browser does not support audio playback.
+            </audio>
+          ) : (
+            <p className="item-note">
+              {sentence.audioStatus === "pending"
+                ? "Audio is generating in the background."
+                : "Sentence remains usable even without audio."}
+            </p>
+          )}
           <div className="queue-meta-grid">
             <div className="queue-span">
               <strong>Linked words</strong>
@@ -680,17 +719,32 @@ function QueueSentenceCandidateCard(props: {
   );
 }
 
-function QueueGenericSentenceCard(props: { item: Extract<QueueListItem, { type: QueueItemType.AudioFailure }> }) {
+function QueueAudioFailureCard(props: {
+  item: QueueAudioFailureItem;
+  actionItemId: string | null;
+  onRegenerate: (item: QueueAudioFailureItem) => void;
+}) {
+  const isBusy = props.actionItemId === props.item.id;
+
   return (
     <article className="queue-card">
       <div className="queue-card-header">
         <div>
-          <p className="section-kicker">{queueTypeLabels[props.item.type]}</p>
+          <p className="section-kicker">Audio Failure</p>
           <h3>{props.item.sentence.text}</h3>
         </div>
-        <span className="summary-chip">{props.item.availableActions[0]?.label ?? "Pending"}</span>
+        <span className="summary-chip">{props.item.sentence.linkedWords.map((word) => word.simplified).join(", ")}</span>
       </div>
       <p className="item-note">{formatNullable(props.item.sentence.translation)}</p>
+      <p className="item-note">Stored sentence content stays available while audio is retried.</p>
+      <button
+        className="secondary-button"
+        disabled={isBusy}
+        onClick={() => props.onRegenerate(props.item)}
+        type="button"
+      >
+        {isBusy ? "Saving..." : "Regenerate Audio"}
+      </button>
     </article>
   );
 }
@@ -764,7 +818,14 @@ export function QueueHubSection(props: QueueHubSectionProps) {
                     />
                   );
                 case QueueItemType.AudioFailure:
-                  return <QueueGenericSentenceCard item={item} key={item.id} />;
+                  return (
+                    <QueueAudioFailureCard
+                      actionItemId={props.actionItemId}
+                      item={item}
+                      key={item.id}
+                      onRegenerate={props.onRegenerateAudio}
+                    />
+                  );
               }
             })}
           </div>
@@ -1435,6 +1496,24 @@ export function App() {
     }, 50);
   }
 
+  async function regenerateAudio(item: QueueAudioFailureItem) {
+    await updateQueueHub(
+      item.id,
+      { action: "regenerate_audio" },
+      "Sentence audio regeneration queued."
+    );
+    setTimeout(() => {
+      void refreshDashboard();
+      void expectJson<QueueListResponse>("/queue").then((nextQueueHub) => {
+        setQueueHub(nextQueueHub);
+        setActiveQueueType((current) => {
+          const stillVisible = nextQueueHub.counts.some((count) => count.type === current && count.count > 0);
+          return stillVisible ? current : getDefaultQueueType(nextQueueHub);
+        });
+      }).catch(() => undefined);
+    }, 50);
+  }
+
   return (
     <main className="page">
       <section className="hero">
@@ -1486,6 +1565,7 @@ export function App() {
             onApproveSentence={(item) => void approveSentence(item)}
             onCreateLiteralProp={(item) => void createLiteralProp(item)}
             onEditApproveSentence={(item, values) => void editApproveSentence(item, values)}
+            onRegenerateAudio={(item) => void regenerateAudio(item)}
             onRegenerateSentence={(item) => void regenerateSentence(item)}
             onRejectSentence={(item) => void rejectSentence(item)}
             onResolveWithSuggestion={(item) => void resolveWithSuggestion(item)}

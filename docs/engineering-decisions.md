@@ -372,3 +372,18 @@ Reason:
 - this keeps the initial UI small while still satisfying shared sentence reuse across words
 - it avoids a separate multi-select word-picker before the repo has a fuller detail/edit surface
 - it preserves one canonical sentence record with many-to-many word links instead of duplicating manual entries per word
+
+## 25. Local Sentence Audio Storage And Fallback Provider
+
+For ticket `018` and until a real TTS backend is wired:
+
+- keep sentence audio generation behind a thin provider interface
+- store generated sentence audio as app-managed local media files under the API data directory
+- persist `sentences.audio_path` as the served relative URL path under `/media`
+- use a deterministic local waveform fallback provider for v1 verification and offline reuse
+
+Reason:
+
+- ticket `018` needs queue-backed audio generation and playback now without blocking on an external service
+- serving local media through the API keeps the playback contract stable for the web app
+- storing reusable files on disk satisfies the offline-cache requirement once audio has been generated

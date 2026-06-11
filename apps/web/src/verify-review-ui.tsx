@@ -168,8 +168,8 @@ const wordDetail: WordDetailRecord = {
       translation: "China is big.",
       pinyinFull: "zhong1 guo2 hen3 da4.",
       approvalStatus: SentenceApprovalStatus.Approved,
-      audioStatus: AudioStatus.None,
-      audioPath: null,
+      audioStatus: AudioStatus.Ready,
+      audioPath: "/media/audio/sentences/sentence-1.wav",
       generationSource: ItemSource.Manual,
       notes: null,
       createdAt: now,
@@ -267,7 +267,8 @@ expectMatch(wordMarkup, /Word Review/);
 expectMatch(wordMarkup, />中国</);
 expectMatch(wordMarkup, /Component characters/);
 expectMatch(wordMarkup, /Sentence bank/);
-expectMatch(wordMarkup, /Audio unavailable/);
+expectMatch(wordMarkup, /Audio ready/);
+expectMatch(wordMarkup, /audio/);
 expectMatch(wordMarkup, /Add manual sentence/);
 expectMatch(wordMarkup, /middle/);
 expectMatch(wordMarkup, /country/);

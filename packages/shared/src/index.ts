@@ -551,6 +551,9 @@ export type QueueActionInput =
     }
   | {
       action: "regenerate_sentence_candidate";
+    }
+  | {
+      action: "regenerate_audio";
     };
 
 export type ReviewItemKind = "character" | "word";
@@ -992,6 +995,9 @@ export const queueActionInputSchema = z.discriminatedUnion("action", [
   }),
   z.object({
     action: z.literal("regenerate_sentence_candidate")
+  }),
+  z.object({
+    action: z.literal("regenerate_audio")
   })
 ]);
 

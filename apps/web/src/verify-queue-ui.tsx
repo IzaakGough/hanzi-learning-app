@@ -20,7 +20,7 @@ const queue: QueueListResponse = {
     { type: QueueItemType.DecompositionCandidate, count: 1 },
     { type: QueueItemType.UnresolvedProp, count: 1 },
     { type: QueueItemType.SentenceCandidate, count: 1 },
-    { type: QueueItemType.AudioFailure, count: 0 },
+    { type: QueueItemType.AudioFailure, count: 1 },
     { type: QueueItemType.MissingLexicalData, count: 1 }
   ],
   items: [
@@ -179,6 +179,42 @@ const queue: QueueListResponse = {
       }
     },
     {
+      id: "queue-audio-1",
+      dedupeKey: "audio_failure:sentence-2",
+      type: QueueItemType.AudioFailure,
+      state: "open",
+      title: "你好！",
+      description: "hello",
+      createdAt: "2026-06-11T08:00:00.000Z",
+      updatedAt: "2026-06-11T08:00:00.000Z",
+      availableActions: [
+        { action: "regenerate_audio", label: "Regenerate audio" }
+      ],
+      sentence: {
+        id: "sentence-2",
+        text: "你好！",
+        translation: "hello",
+        pinyinFull: "ni3 hao3",
+        approvalStatus: SentenceApprovalStatus.Approved,
+        audioStatus: AudioStatus.Failed,
+        audioPath: null,
+        generationSource: ItemSource.Manual,
+        notes: null,
+        createdAt: "2026-06-11T08:00:00.000Z",
+        updatedAt: "2026-06-11T08:00:00.000Z",
+        linkedWords: [
+          {
+            id: "word-hello",
+            simplified: "你好",
+            pinyinDisplay: "ni3 hao3",
+            meaningPrimary: "hello",
+            status: ItemStatus.Ready
+          }
+        ],
+        analysisSpans: []
+      }
+    },
+    {
       id: "queue-lex-1",
       dedupeKey: "missing_lexical_data:word:word-3",
       type: QueueItemType.MissingLexicalData,
@@ -210,6 +246,7 @@ const decompositionMarkup = renderToStaticMarkup(
     onApproveSentence={() => undefined}
     onCreateLiteralProp={() => undefined}
     onEditApproveSentence={() => undefined}
+    onRegenerateAudio={() => undefined}
     onRegenerateSentence={() => undefined}
     onRejectSentence={() => undefined}
     onResolveWithSuggestion={() => undefined}
@@ -232,6 +269,7 @@ const unresolvedMarkup = renderToStaticMarkup(
     onApproveSentence={() => undefined}
     onCreateLiteralProp={() => undefined}
     onEditApproveSentence={() => undefined}
+    onRegenerateAudio={() => undefined}
     onRegenerateSentence={() => undefined}
     onRejectSentence={() => undefined}
     onResolveWithSuggestion={() => undefined}
@@ -253,6 +291,7 @@ const sentenceMarkup = renderToStaticMarkup(
     onApproveSentence={() => undefined}
     onCreateLiteralProp={() => undefined}
     onEditApproveSentence={() => undefined}
+    onRegenerateAudio={() => undefined}
     onRegenerateSentence={() => undefined}
     onRejectSentence={() => undefined}
     onResolveWithSuggestion={() => undefined}
@@ -267,5 +306,27 @@ expectMatch(sentenceMarkup, /Reject/);
 expectMatch(sentenceMarkup, /Edit \+ Approve/);
 expectMatch(sentenceMarkup, /Regenerate/);
 expectMatch(sentenceMarkup, /hello/);
+
+const audioMarkup = renderToStaticMarkup(
+  <QueueHubSection
+    actionItemId={null}
+    activeType={QueueItemType.AudioFailure}
+    feedback="Ready"
+    onApproveCandidate={() => undefined}
+    onApproveSentence={() => undefined}
+    onCreateLiteralProp={() => undefined}
+    onEditApproveSentence={() => undefined}
+    onRegenerateAudio={() => undefined}
+    onRegenerateSentence={() => undefined}
+    onRejectSentence={() => undefined}
+    onResolveWithSuggestion={() => undefined}
+    onSelectType={() => undefined}
+    queue={queue}
+  />
+);
+
+expectMatch(audioMarkup, /Audio Failures/);
+expectMatch(audioMarkup, /Regenerate Audio/);
+expectMatch(audioMarkup, /stays available while audio is retried/i);
 
 console.log("Ticket 016 queue UI verification passed.");

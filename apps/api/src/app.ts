@@ -13,7 +13,8 @@ import {
   parseReviewGradeInput,
   type HealthcheckResponse
 } from "@hanzi-learning-app/shared";
-import { databaseFilePath } from "./db/config.js";
+import { databaseFilePath, mediaDirectory } from "./db/config.js";
+import { queueSentenceAudioGeneration } from "./services/audio/audio-generation-service.js";
 import {
   createMapping,
   listMappings,
@@ -67,6 +68,7 @@ import { createSentenceGenerationJob } from "./services/sentences/sentence-gener
 import {
   createManualSentenceForWord,
   listApprovedSentencesForWord,
+  recomputeSentenceDisplay,
   SentenceNotFoundError
 } from "./services/sentences/sentence-service.js";
 import {
@@ -83,6 +85,7 @@ export function createApp(database: Database.Database) {
 
   app.use(cors());
   app.use(express.json());
+  app.use("/media", express.static(mediaDirectory));
 
   app.get(HEALTHCHECK_PATH, (_request, response) => {
     const payload: HealthcheckResponse = {
@@ -188,7 +191,9 @@ export function createApp(database: Database.Database) {
   app.post("/words/:id/manual-sentences", (request, response) => {
     try {
       const input = parseManualSentenceCreateInput(request.body);
-      response.status(201).json(createManualSentenceForWord(database, request.params.id, input));
+      const sentence = createManualSentenceForWord(database, request.params.id, input);
+      queueSentenceAudioGeneration(database, sentence.id);
+      response.status(201).json(recomputeSentenceDisplay(database, sentence.id));
     } catch (error) {
       sendRouteError(response, error);
     }
