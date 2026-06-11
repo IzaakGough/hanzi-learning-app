@@ -6,6 +6,9 @@ Raw Pleco and Notion exports are not consumed directly by the app in this phase.
 
 Example fixtures live in `data/imports/examples/`.
 
+Raw export examples that match the ticket `009` normalization scripts live in `data/imports/raw-examples/`.
+Usage and input-shape assumptions for those scripts live in `scripts/README.md`.
+
 ## Files
 
 - `known_characters.json`
