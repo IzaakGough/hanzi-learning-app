@@ -120,6 +120,30 @@ export interface ImportRecord extends BaseEntity {
   errorMessage: string | null;
 }
 
+function uniqueBy<T>(
+  items: T[],
+  getKey: (item: T) => string,
+  context: z.RefinementCtx,
+  message: (key: string) => string,
+) {
+  const seen = new Set<string>();
+
+  items.forEach((item, index) => {
+    const key = getKey(item);
+
+    if (seen.has(key)) {
+      context.addIssue({
+        code: "custom",
+        message: message(key),
+        path: [index]
+      });
+      return;
+    }
+
+    seen.add(key);
+  });
+}
+
 export const importSourceEnumSchema = z.enum([
   ItemSource.PlecoImport,
   ItemSource.CurriculumImport,
@@ -141,6 +165,13 @@ export const knownCharactersImportSchema = z.object({
   version: z.literal(1),
   sourceName: z.string().min(1),
   items: z.array(knownCharacterImportItemSchema)
+}).superRefine((value, context) => {
+  uniqueBy(
+    value.items,
+    (item) => item.hanzi,
+    context,
+    (key) => `Duplicate known character entry: ${key}`,
+  );
 });
 
 export const knownWordImportItemSchema = z.object({
@@ -157,6 +188,13 @@ export const knownWordsImportSchema = z.object({
   version: z.literal(1),
   sourceName: z.string().min(1),
   items: z.array(knownWordImportItemSchema)
+}).superRefine((value, context) => {
+  uniqueBy(
+    value.items,
+    (item) => item.simplified,
+    context,
+    (key) => `Duplicate known word entry: ${key}`,
+  );
 });
 
 export const levelCharacterImportSchema = z.object({
@@ -181,6 +219,13 @@ export const levelsImportSchema = z.object({
   version: z.literal(1),
   sourceName: z.string().min(1),
   items: z.array(levelImportSchema)
+}).superRefine((value, context) => {
+  uniqueBy(
+    value.items,
+    (item) => `${item.course}::${item.sequenceNumber}`,
+    context,
+    (key) => `Duplicate level entry: ${key}`,
+  );
 });
 
 export const pinyinMappingImportItemSchema = z.object({
@@ -195,6 +240,13 @@ export const pinyinMappingsImportSchema = z.object({
   version: z.literal(1),
   sourceName: z.string().min(1),
   items: z.array(pinyinMappingImportItemSchema)
+}).superRefine((value, context) => {
+  uniqueBy(
+    value.items,
+    (item) => `${item.kind}::${item.symbol}`,
+    context,
+    (key) => `Duplicate pinyin mapping entry: ${key}`,
+  );
 });
 
 export const normalizedImportSchema = z.discriminatedUnion("importType", [
