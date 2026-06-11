@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createServer } from "node:http";
+import { QueueItemType } from "@hanzi-learning-app/shared";
 
 const verificationDatabasePath = path.join(
   os.tmpdir(),
@@ -24,14 +25,20 @@ interface DashboardResponse {
   };
   contentQueue: {
     hasWork: boolean;
-    charactersNeedingApprovalCount: number;
-    unresolvedPropCount: number;
+    totalCount: number;
+    counts: Array<{
+      type: QueueItemType;
+      count: number;
+    }>;
   };
 }
 
-interface WorkspaceResponse {
-  charactersNeedingApproval: unknown[];
-  unresolvedProps: unknown[];
+interface QueueResponse {
+  counts: Array<{
+    type: QueueItemType;
+    count: number;
+  }>;
+  items: unknown[];
 }
 
 interface ReviewQueueResponse {
@@ -70,22 +77,22 @@ async function main() {
     assert(address && typeof address === "object");
     const baseUrl = `http://127.0.0.1:${address.port}`;
 
-    const [dashboardResponse, characterQueueResponse, wordQueueResponse, workspaceResponse] = await Promise.all([
+    const [dashboardResponse, characterQueueResponse, wordQueueResponse, queueResponse] = await Promise.all([
       fetch(`${baseUrl}/dashboard`),
       fetch(`${baseUrl}/reviews/characters/due`),
       fetch(`${baseUrl}/reviews/words/due`),
-      fetch(`${baseUrl}/decompositions/workspace`)
+      fetch(`${baseUrl}/queue`)
     ]);
 
     assert.equal(dashboardResponse.status, 200);
     assert.equal(characterQueueResponse.status, 200);
     assert.equal(wordQueueResponse.status, 200);
-    assert.equal(workspaceResponse.status, 200);
+    assert.equal(queueResponse.status, 200);
 
     const dashboard = await dashboardResponse.json() as DashboardResponse;
     const characterQueue = await characterQueueResponse.json() as ReviewQueueResponse;
     const wordQueue = await wordQueueResponse.json() as ReviewQueueResponse;
-    const workspace = await workspaceResponse.json() as WorkspaceResponse;
+    const queue = await queueResponse.json() as QueueResponse;
 
     assert.equal(dashboard.dueReview.characterCount, characterQueue.items.length);
     assert.equal(dashboard.dueReview.wordCount, wordQueue.items.length);
@@ -96,12 +103,12 @@ async function main() {
     assert.notEqual(dashboard.learningProgress.level.nextCharacterId, null);
     assert(dashboard.learningProgress.level.words.some((word) => word.status === "blocked"));
 
+    assert.equal(dashboard.contentQueue.totalCount, queue.items.length);
     assert.equal(
-      dashboard.contentQueue.charactersNeedingApprovalCount,
-      workspace.charactersNeedingApproval.length
+      dashboard.contentQueue.hasWork,
+      queue.counts.some((count) => count.count > 0)
     );
-    assert.equal(dashboard.contentQueue.unresolvedPropCount, workspace.unresolvedProps.length);
-    assert.equal(dashboard.contentQueue.hasWork, workspace.charactersNeedingApproval.length > 0 || workspace.unresolvedProps.length > 0);
+    assert.deepEqual(dashboard.contentQueue.counts, queue.counts);
 
     console.log("Ticket 013 dashboard verification passed.");
   } finally {

@@ -8,6 +8,7 @@ import {
   parseLexicalEditInput,
   parseMappingAdminInput,
   parsePropAdminInput,
+  parseQueueActionInput,
   parseReviewGradeInput,
   type HealthcheckResponse
 } from "@hanzi-learning-app/shared";
@@ -55,6 +56,12 @@ import {
   resolveDecompositionPart
 } from "./services/decomposition/decomposition-service.js";
 import { getDashboardSummary } from "./services/dashboard/dashboard-service.js";
+import {
+  applyQueueAction,
+  listQueueItems,
+  QueueActionNotSupportedError,
+  QueueItemNotFoundError
+} from "./services/queue/queue-service.js";
 import {
   gradeCharacterReview,
   gradeWordReview,
@@ -140,6 +147,19 @@ export function createApp(database: Database.Database) {
 
   app.get("/dashboard", (_request, response) => {
     response.json(getDashboardSummary(database));
+  });
+
+  app.get("/queue", (_request, response) => {
+    response.json(listQueueItems(database));
+  });
+
+  app.post("/queue/items/:id/actions", (request, response) => {
+    try {
+      const input = parseQueueActionInput(request.body);
+      response.json(applyQueueAction(database, request.params.id, input));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
   });
 
   app.get("/decompositions/workspace", (_request, response) => {
@@ -284,6 +304,11 @@ function sendRouteError(
     return;
   }
 
+  if (error instanceof QueueItemNotFoundError) {
+    response.status(404).json({ error: error.message });
+    return;
+  }
+
   if (error instanceof MappingConflictError || error instanceof PropConflictError) {
     response.status(409).json({ error: error.message });
     return;
@@ -305,6 +330,11 @@ function sendRouteError(
   }
 
   if (error instanceof ReviewItemNotEligibleError) {
+    response.status(422).json({ error: error.message });
+    return;
+  }
+
+  if (error instanceof QueueActionNotSupportedError) {
     response.status(422).json({ error: error.message });
     return;
   }

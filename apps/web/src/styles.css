@@ -98,10 +98,13 @@ h3 {
 .summary-chip-group,
 .meta-row,
 .review-actions,
-.learning-item-header,
+  .learning-item-header,
 .summary-row,
 .dashboard-metric-row,
-.cta-row {
+.cta-row,
+.queue-card-header,
+.queue-actions-row,
+.queue-tab-row {
   display: flex;
   gap: 12px;
 }
@@ -220,7 +223,8 @@ h3 {
 }
 
 .summary-list,
-.learning-list {
+.learning-list,
+.queue-list {
   display: grid;
   gap: 14px;
 }
@@ -234,7 +238,8 @@ h3 {
 .review-prompt-card,
 .answer-card,
 .empty-state,
-.learning-item-card {
+.learning-item-card,
+.queue-card {
   display: grid;
   gap: 12px;
   padding: 18px;
@@ -307,6 +312,44 @@ h3 {
 .review-actions {
   align-items: stretch;
   flex-direction: column;
+}
+
+.queue-tab-row,
+.queue-actions-row {
+  flex-wrap: wrap;
+}
+
+.queue-tab {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 170px;
+  padding: 12px 14px;
+  border: 1px solid rgba(120, 53, 15, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 251, 240, 0.88);
+  color: #7c2d12;
+}
+
+.queue-tab-active {
+  background: linear-gradient(135deg, rgba(124, 45, 18, 0.95), rgba(154, 52, 18, 0.92));
+  color: #fff8ef;
+}
+
+.queue-card-header {
+  align-items: start;
+  justify-content: space-between;
+}
+
+.queue-meta-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.queue-span {
+  grid-column: 1 / -1;
 }
 
 .grade-grid {
@@ -419,13 +462,18 @@ h3 {
   .summary-chip-group,
   .meta-row,
   .summary-row,
-  .learning-item-header {
+  .learning-item-header,
+  .queue-card-header {
     flex-direction: column;
     align-items: stretch;
   }
 
   .component-list li,
   .compact-list li {
+    grid-template-columns: 1fr;
+  }
+
+  .queue-meta-grid {
     grid-template-columns: 1fr;
   }
 }

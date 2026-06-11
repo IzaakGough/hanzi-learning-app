@@ -418,8 +418,8 @@ export interface DashboardDueReviewSummary {
 
 export interface DashboardContentQueueSummary {
   hasWork: boolean;
-  charactersNeedingApprovalCount: number;
-  unresolvedPropCount: number;
+  totalCount: number;
+  counts: QueueTypeCount[];
 }
 
 export interface DashboardSummaryResponse {
@@ -427,6 +427,88 @@ export interface DashboardSummaryResponse {
   learningProgress: CurrentLevelProgressResponse;
   contentQueue: DashboardContentQueueSummary;
 }
+
+export type QueueItemState = "open" | "resolved";
+
+export type QueueActionKind =
+  | "approve_decomposition_candidate"
+  | "resolve_unresolved_prop"
+  | "review_sentence_candidate"
+  | "regenerate_audio"
+  | "edit_missing_lexical_data";
+
+export interface QueueTypeCount {
+  type: QueueItemType;
+  count: number;
+}
+
+export interface QueueActionDefinition {
+  action: QueueActionKind;
+  label: string;
+}
+
+export interface QueueItemBase extends BaseEntity {
+  dedupeKey: string;
+  type: QueueItemType;
+  state: QueueItemState;
+  title: string;
+  description: string | null;
+  availableActions: QueueActionDefinition[];
+}
+
+export interface QueueDecompositionCandidateItem extends QueueItemBase {
+  type: QueueItemType.DecompositionCandidate;
+  character: DecompositionCharacterSummary;
+  candidate: CharacterDecompositionRecord;
+  linkedWords: DecompositionLinkedWordSummary[];
+}
+
+export interface QueueUnresolvedPropItem extends QueueItemBase {
+  type: QueueItemType.UnresolvedProp;
+  part: UnresolvedPropQueueItem;
+}
+
+export interface QueueSentenceCandidateItem extends QueueItemBase {
+  type: QueueItemType.SentenceCandidate;
+  sentence: SentenceDetailRecord;
+}
+
+export interface QueueAudioFailureItem extends QueueItemBase {
+  type: QueueItemType.AudioFailure;
+  sentence: SentenceDetailRecord;
+}
+
+export interface QueueMissingLexicalDataItem extends QueueItemBase {
+  type: QueueItemType.MissingLexicalData;
+  target: {
+    id: string;
+    text: string;
+    kind: "character" | "word";
+  };
+  blockedReason: LearningBlockReason;
+  missingFields: string[];
+}
+
+export type QueueListItem =
+  | QueueDecompositionCandidateItem
+  | QueueUnresolvedPropItem
+  | QueueSentenceCandidateItem
+  | QueueAudioFailureItem
+  | QueueMissingLexicalDataItem;
+
+export interface QueueListResponse {
+  counts: QueueTypeCount[];
+  items: QueueListItem[];
+}
+
+export type QueueActionInput =
+  | {
+      action: "approve_decomposition_candidate";
+    }
+  | {
+      action: "resolve_unresolved_prop";
+      resolution: DecompositionPartResolutionInput;
+    };
 
 export type ReviewItemKind = "character" | "word";
 
@@ -827,6 +909,16 @@ export const reviewGradeInputSchema = z.object({
   grade: reviewGradeSchema
 });
 
+export const queueActionInputSchema = z.discriminatedUnion("action", [
+  z.object({
+    action: z.literal("approve_decomposition_candidate")
+  }),
+  z.object({
+    action: z.literal("resolve_unresolved_prop"),
+    resolution: decompositionPartResolutionInputSchema
+  })
+]);
+
 export type KnownCharacterImportItem = z.infer<typeof knownCharacterImportItemSchema>;
 export type KnownCharactersImport = z.infer<typeof knownCharactersImportSchema>;
 export type KnownWordImportItem = z.infer<typeof knownWordImportItemSchema>;
@@ -842,6 +934,7 @@ export type LexicalEditInputPayload = z.infer<typeof lexicalEditInputSchema>;
 export type DecompositionCandidateCreateInputPayload = z.infer<typeof decompositionCandidateCreateInputSchema>;
 export type DecompositionPartResolutionInputPayload = z.infer<typeof decompositionPartResolutionInputSchema>;
 export type ReviewGradeInputPayload = z.infer<typeof reviewGradeInputSchema>;
+export type QueueActionInputPayload = z.infer<typeof queueActionInputSchema>;
 
 export function parseKnownCharactersImport(input: unknown) {
   return knownCharactersImportSchema.parse(input);
@@ -885,4 +978,8 @@ export function parseDecompositionPartResolutionInput(input: unknown) {
 
 export function parseReviewGradeInput(input: unknown) {
   return reviewGradeInputSchema.parse(input);
+}
+
+export function parseQueueActionInput(input: unknown) {
+  return queueActionInputSchema.parse(input);
 }

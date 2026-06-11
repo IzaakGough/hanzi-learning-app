@@ -1,5 +1,5 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import { ItemStatus, type DashboardSummaryResponse } from "@hanzi-learning-app/shared";
+import { ItemStatus, QueueItemType, type DashboardSummaryResponse } from "@hanzi-learning-app/shared";
 import { DashboardOverviewSection, LearningSection } from "./App";
 
 function expectMatch(value: string, pattern: RegExp) {
@@ -72,8 +72,14 @@ const dashboard: DashboardSummaryResponse = {
   },
   contentQueue: {
     hasWork: true,
-    charactersNeedingApprovalCount: 2,
-    unresolvedPropCount: 3
+    totalCount: 5,
+    counts: [
+      { type: QueueItemType.DecompositionCandidate, count: 2 },
+      { type: QueueItemType.UnresolvedProp, count: 3 },
+      { type: QueueItemType.SentenceCandidate, count: 0 },
+      { type: QueueItemType.AudioFailure, count: 0 },
+      { type: QueueItemType.MissingLexicalData, count: 0 }
+    ]
   }
 };
 
@@ -86,12 +92,13 @@ const dashboardMarkup = renderToStaticMarkup(
   />
 );
 
-expectMatch(dashboardMarkup, /Due review is ready first/);
+expectMatch(dashboardMarkup, /Review first, queue work visible/);
 expectMatch(dashboardMarkup, /Start Review/);
 expectMatch(dashboardMarkup, /Continue Learning/);
-expectMatch(dashboardMarkup, /Queue Work/);
-expectMatch(dashboardMarkup, /Unlocked words waiting/);
-expectMatch(dashboardMarkup, /Characters needing approval/);
+expectMatch(dashboardMarkup, /Open Queue Hub/);
+expectMatch(dashboardMarkup, /Shared content queue counts/);
+expectMatch(dashboardMarkup, /Decomposition/);
+expectMatch(dashboardMarkup, /Unresolved Props/);
 
 const learningMarkup = renderToStaticMarkup(
   <LearningSection
@@ -110,4 +117,4 @@ expectMatch(learningMarkup, /学生/);
 expectMatch(learningMarkup, /Mark Character Learned/);
 expectMatch(learningMarkup, /Mark Word Learned/);
 
-console.log("Ticket 013 dashboard UI verification passed.");
+console.log("Ticket 015 dashboard UI verification passed.");

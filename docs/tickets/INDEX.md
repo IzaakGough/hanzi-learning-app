@@ -1,7 +1,7 @@
 # Ticket Index
 
 ## Next Up
-- `015-content-queue-hub.md`
+- `016-sentence-generation-and-approval.md`
 
 ## Tickets
 - [x] `001-project-scaffold.md`
@@ -18,7 +18,7 @@
 - [x] `012-review-mode-ui.md`
 - [x] `013-dashboard-and-priority-flow.md`
 - [x] `014-sentence-schema-and-analysis.md`
-- [ ] `015-content-queue-hub.md`
+- [x] `015-content-queue-hub.md`
 - [ ] `016-sentence-generation-and-approval.md`
 - [ ] `017-manual-sentence-entry-and-sentence-bank.md`
 - [ ] `018-audio-generation.md`

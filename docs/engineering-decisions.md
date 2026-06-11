@@ -312,3 +312,19 @@ Reason:
 - SQLite cannot enforce polymorphic foreign keys cleanly
 - this keeps stored sentence analysis referentially valid
 - render-time visibility can still apply the documented word-first annotation rules
+
+## 21. Queue Registry Sync Model
+
+For ticket `015` and the shared content queue hub:
+
+- add a persisted `queue_items` table as a lightweight registry
+- keep queue item identity stable with a unique `dedupe_key`
+- treat `queue_items` as a synced projection of canonical source tables, not as the source of truth for decomposition, sentence, audio, or lexical records
+- store queue-specific display payload in `payload_json` so the hub can render heterogeneous queue types through one list contract
+- mark rows `resolved` when the underlying source item no longer belongs in an open queue instead of deleting them immediately
+
+Reason:
+
+- decomposition, unresolved prop, sentence, audio, and lexical queue items point at different canonical tables
+- a synced registry gives the dashboard and queue hub one reusable contract now without forcing polymorphic foreign keys into SQLite
+- stable queue ids and dedupe keys make queue actions and future audit views simpler

@@ -316,5 +316,33 @@ export const migrations: MigrationDefinition[] = [
       CREATE INDEX IF NOT EXISTS idx_sentence_analysis_spans_word_id ON sentence_analysis_spans(linked_word_id);
       CREATE INDEX IF NOT EXISTS idx_sentence_analysis_spans_character_id ON sentence_analysis_spans(linked_character_id);
     `
+  },
+  {
+    id: "006_queue_items",
+    description: "Add persisted queue item registry for the shared content queue hub",
+    sql: `
+      CREATE TABLE IF NOT EXISTS queue_items (
+        id TEXT PRIMARY KEY,
+        dedupe_key TEXT NOT NULL UNIQUE,
+        type TEXT NOT NULL CHECK (
+          type IN (
+            'decomposition_candidate',
+            'unresolved_prop',
+            'sentence_candidate',
+            'audio_failure',
+            'missing_lexical_data'
+          )
+        ),
+        state TEXT NOT NULL CHECK (state IN ('open', 'resolved')),
+        title TEXT NOT NULL,
+        description TEXT,
+        payload_json TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_queue_items_type_state ON queue_items(type, state);
+      CREATE INDEX IF NOT EXISTS idx_queue_items_state_updated_at ON queue_items(state, updated_at DESC);
+    `
   }
 ];

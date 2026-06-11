@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   HEALTHCHECK_PATH,
   ItemStatus,
+  QueueItemType,
   ReviewGrade,
   type CharacterDetailRecord,
   type CharacterReviewQueueResponse,
@@ -13,6 +14,12 @@ import {
   type LearningCharacterState,
   type LearningLevelState,
   type LearningWordState,
+  type QueueDecompositionCandidateItem,
+  type QueueListItem,
+  type QueueListResponse,
+  type QueueMissingLexicalDataItem,
+  type QueueTypeCount,
+  type QueueUnresolvedPropItem,
   type ReviewSubmissionResult,
   type WordDetailRecord,
   type WordReviewQueueResponse
@@ -62,6 +69,32 @@ interface LearningSectionProps {
   onMarkCharacterLearned: (character: LearningCharacterState) => void;
   onMarkWordLearned: (word: LearningWordState) => void;
 }
+
+interface QueueHubSectionProps {
+  queue: QueueListResponse;
+  activeType: QueueItemType;
+  feedback: string | null;
+  actionItemId: string | null;
+  onSelectType: (type: QueueItemType) => void;
+  onApproveCandidate: (item: QueueDecompositionCandidateItem) => void;
+  onResolveWithSuggestion: (item: QueueUnresolvedPropItem) => void;
+  onCreateLiteralProp: (item: QueueUnresolvedPropItem) => void;
+}
+
+const reviewGrades = [
+  ReviewGrade.Again,
+  ReviewGrade.Hard,
+  ReviewGrade.Good,
+  ReviewGrade.Easy
+] as const;
+
+const queueTypeLabels: Record<QueueItemType, string> = {
+  [QueueItemType.DecompositionCandidate]: "Decomposition",
+  [QueueItemType.UnresolvedProp]: "Unresolved Props",
+  [QueueItemType.SentenceCandidate]: "Sentence Candidates",
+  [QueueItemType.AudioFailure]: "Audio Failures",
+  [QueueItemType.MissingLexicalData]: "Missing Lexical"
+};
 
 function formatNullable(value: string | null) {
   return value ?? "Not set";
@@ -137,12 +170,32 @@ function scrollToSection(sectionId: string) {
   });
 }
 
-const reviewGrades = [
-  ReviewGrade.Again,
-  ReviewGrade.Hard,
-  ReviewGrade.Good,
-  ReviewGrade.Easy
-] as const;
+function getVisibleQueueCounts(counts: QueueTypeCount[]) {
+  return counts.filter((count) => count.count > 0);
+}
+
+function getDefaultQueueType(queue: QueueListResponse) {
+  return getVisibleQueueCounts(queue.counts)[0]?.type ?? QueueItemType.DecompositionCandidate;
+}
+
+function QueueCountsList(props: { counts: QueueTypeCount[] }) {
+  const visibleCounts = getVisibleQueueCounts(props.counts);
+
+  if (visibleCounts.length === 0) {
+    return <p className="item-note">No queue items are open right now.</p>;
+  }
+
+  return (
+    <div className="summary-list">
+      {visibleCounts.map((count) => (
+        <div className="summary-row" key={count.type}>
+          <span>{queueTypeLabels[count.type]}</span>
+          <strong>{count.count}</strong>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function LearningItemCard(props: {
   title: string;
@@ -196,13 +249,13 @@ export function DashboardOverviewSection(props: DashboardOverviewSectionProps) {
         <div className="panel-heading">
           <div>
             <p className="section-kicker">Priority</p>
-            <h2>Due review is ready first</h2>
+            <h2>Review first, queue work visible</h2>
           </div>
           <span className="priority-badge">{props.dashboard.dueReview.totalCount} total due</span>
         </div>
 
         <p className="hero-copy">
-          Review stays prominent, but learning remains available even when backlog exists.
+          The shared content queue now sits beside review and learning so blocked content work stays actionable.
         </p>
 
         <div className="dashboard-metric-row">
@@ -214,6 +267,10 @@ export function DashboardOverviewSection(props: DashboardOverviewSectionProps) {
             <strong>{props.dashboard.dueReview.wordCount}</strong>
             <span>Words due</span>
           </div>
+          <div className="metric-card metric-review">
+            <strong>{props.dashboard.contentQueue.totalCount}</strong>
+            <span>Queue items</span>
+          </div>
         </div>
 
         <div className="cta-row">
@@ -223,11 +280,9 @@ export function DashboardOverviewSection(props: DashboardOverviewSectionProps) {
           <button className="secondary-button" onClick={props.onOpenLearning} type="button">
             Continue Learning
           </button>
-          {props.dashboard.contentQueue.hasWork ? (
-            <button className="secondary-button" onClick={props.onOpenQueue} type="button">
-              Queue Work
-            </button>
-          ) : null}
+          <button className="secondary-button" onClick={props.onOpenQueue} type="button">
+            Open Queue Hub
+          </button>
         </div>
       </article>
 
@@ -237,12 +292,12 @@ export function DashboardOverviewSection(props: DashboardOverviewSectionProps) {
           <>
             <h2>
               Level {level.sequenceNumber}
-              {level.title ? ` · ${level.title}` : ""}
+              {level.title ? ` - ${level.title}` : ""}
             </h2>
             <div className="summary-list">
               <div className="summary-row">
                 <span>Next character</span>
-                <strong>{nextCharacter ? `${nextCharacter.hanzi} · ${formatNullable(nextCharacter.pinyinDisplay)}` : "Level review"}</strong>
+                <strong>{nextCharacter ? `${nextCharacter.hanzi} - ${formatNullable(nextCharacter.pinyinDisplay)}` : "Level review"}</strong>
               </div>
               <div className="summary-row">
                 <span>Unlocked words waiting</span>
@@ -257,27 +312,16 @@ export function DashboardOverviewSection(props: DashboardOverviewSectionProps) {
         ) : (
           <>
             <h2>Course complete</h2>
-            <p className="item-note">No current level remains. Review and future content work stay available.</p>
+            <p className="item-note">No current level remains. Review and queue work stay available.</p>
           </>
         )}
       </article>
 
-      {props.dashboard.contentQueue.hasWork ? (
-        <article className="panel dashboard-summary-panel">
-          <p className="section-kicker">Queue Work</p>
-          <h2>Content blockers waiting</h2>
-          <div className="summary-list">
-            <div className="summary-row">
-              <span>Characters needing approval</span>
-              <strong>{props.dashboard.contentQueue.charactersNeedingApprovalCount}</strong>
-            </div>
-            <div className="summary-row">
-              <span>Unresolved prop matches</span>
-              <strong>{props.dashboard.contentQueue.unresolvedPropCount}</strong>
-            </div>
-          </div>
-        </article>
-      ) : null}
+      <article className="panel dashboard-summary-panel">
+        <p className="section-kicker">Queue Work</p>
+        <h2>Shared content queue counts</h2>
+        <QueueCountsList counts={props.dashboard.contentQueue.counts} />
+      </article>
     </section>
   );
 }
@@ -355,7 +399,7 @@ export function LearningSection(props: LearningSectionProps) {
                       key={character.id}
                       onAction={() => props.onMarkCharacterLearned(character)}
                       status={character.status}
-                      subtitle={`${formatNullable(character.pinyinDisplay)} · ${formatNullable(character.meaningPrimary)}`}
+                      subtitle={`${formatNullable(character.pinyinDisplay)} - ${formatNullable(character.meaningPrimary)}`}
                       title={character.hanzi}
                     />
                   ))}
@@ -379,7 +423,7 @@ export function LearningSection(props: LearningSectionProps) {
                       key={word.id}
                       onAction={() => props.onMarkWordLearned(word)}
                       status={word.status}
-                      subtitle={`${formatNullable(word.pinyinDisplay)} · ${formatNullable(word.meaningPrimary)}`}
+                      subtitle={`${formatNullable(word.pinyinDisplay)} - ${formatNullable(word.meaningPrimary)}`}
                       title={word.simplified}
                     />
                   ))}
@@ -390,7 +434,203 @@ export function LearningSection(props: LearningSectionProps) {
         ) : (
           <section className="empty-state">
             <strong>Course complete.</strong>
-            <p>No current level remains. Continue with due review or later content queue work.</p>
+            <p>No current level remains. Continue with due review or queue work.</p>
+          </section>
+        )}
+
+        <p className="form-message left">{props.feedback ?? " "}</p>
+      </article>
+    </section>
+  );
+}
+
+function QueueDecompositionCard(props: {
+  item: QueueDecompositionCandidateItem;
+  actionItemId: string | null;
+  onApprove: () => void;
+}) {
+  return (
+    <article className="queue-card">
+      <div className="queue-card-header">
+        <div>
+          <p className="section-kicker">Decomposition Candidate</p>
+          <h3>{props.item.character.hanzi}</h3>
+        </div>
+        <span className={`status-pill status-${props.item.character.status}`}>{formatStatusLabel(props.item.character.status)}</span>
+      </div>
+      <p className="item-note">{props.item.description}</p>
+      <div className="queue-meta-grid">
+        <div>
+          <strong>Meaning</strong>
+          <p>{formatNullable(props.item.character.meaningPrimary)}</p>
+        </div>
+        <div>
+          <strong>Pinyin</strong>
+          <p>{formatNullable(props.item.character.pinyinDisplay)}</p>
+        </div>
+        <div className="queue-span">
+          <strong>Linked words</strong>
+          <p>{props.item.linkedWords.length > 0 ? props.item.linkedWords.map((word) => word.simplified).join(", ") : "None"}</p>
+        </div>
+      </div>
+      <button
+        className="primary-button"
+        disabled={props.actionItemId === props.item.id}
+        onClick={props.onApprove}
+        type="button"
+      >
+        {props.actionItemId === props.item.id ? "Saving..." : "Approve Candidate"}
+      </button>
+    </article>
+  );
+}
+
+function QueueUnresolvedPropCard(props: {
+  item: QueueUnresolvedPropItem;
+  actionItemId: string | null;
+  onResolveWithSuggestion: () => void;
+  onCreateLiteralProp: () => void;
+}) {
+  const suggestion = props.item.part.existingPropOptions[0] ?? null;
+
+  return (
+    <article className="queue-card">
+      <div className="queue-card-header">
+        <div>
+          <p className="section-kicker">Unresolved Prop</p>
+          <h3>{props.item.part.characterHanzi} needs {props.item.part.literalText}</h3>
+        </div>
+        <span className="summary-chip">{props.item.part.blockedDependencies.length} blocked dependents</span>
+      </div>
+      <p className="item-note">{props.item.description}</p>
+      <div className="queue-meta-grid">
+        <div>
+          <strong>Suggested props</strong>
+          <p>{suggestion ? `${suggestion.name} (${suggestion.meaningOrImage})` : "No existing prop suggestions"}</p>
+        </div>
+        <div className="queue-span">
+          <strong>Blocked items</strong>
+          <p>{props.item.part.blockedDependencies.map((dependency) => dependency.text).join(", ") || "None"}</p>
+        </div>
+      </div>
+      <div className="queue-actions-row">
+        <button
+          className="secondary-button"
+          disabled={!suggestion || props.actionItemId === props.item.id}
+          onClick={props.onResolveWithSuggestion}
+          type="button"
+        >
+          {props.actionItemId === props.item.id ? "Saving..." : suggestion ? `Match ${suggestion.name}` : "No match available"}
+        </button>
+        <button
+          className="primary-button"
+          disabled={props.actionItemId === props.item.id}
+          onClick={props.onCreateLiteralProp}
+          type="button"
+        >
+          {props.actionItemId === props.item.id ? "Saving..." : "Create Prop"}
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function QueueMissingLexicalCard(props: { item: QueueMissingLexicalDataItem }) {
+  return (
+    <article className="queue-card">
+      <div className="queue-card-header">
+        <div>
+          <p className="section-kicker">Missing Lexical Data</p>
+          <h3>{props.item.target.text}</h3>
+        </div>
+        <span className="summary-chip">{props.item.target.kind}</span>
+      </div>
+      <p className="item-note">Missing {props.item.missingFields.join(", ")}. Edit this item through the existing lexical detail flow.</p>
+    </article>
+  );
+}
+
+function QueueGenericSentenceCard(props: { item: Extract<QueueListItem, { type: QueueItemType.SentenceCandidate | QueueItemType.AudioFailure }> }) {
+  return (
+    <article className="queue-card">
+      <div className="queue-card-header">
+        <div>
+          <p className="section-kicker">{queueTypeLabels[props.item.type]}</p>
+          <h3>{props.item.sentence.text}</h3>
+        </div>
+        <span className="summary-chip">{props.item.availableActions[0]?.label ?? "Pending"}</span>
+      </div>
+      <p className="item-note">{formatNullable(props.item.sentence.translation)}</p>
+    </article>
+  );
+}
+
+export function QueueHubSection(props: QueueHubSectionProps) {
+  const filteredItems = props.queue.items.filter((item) => item.type === props.activeType);
+
+  return (
+    <section className="workspace" id="queue-section">
+      <article className="panel panel-stack">
+        <div className="panel-heading">
+          <div>
+            <p className="section-kicker">Queue Hub</p>
+            <h2>Shared content moderation and cleanup</h2>
+          </div>
+          <div className="summary-chip-group">
+            <span className="summary-chip">{props.queue.items.length} open items</span>
+            <span className="summary-chip">{queueTypeLabels[props.activeType]}</span>
+          </div>
+        </div>
+
+        <div className="queue-tab-row">
+          {props.queue.counts.map((count) => (
+            <button
+              className={count.type === props.activeType ? "queue-tab queue-tab-active" : "queue-tab"}
+              key={count.type}
+              onClick={() => props.onSelectType(count.type)}
+              type="button"
+            >
+              <span>{queueTypeLabels[count.type]}</span>
+              <strong>{count.count}</strong>
+            </button>
+          ))}
+        </div>
+
+        {filteredItems.length > 0 ? (
+          <div className="queue-list">
+            {filteredItems.map((item) => {
+              switch (item.type) {
+                case QueueItemType.DecompositionCandidate:
+                  return (
+                    <QueueDecompositionCard
+                      actionItemId={props.actionItemId}
+                      item={item}
+                      key={item.id}
+                      onApprove={() => props.onApproveCandidate(item)}
+                    />
+                  );
+                case QueueItemType.UnresolvedProp:
+                  return (
+                    <QueueUnresolvedPropCard
+                      actionItemId={props.actionItemId}
+                      item={item}
+                      key={item.id}
+                      onCreateLiteralProp={() => props.onCreateLiteralProp(item)}
+                      onResolveWithSuggestion={() => props.onResolveWithSuggestion(item)}
+                    />
+                  );
+                case QueueItemType.MissingLexicalData:
+                  return <QueueMissingLexicalCard item={item} key={item.id} />;
+                case QueueItemType.SentenceCandidate:
+                case QueueItemType.AudioFailure:
+                  return <QueueGenericSentenceCard item={item} key={item.id} />;
+              }
+            })}
+          </div>
+        ) : (
+          <section className="empty-state">
+            <strong>No {queueTypeLabels[props.activeType].toLowerCase()} items.</strong>
+            <p>This queue type is empty right now, but the tab stays available for later ticket work.</p>
           </section>
         )}
 
@@ -607,9 +847,26 @@ async function expectPost<T>(path: string) {
   return await response.json() as T;
 }
 
+async function expectPostWithBody<T>(path: string, body: unknown) {
+  const response = await fetch(`${apiBaseUrl}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    const payload = await response.json() as { error?: string };
+    throw new Error(payload.error ?? `${path} failed with status ${response.status}`);
+  }
+
+  return await response.json() as T;
+}
+
 export function App() {
   const [health, setHealth] = useState<HealthcheckResponse | null>(null);
   const [dashboard, setDashboard] = useState<DashboardSummaryResponse | null>(null);
+  const [queueHub, setQueueHub] = useState<QueueListResponse | null>(null);
+  const [activeQueueType, setActiveQueueType] = useState<QueueItemType>(QueueItemType.DecompositionCandidate);
   const [pageError, setPageError] = useState<string | null>(null);
   const [loadingPage, setLoadingPage] = useState(true);
 
@@ -631,23 +888,36 @@ export function App() {
 
   const [learningSubmittingItemId, setLearningSubmittingItemId] = useState<string | null>(null);
   const [learningFeedback, setLearningFeedback] = useState<string | null>(null);
+  const [queueActionItemId, setQueueActionItemId] = useState<string | null>(null);
+  const [queueFeedback, setQueueFeedback] = useState<string | null>(null);
 
   const currentCharacter = characterQueue[0] ?? null;
   const currentWord = wordQueue[0] ?? null;
+
+  async function refreshDashboard() {
+    const nextDashboard = await expectJson<DashboardSummaryResponse>("/dashboard");
+    setDashboard(nextDashboard);
+  }
 
   async function loadPage(signal?: AbortSignal) {
     setLoadingPage(true);
 
     try {
-      const [nextHealth, nextDashboard, nextCharacterQueue, nextWordQueue] = await Promise.all([
+      const [nextHealth, nextDashboard, nextCharacterQueue, nextWordQueue, nextQueueHub] = await Promise.all([
         expectJson<HealthcheckResponse>(HEALTHCHECK_PATH, signal),
         expectJson<DashboardSummaryResponse>("/dashboard", signal),
         expectJson<CharacterReviewQueueResponse>("/reviews/characters/due", signal),
-        expectJson<WordReviewQueueResponse>("/reviews/words/due", signal)
+        expectJson<WordReviewQueueResponse>("/reviews/words/due", signal),
+        expectJson<QueueListResponse>("/queue", signal)
       ]);
 
       setHealth(nextHealth);
       setDashboard(nextDashboard);
+      setQueueHub(nextQueueHub);
+      setActiveQueueType((current) => {
+        const stillVisible = nextQueueHub.counts.some((count) => count.type === current && count.count > 0);
+        return stillVisible ? current : getDefaultQueueType(nextQueueHub);
+      });
       setCharacterQueue(nextCharacterQueue.items);
       setCharacterTotalCount(nextCharacterQueue.items.length);
       setCharacterReviewedCount(0);
@@ -658,6 +928,7 @@ export function App() {
       setWordReviewedCount(0);
       setWordDetail(null);
       setWordFeedback(null);
+      setQueueFeedback(null);
       setPageError(null);
     } catch (error) {
       if (!signal?.aborted) {
@@ -750,18 +1021,10 @@ export function App() {
     setCharacterGradeSubmitting(true);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/reviews/characters/${currentCharacter.id}/grade`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ grade })
-      });
-
-      if (!response.ok) {
-        const payload = await response.json() as { error?: string };
-        throw new Error(payload.error ?? `Failed to grade character review (${response.status})`);
-      }
-
-      const submission = await response.json() as ReviewSubmissionResult;
+      const submission = await expectPostWithBody<ReviewSubmissionResult>(
+        `/reviews/characters/${currentCharacter.id}/grade`,
+        { grade }
+      );
       advanceCharacterQueue(submission, currentCharacter.id);
     } catch (error) {
       setCharacterFeedback(error instanceof Error ? error.message : "Unknown character grading error");
@@ -778,18 +1041,10 @@ export function App() {
     setWordGradeSubmitting(true);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/reviews/words/${currentWord.id}/grade`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ grade })
-      });
-
-      if (!response.ok) {
-        const payload = await response.json() as { error?: string };
-        throw new Error(payload.error ?? `Failed to grade word review (${response.status})`);
-      }
-
-      const submission = await response.json() as ReviewSubmissionResult;
+      const submission = await expectPostWithBody<ReviewSubmissionResult>(
+        `/reviews/words/${currentWord.id}/grade`,
+        { grade }
+      );
       advanceWordQueue(submission, currentWord.id);
     } catch (error) {
       setWordFeedback(error instanceof Error ? error.message : "Unknown word grading error");
@@ -828,19 +1083,83 @@ export function App() {
     }
   }
 
+  async function updateQueueHub(itemId: string, body: unknown, successMessage: string) {
+    setQueueActionItemId(itemId);
+
+    try {
+      const nextQueueHub = await expectPostWithBody<QueueListResponse>(`/queue/items/${itemId}/actions`, body);
+      setQueueHub(nextQueueHub);
+      setActiveQueueType((current) => {
+        const stillVisible = nextQueueHub.counts.some((count) => count.type === current && count.count > 0);
+        return stillVisible ? current : getDefaultQueueType(nextQueueHub);
+      });
+      await refreshDashboard();
+      setQueueFeedback(successMessage);
+    } catch (error) {
+      setQueueFeedback(error instanceof Error ? error.message : "Unknown queue update error");
+    } finally {
+      setQueueActionItemId(null);
+    }
+  }
+
+  async function approveCandidate(item: QueueDecompositionCandidateItem) {
+    await updateQueueHub(
+      item.id,
+      { action: "approve_decomposition_candidate" },
+      `${item.character.hanzi} candidate approved.`
+    );
+  }
+
+  async function resolveWithSuggestion(item: QueueUnresolvedPropItem) {
+    const suggestion = item.part.existingPropOptions[0];
+
+    if (!suggestion) {
+      setQueueFeedback("No existing prop suggestion is available for this item.");
+      return;
+    }
+
+    await updateQueueHub(
+      item.id,
+      {
+        action: "resolve_unresolved_prop",
+        resolution: {
+          action: "match_existing_prop",
+          propId: suggestion.id
+        }
+      },
+      `${item.part.literalText} resolved with ${suggestion.name}.`
+    );
+  }
+
+  async function createLiteralProp(item: QueueUnresolvedPropItem) {
+    await updateQueueHub(
+      item.id,
+      {
+        action: "resolve_unresolved_prop",
+        resolution: {
+          action: "create_new_prop",
+          name: `Literal ${item.part.literalText}`,
+          shapeRef: item.part.literalText,
+          meaningOrImage: `Queue-created prop for ${item.part.literalText}`,
+          notes: "Created from the queue hub"
+        }
+      },
+      `${item.part.literalText} resolved by creating a prop.`
+    );
+  }
+
   return (
     <main className="page">
       <section className="hero">
-        <p className="eyebrow">Ticket 013</p>
-        <h1>Dashboard And Priority Flow</h1>
+        <p className="eyebrow">Ticket 015</p>
+        <h1>Content Queue Hub</h1>
         <p className="hero-copy">
-          Start from a dashboard that foregrounds due review, keeps current-level learning visible, and surfaces queue blockers without hard-gating study.
+          One queue area now tracks decomposition candidates, unresolved props, sentence moderation, audio failures, and lexical cleanup work.
         </p>
         <div className="hero-status">
           <span>API: {health ? `${health.status} @ ${health.databasePath}` : pageError ?? "Loading..."}</span>
           <span>{dashboard ? `${dashboard.dueReview.totalCount} review items due` : "Loading dashboard..."}</span>
-          <span>{dashboard?.learningProgress.level ? `Level ${dashboard.learningProgress.level.sequenceNumber} active` : "No active level"}</span>
-          {dashboard?.contentQueue.hasWork ? <span>Queue work waiting</span> : null}
+          <span>{dashboard ? `${dashboard.contentQueue.totalCount} queue items open` : "Loading queue..."}</span>
         </div>
       </section>
 
@@ -858,18 +1177,29 @@ export function App() {
       {!pageError && loadingPage ? (
         <section className="workspace">
           <article className="panel">
-            <p className="empty-state">Loading dashboard, learning progress, and due review queues...</p>
+            <p className="empty-state">Loading dashboard, queue, learning progress, and due review...</p>
           </article>
         </section>
       ) : null}
 
-      {!pageError && !loadingPage && dashboard ? (
+      {!pageError && !loadingPage && dashboard && queueHub ? (
         <>
           <DashboardOverviewSection
             dashboard={dashboard}
             onOpenLearning={() => scrollToSection("learning-section")}
             onOpenQueue={() => scrollToSection("queue-section")}
             onOpenReview={() => scrollToSection("review-section")}
+          />
+
+          <QueueHubSection
+            actionItemId={queueActionItemId}
+            activeType={activeQueueType}
+            feedback={queueFeedback}
+            onApproveCandidate={(item) => void approveCandidate(item)}
+            onCreateLiteralProp={(item) => void createLiteralProp(item)}
+            onResolveWithSuggestion={(item) => void resolveWithSuggestion(item)}
+            onSelectType={setActiveQueueType}
+            queue={queueHub}
           />
 
           <LearningSection
@@ -879,26 +1209,6 @@ export function App() {
             progress={dashboard.learningProgress}
             submittingItemId={learningSubmittingItemId}
           />
-
-          {dashboard.contentQueue.hasWork ? (
-            <section className="workspace" id="queue-section">
-              <article className="panel panel-stack">
-                <div className="panel-heading">
-                  <div>
-                    <p className="section-kicker">Queue Work</p>
-                    <h2>Current content blockers</h2>
-                  </div>
-                  <div className="summary-chip-group">
-                    <span className="summary-chip">{dashboard.contentQueue.charactersNeedingApprovalCount} approvals</span>
-                    <span className="summary-chip">{dashboard.contentQueue.unresolvedPropCount} unresolved props</span>
-                  </div>
-                </div>
-                <p className="item-note">
-                  Queue work exists in the decomposition workspace. Review remains prioritized, but these blockers are visible from home.
-                </p>
-              </article>
-            </section>
-          ) : null}
 
           <section className="workspace review-layout" id="review-section">
             <CharacterReviewSection
