@@ -3,6 +3,7 @@ import cors from "cors";
 import type Database from "better-sqlite3";
 import {
   HEALTHCHECK_PATH,
+  parseLexicalEditInput,
   parseMappingAdminInput,
   parsePropAdminInput,
   type HealthcheckResponse
@@ -22,6 +23,17 @@ import {
   PropNotFoundError,
   updateProp
 } from "./services/admin/props-service.js";
+import {
+  InvalidLexicalEditError,
+  updateCharacterLexical,
+  updateWordLexical
+} from "./services/search/lexical-edit-service.js";
+import {
+  getCharacterDetail,
+  getWordDetail,
+  searchItems,
+  SearchEntityNotFoundError
+} from "./services/search/search-service.js";
 
 export function createApp(database: Database.Database) {
   const app = express();
@@ -88,6 +100,45 @@ export function createApp(database: Database.Database) {
     }
   });
 
+  app.get("/search", (request, response) => {
+    const query = typeof request.query.q === "string" ? request.query.q : "";
+    response.json({ items: searchItems(database, query) });
+  });
+
+  app.get("/characters/:id", (request, response) => {
+    try {
+      response.json(getCharacterDetail(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.put("/characters/:id/lexical", (request, response) => {
+    try {
+      const input = parseLexicalEditInput(request.body);
+      response.json(updateCharacterLexical(database, request.params.id, input));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.get("/words/:id", (request, response) => {
+    try {
+      response.json(getWordDetail(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.put("/words/:id/lexical", (request, response) => {
+    try {
+      const input = parseLexicalEditInput(request.body);
+      response.json(updateWordLexical(database, request.params.id, input));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
   return app;
 }
 
@@ -100,8 +151,18 @@ function sendRouteError(
     return;
   }
 
+  if (error instanceof SearchEntityNotFoundError) {
+    response.status(404).json({ error: error.message });
+    return;
+  }
+
   if (error instanceof MappingConflictError || error instanceof PropConflictError) {
     response.status(409).json({ error: error.message });
+    return;
+  }
+
+  if (error instanceof InvalidLexicalEditError) {
+    response.status(422).json({ error: error.message });
     return;
   }
 

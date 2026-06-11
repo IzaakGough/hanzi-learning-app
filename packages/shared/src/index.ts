@@ -135,6 +135,48 @@ export interface PropAdminInput {
   isActive: boolean;
 }
 
+export type SearchItemKind = "character" | "word";
+
+export interface SearchResultItem {
+  id: string;
+  kind: SearchItemKind;
+  text: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  status: ItemStatus;
+  source: ItemSource;
+}
+
+export interface CharacterLinkWord {
+  id: string;
+  simplified: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  status: ItemStatus;
+}
+
+export interface WordComponentCharacter {
+  id: string;
+  hanzi: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  status: ItemStatus;
+}
+
+export interface CharacterDetailRecord extends CharacterRecord {
+  linkedWords: CharacterLinkWord[];
+}
+
+export interface WordDetailRecord extends WordRecord {
+  componentCharacters: WordComponentCharacter[];
+}
+
+export interface LexicalEditInput {
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  provenanceNote: string;
+}
+
 export interface ImportRecord extends BaseEntity {
   importType: string;
   sourceName: string;
@@ -371,6 +413,18 @@ export const propAdminInputSchema = z.object({
   isActive: z.boolean()
 });
 
+export const lexicalEditInputSchema = z.object({
+  pinyinDisplay: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
+  meaningPrimary: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
+  provenanceNote: z.string().trim().min(1)
+});
+
 export type KnownCharacterImportItem = z.infer<typeof knownCharacterImportItemSchema>;
 export type KnownCharactersImport = z.infer<typeof knownCharactersImportSchema>;
 export type KnownWordImportItem = z.infer<typeof knownWordImportItemSchema>;
@@ -382,6 +436,7 @@ export type PinyinMappingsImport = z.infer<typeof pinyinMappingsImportSchema>;
 export type NormalizedImport = z.infer<typeof normalizedImportSchema>;
 export type MappingAdminInputPayload = z.infer<typeof mappingAdminInputSchema>;
 export type PropAdminInputPayload = z.infer<typeof propAdminInputSchema>;
+export type LexicalEditInputPayload = z.infer<typeof lexicalEditInputSchema>;
 
 export function parseKnownCharactersImport(input: unknown) {
   return knownCharactersImportSchema.parse(input);
@@ -409,4 +464,8 @@ export function parseMappingAdminInput(input: unknown) {
 
 export function parsePropAdminInput(input: unknown) {
   return propAdminInputSchema.parse(input);
+}
+
+export function parseLexicalEditInput(input: unknown) {
+  return lexicalEditInputSchema.parse(input);
 }

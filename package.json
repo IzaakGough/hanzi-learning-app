@@ -14,7 +14,8 @@
     "db:migrate": "npm run db:migrate --workspace @hanzi-learning-app/api",
     "imports:run": "npm run imports:run --workspace @hanzi-learning-app/api",
     "imports:verify": "npm run imports:verify --workspace @hanzi-learning-app/api",
-    "admin:verify": "npm run admin:verify --workspace @hanzi-learning-app/api"
+    "admin:verify": "npm run admin:verify --workspace @hanzi-learning-app/api",
+    "search:verify": "npm run search:verify --workspace @hanzi-learning-app/api"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
