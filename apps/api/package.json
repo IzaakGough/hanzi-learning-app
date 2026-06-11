@@ -11,6 +11,7 @@
     "imports:verify": "tsx src/imports/verify-imports.ts",
     "admin:verify": "tsx src/verify-admin.ts",
     "search:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-search.ts",
+    "decomposition:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-decomposition.ts",
     "learning:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-learning.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",

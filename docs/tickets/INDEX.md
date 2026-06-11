@@ -1,7 +1,7 @@
 # Ticket Index
 
 ## Next Up
-- `010-decomposition-approval-and-unresolved-props.md`
+- `011-fsrs-review-engine.md`
 
 ## Tickets
 - [x] `001-project-scaffold.md`
@@ -13,7 +13,7 @@
 - [x] `007-search-and-detail-views.md`
 - [x] `008-level-progression-and-learning-mode.md`
 - [x] `009-raw-export-normalization-scripts.md`
-- [ ] `010-decomposition-approval-and-unresolved-props.md`
+- [x] `010-decomposition-approval-and-unresolved-props.md`
 - [ ] `011-fsrs-review-engine.md`
 - [ ] `012-review-mode-ui.md`
 - [ ] `013-dashboard-and-priority-flow.md`

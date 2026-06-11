@@ -241,3 +241,18 @@ Reason:
 - ticket `008` requires approved decompositions for learnable characters
 - ticket `010` owns the actual approval workflow and broader decomposition management
 - the sample curriculum still needs contract-valid study data in the meantime
+
+## 17. Example Candidate Decomposition Seed Data
+
+For ticket `010` and the repo example curriculum:
+
+- allow a repo-local curated fixture of candidate decompositions for blocked sample characters
+- seed those rows idempotently during import/enrichment so the approval UI has real queue data
+- keep the candidate fixture separate from the approved-decomposition fixture
+- prefer leaving later sample characters blocked by `missing_approved_decomposition` until the user approves a candidate
+
+Reason:
+
+- ticket `010` needs a real approval workflow to exercise
+- this keeps v1 aligned with the no-auto-approval rule
+- it avoids introducing a broader structural-decomposition import pipeline before it has a ticket

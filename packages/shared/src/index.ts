@@ -171,6 +171,81 @@ export interface WordDetailRecord extends WordRecord {
   componentCharacters: WordComponentCharacter[];
 }
 
+export type DecompositionPartResolutionKind = "prop" | "character" | "literal";
+
+export interface DecompositionPartRecord {
+  id: string;
+  sortOrder: number;
+  resolutionKind: DecompositionPartResolutionKind;
+  text: string;
+  propId: string | null;
+  characterId: string | null;
+}
+
+export interface CharacterDecompositionRecord extends BaseEntity {
+  characterId: string;
+  status: "candidate" | "approved" | "rejected";
+  source: ItemSource;
+  sourceRef: string | null;
+  notes: string | null;
+  parts: DecompositionPartRecord[];
+}
+
+export interface DecompositionCharacterSummary {
+  id: string;
+  hanzi: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  status: ItemStatus;
+  blockedReason: string | null;
+}
+
+export interface DecompositionLinkedWordSummary {
+  id: string;
+  simplified: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  status: ItemStatus;
+}
+
+export interface DecompositionCharacterWorkspace {
+  character: DecompositionCharacterSummary;
+  approvedDecomposition: CharacterDecompositionRecord | null;
+  candidates: CharacterDecompositionRecord[];
+  linkedWords: DecompositionLinkedWordSummary[];
+}
+
+export interface UnresolvedPropOption {
+  id: string;
+  name: string;
+  type: PropType;
+  shapeRef: string | null;
+  meaningOrImage: string;
+  isActive: number;
+}
+
+export interface UnresolvedPropQueueDependency {
+  id: string;
+  text: string;
+  kind: "character" | "word";
+  status: ItemStatus;
+}
+
+export interface UnresolvedPropQueueItem {
+  partId: string;
+  candidateId: string;
+  characterId: string;
+  characterHanzi: string;
+  literalText: string;
+  existingPropOptions: UnresolvedPropOption[];
+  blockedDependencies: UnresolvedPropQueueDependency[];
+}
+
+export interface DecompositionWorkspaceResponse {
+  charactersNeedingApproval: DecompositionCharacterWorkspace[];
+  unresolvedProps: UnresolvedPropQueueItem[];
+}
+
 export type LearningBlockReason =
   | "missing_text"
   | "missing_pinyin"
@@ -236,6 +311,31 @@ export interface LexicalEditInput {
   meaningPrimary: string | null;
   provenanceNote: string;
 }
+
+export interface DecompositionCandidateCreateInput {
+  parts: string[];
+  notes: string | null;
+}
+
+export type DecompositionPartResolutionInput =
+  | {
+      action: "match_existing_prop";
+      propId: string;
+    }
+  | {
+      action: "create_known_character_prop";
+      name: string;
+      shapeRef: string;
+      meaningOrImage: string;
+      notes: string | null;
+    }
+  | {
+      action: "create_new_prop";
+      name: string;
+      shapeRef: string | null;
+      meaningOrImage: string;
+      notes: string | null;
+    };
 
 export interface ImportRecord extends BaseEntity {
   importType: string;
@@ -485,6 +585,44 @@ export const lexicalEditInputSchema = z.object({
   provenanceNote: z.string().trim().min(1)
 });
 
+export const decompositionCandidateCreateInputSchema = z.object({
+  parts: z.array(z.string().trim().min(1)).min(1),
+  notes: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  )
+});
+
+export const decompositionPartResolutionInputSchema = z.discriminatedUnion("action", [
+  z.object({
+    action: z.literal("match_existing_prop"),
+    propId: z.string().trim().min(1)
+  }),
+  z.object({
+    action: z.literal("create_known_character_prop"),
+    name: z.string().trim().min(1),
+    shapeRef: z.string().trim().min(1),
+    meaningOrImage: z.string().trim().min(1),
+    notes: z.preprocess(
+      nullableTrimmedString,
+      z.string().min(1).nullable()
+    )
+  }),
+  z.object({
+    action: z.literal("create_new_prop"),
+    name: z.string().trim().min(1),
+    shapeRef: z.preprocess(
+      nullableTrimmedString,
+      z.string().min(1).nullable()
+    ),
+    meaningOrImage: z.string().trim().min(1),
+    notes: z.preprocess(
+      nullableTrimmedString,
+      z.string().min(1).nullable()
+    )
+  })
+]);
+
 export type KnownCharacterImportItem = z.infer<typeof knownCharacterImportItemSchema>;
 export type KnownCharactersImport = z.infer<typeof knownCharactersImportSchema>;
 export type KnownWordImportItem = z.infer<typeof knownWordImportItemSchema>;
@@ -497,6 +635,8 @@ export type NormalizedImport = z.infer<typeof normalizedImportSchema>;
 export type MappingAdminInputPayload = z.infer<typeof mappingAdminInputSchema>;
 export type PropAdminInputPayload = z.infer<typeof propAdminInputSchema>;
 export type LexicalEditInputPayload = z.infer<typeof lexicalEditInputSchema>;
+export type DecompositionCandidateCreateInputPayload = z.infer<typeof decompositionCandidateCreateInputSchema>;
+export type DecompositionPartResolutionInputPayload = z.infer<typeof decompositionPartResolutionInputSchema>;
 
 export function parseKnownCharactersImport(input: unknown) {
   return knownCharactersImportSchema.parse(input);
@@ -528,4 +668,12 @@ export function parsePropAdminInput(input: unknown) {
 
 export function parseLexicalEditInput(input: unknown) {
   return lexicalEditInputSchema.parse(input);
+}
+
+export function parseDecompositionCandidateCreateInput(input: unknown) {
+  return decompositionCandidateCreateInputSchema.parse(input);
+}
+
+export function parseDecompositionPartResolutionInput(input: unknown) {
+  return decompositionPartResolutionInputSchema.parse(input);
 }

@@ -1,0 +1,27 @@
+{
+  "sourceName": "repo_example_decomposition_candidates_v1",
+  "characters": [
+    {
+      "hanzi": "习",
+      "candidates": [
+        {
+          "notes": "Example candidate for ticket 010 verification",
+          "parts": ["乙", "丶"]
+        }
+      ]
+    },
+    {
+      "hanzi": "练",
+      "candidates": [
+        {
+          "notes": "Primary structural candidate",
+          "parts": ["纟", "东"]
+        },
+        {
+          "notes": "Alternate candidate to show manual approval choices",
+          "parts": ["纟", "日"]
+        }
+      ]
+    }
+  ]
+}

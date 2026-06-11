@@ -226,7 +226,7 @@ function syncWordStatuses(database: Database.Database) {
   }
 }
 
-function syncLearningStatuses(database: Database.Database) {
+export function syncLearningStatuses(database: Database.Database) {
   syncCharacterStatuses(database);
   syncWordStatuses(database);
 }

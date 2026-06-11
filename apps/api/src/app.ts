@@ -3,6 +3,8 @@ import cors from "cors";
 import type Database from "better-sqlite3";
 import {
   HEALTHCHECK_PATH,
+  parseDecompositionCandidateCreateInput,
+  parseDecompositionPartResolutionInput,
   parseLexicalEditInput,
   parseMappingAdminInput,
   parsePropAdminInput,
@@ -41,6 +43,16 @@ import {
   markCharacterLearned,
   markWordLearned
 } from "./services/learning/level-progression-service.js";
+import {
+  approveDecompositionCandidate,
+  createDecompositionCandidate,
+  DecompositionApprovalBlockedError,
+  DecompositionCandidateNotFoundError,
+  DecompositionCharacterNotFoundError,
+  DecompositionPartNotFoundError,
+  listDecompositionWorkspace,
+  resolveDecompositionPart
+} from "./services/decomposition/decomposition-service.js";
 
 export function createApp(database: Database.Database) {
   const app = express();
@@ -116,6 +128,36 @@ export function createApp(database: Database.Database) {
     response.json(getCurrentLevelProgress(database));
   });
 
+  app.get("/decompositions/workspace", (_request, response) => {
+    response.json(listDecompositionWorkspace(database));
+  });
+
+  app.post("/characters/:id/decomposition-candidates", (request, response) => {
+    try {
+      const input = parseDecompositionCandidateCreateInput(request.body);
+      response.status(201).json(createDecompositionCandidate(database, request.params.id, input));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/decompositions/parts/:id/resolve", (request, response) => {
+    try {
+      const input = parseDecompositionPartResolutionInput(request.body);
+      response.json(resolveDecompositionPart(database, request.params.id, input));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/decompositions/candidates/:id/approve", (request, response) => {
+    try {
+      response.json(approveDecompositionCandidate(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
   app.post("/learning/characters/:id/learned", (request, response) => {
     try {
       response.json(markCharacterLearned(database, request.params.id));
@@ -178,6 +220,15 @@ function sendRouteError(
     return;
   }
 
+  if (
+    error instanceof DecompositionCharacterNotFoundError
+    || error instanceof DecompositionCandidateNotFoundError
+    || error instanceof DecompositionPartNotFoundError
+  ) {
+    response.status(404).json({ error: error.message });
+    return;
+  }
+
   if (error instanceof SearchEntityNotFoundError) {
     response.status(404).json({ error: error.message });
     return;
@@ -199,6 +250,11 @@ function sendRouteError(
   }
 
   if (error instanceof InvalidLexicalEditError) {
+    response.status(422).json({ error: error.message });
+    return;
+  }
+
+  if (error instanceof DecompositionApprovalBlockedError) {
     response.status(422).json({ error: error.message });
     return;
   }

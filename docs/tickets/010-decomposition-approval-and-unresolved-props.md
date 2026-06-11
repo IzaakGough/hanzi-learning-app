@@ -1,4 +1,4 @@
-Status: todo
+Status: done
 
 # 010 Decomposition Approval And Unresolved Props
 
