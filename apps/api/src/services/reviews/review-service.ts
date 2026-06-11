@@ -10,6 +10,7 @@ import {
   type DueWordReviewItem,
   type ReviewEventRecord,
   type ReviewItemKind,
+  type ReviewResetResult,
   type ReviewSubmissionResult,
   type ReviewStateRecord,
   type WordReviewQueueResponse,
@@ -787,4 +788,79 @@ export function seedReviewStateForLearnedItem(
   }
 
   return requireWordReviewState(database, params.itemId);
+}
+
+function resetReviewStateRow(
+  database: Database.Database,
+  params: {
+    stateTable: "character_review_state" | "word_review_state";
+    itemColumn: "character_id" | "word_id";
+    itemId: string;
+    resetAt: string;
+  }
+) {
+  database.prepare(`
+    UPDATE ${params.stateTable}
+    SET
+      due_at = @dueAt,
+      stability = NULL,
+      difficulty = NULL,
+      last_reviewed_at = NULL,
+      review_count = 0,
+      lapse_count = 0,
+      updated_at = @updatedAt
+    WHERE ${params.itemColumn} = @itemId
+  `).run({
+    itemId: params.itemId,
+    dueAt: params.resetAt,
+    updatedAt: params.resetAt
+  });
+}
+
+export function resetCharacterReviewState(
+  database: Database.Database,
+  characterId: string,
+  resetAt = new Date().toISOString()
+): ReviewResetResult {
+  const execute = database.transaction(() => {
+    requireCharacterReviewState(database, characterId);
+    resetReviewStateRow(database, {
+      stateTable: "character_review_state",
+      itemColumn: "character_id",
+      itemId: characterId,
+      resetAt
+    });
+
+    return {
+      itemKind: "character" as const,
+      itemId: characterId,
+      reviewState: requireCharacterReviewState(database, characterId)
+    };
+  });
+
+  return execute();
+}
+
+export function resetWordReviewState(
+  database: Database.Database,
+  wordId: string,
+  resetAt = new Date().toISOString()
+): ReviewResetResult {
+  const execute = database.transaction(() => {
+    requireWordReviewState(database, wordId);
+    resetReviewStateRow(database, {
+      stateTable: "word_review_state",
+      itemColumn: "word_id",
+      itemId: wordId,
+      resetAt
+    });
+
+    return {
+      itemKind: "word" as const,
+      itemId: wordId,
+      reviewState: requireWordReviewState(database, wordId)
+    };
+  });
+
+  return execute();
 }

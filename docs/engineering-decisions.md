@@ -387,3 +387,40 @@ Reason:
 - ticket `018` needs queue-backed audio generation and playback now without blocking on an external service
 - serving local media through the API keeps the playback contract stable for the web app
 - storing reusable files on disk satisfies the offline-cache requirement once audio has been generated
+
+## 26. Custom Item Collection Semantics
+
+For ticket `019` and the first custom character/word flows:
+
+- store user-created extra items in the normal `characters` and `words` tables
+- represent the `extra/custom` collection with:
+  - `source = manual`
+  - `source_ref = 'extra/custom'`
+  - `level_id = NULL`
+- when a custom word references a character that does not exist yet, create a placeholder manual character row in the same collection and link it through `word_characters`
+- custom items must still use the normal status sync rules for readiness, blocking, learning, archive exclusion, and review eligibility
+
+Reason:
+
+- custom items should reuse the canonical item model instead of introducing parallel tables late in v1
+- `level_id = NULL` keeps them outside numbered curriculum progression without hiding them from search, detail, archive, or review flows
+- placeholder character creation lets users save a custom word before every component character has been fully curated
+
+## 27. Explicit Review Reset Semantics
+
+For ticket `019` and manual per-item review resets:
+
+- allow review reset only for learned, non-archived items that already participate in review
+- preserve the canonical item row and existing `review_events`
+- reset only the active scheduler state row:
+  - `due_at = reset timestamp`
+  - `stability = NULL`
+  - `difficulty = NULL`
+  - `last_reviewed_at = NULL`
+  - `review_count = 0`
+  - `lapse_count = 0`
+
+Reason:
+
+- the user intent is to restart scheduling, not delete study history
+- keeping old review events preserves auditability while making the item immediately due for a fresh first review

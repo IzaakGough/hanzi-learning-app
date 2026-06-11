@@ -3,6 +3,8 @@ import cors from "cors";
 import type Database from "better-sqlite3";
 import {
   HEALTHCHECK_PATH,
+  parseCustomCharacterCreateInput,
+  parseCustomWordCreateInput,
   parseDecompositionCandidateCreateInput,
   parseDecompositionPartResolutionInput,
   parseLexicalEditInput,
@@ -15,6 +17,17 @@ import {
 } from "@hanzi-learning-app/shared";
 import { databaseFilePath, mediaDirectory } from "./db/config.js";
 import { queueSentenceAudioGeneration } from "./services/audio/audio-generation-service.js";
+import {
+  archiveCharacter,
+  archiveWord,
+  createCustomCharacter,
+  createCustomWord,
+  CustomItemConflictError,
+  CustomItemNotFoundError,
+  InvalidCustomItemError,
+  restoreCharacter,
+  restoreWord
+} from "./services/custom/custom-item-service.js";
 import {
   createMapping,
   listMappings,
@@ -76,6 +89,8 @@ import {
   gradeWordReview,
   listDueCharacterReviews,
   listDueWordReviews,
+  resetCharacterReviewState,
+  resetWordReviewState,
   ReviewItemNotEligibleError,
   ReviewItemNotFoundError
 } from "./services/reviews/review-service.js";
@@ -151,6 +166,24 @@ export function createApp(database: Database.Database) {
     response.json({ items: searchItems(database, query) });
   });
 
+  app.post("/characters", (request, response) => {
+    try {
+      const input = parseCustomCharacterCreateInput(request.body);
+      response.status(201).json(createCustomCharacter(database, input));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/words", (request, response) => {
+    try {
+      const input = parseCustomWordCreateInput(request.body);
+      response.status(201).json(createCustomWord(database, input));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
   app.get("/levels/current", (_request, response) => {
     response.json(getCurrentLevelProgress(database));
   });
@@ -224,6 +257,22 @@ export function createApp(database: Database.Database) {
     try {
       const input = parseReviewGradeInput(request.body);
       response.json(gradeWordReview(database, request.params.id, input.grade));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/reviews/characters/:id/reset", (request, response) => {
+    try {
+      response.json(resetCharacterReviewState(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/reviews/words/:id/reset", (request, response) => {
+    try {
+      response.json(resetWordReviewState(database, request.params.id));
     } catch (error) {
       sendRouteError(response, error);
     }
@@ -305,6 +354,38 @@ export function createApp(database: Database.Database) {
     }
   });
 
+  app.post("/characters/:id/archive", (request, response) => {
+    try {
+      response.json(archiveCharacter(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/characters/:id/restore", (request, response) => {
+    try {
+      response.json(restoreCharacter(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/words/:id/archive", (request, response) => {
+    try {
+      response.json(archiveWord(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/words/:id/restore", (request, response) => {
+    try {
+      response.json(restoreWord(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
   return app;
 }
 
@@ -351,7 +432,17 @@ function sendRouteError(
     return;
   }
 
+  if (error instanceof CustomItemNotFoundError) {
+    response.status(404).json({ error: error.message });
+    return;
+  }
+
   if (error instanceof MappingConflictError || error instanceof PropConflictError) {
+    response.status(409).json({ error: error.message });
+    return;
+  }
+
+  if (error instanceof CustomItemConflictError) {
     response.status(409).json({ error: error.message });
     return;
   }
@@ -377,6 +468,11 @@ function sendRouteError(
   }
 
   if (error instanceof QueueActionNotSupportedError) {
+    response.status(422).json({ error: error.message });
+    return;
+  }
+
+  if (error instanceof InvalidCustomItemError) {
     response.status(422).json({ error: error.message });
     return;
   }

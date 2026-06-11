@@ -300,6 +300,20 @@ export interface ManualSentenceCreateInput {
   pinyinFull: string | null;
 }
 
+export interface CustomCharacterCreateInput {
+  hanzi: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  notes: string | null;
+}
+
+export interface CustomWordCreateInput {
+  simplified: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  notes: string | null;
+}
+
 export type DecompositionPartResolutionKind = "prop" | "character" | "literal";
 
 export interface DecompositionPartRecord {
@@ -627,6 +641,12 @@ export interface ReviewSubmissionResult {
   event: ReviewEventRecord;
 }
 
+export interface ReviewResetResult {
+  itemKind: ReviewItemKind;
+  itemId: string;
+  reviewState: CharacterReviewStateRecord | WordReviewStateRecord;
+}
+
 export interface LexicalEditInput {
   pinyinDisplay: string | null;
   meaningPrimary: string | null;
@@ -906,6 +926,38 @@ export const lexicalEditInputSchema = z.object({
   provenanceNote: z.string().trim().min(1)
 });
 
+export const customCharacterCreateInputSchema = z.object({
+  hanzi: z.string().trim().min(1),
+  pinyinDisplay: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
+  meaningPrimary: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
+  notes: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  )
+});
+
+export const customWordCreateInputSchema = z.object({
+  simplified: z.string().trim().min(1),
+  pinyinDisplay: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
+  meaningPrimary: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
+  notes: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  )
+});
+
 export const manualSentenceCreateInputSchema = z.object({
   text: z.string().trim().min(1),
   translation: z.preprocess(
@@ -1013,6 +1065,8 @@ export type NormalizedImport = z.infer<typeof normalizedImportSchema>;
 export type MappingAdminInputPayload = z.infer<typeof mappingAdminInputSchema>;
 export type PropAdminInputPayload = z.infer<typeof propAdminInputSchema>;
 export type LexicalEditInputPayload = z.infer<typeof lexicalEditInputSchema>;
+export type CustomCharacterCreateInputPayload = z.infer<typeof customCharacterCreateInputSchema>;
+export type CustomWordCreateInputPayload = z.infer<typeof customWordCreateInputSchema>;
 export type ManualSentenceCreateInputPayload = z.infer<typeof manualSentenceCreateInputSchema>;
 export type DecompositionCandidateCreateInputPayload = z.infer<typeof decompositionCandidateCreateInputSchema>;
 export type DecompositionPartResolutionInputPayload = z.infer<typeof decompositionPartResolutionInputSchema>;
@@ -1049,6 +1103,14 @@ export function parsePropAdminInput(input: unknown) {
 
 export function parseLexicalEditInput(input: unknown) {
   return lexicalEditInputSchema.parse(input);
+}
+
+export function parseCustomCharacterCreateInput(input: unknown) {
+  return customCharacterCreateInputSchema.parse(input);
+}
+
+export function parseCustomWordCreateInput(input: unknown) {
+  return customWordCreateInputSchema.parse(input);
 }
 
 export function parseManualSentenceCreateInput(input: unknown) {

@@ -1,5 +1,6 @@
 import type Database from "better-sqlite3";
-import { ItemSource, ItemStatus, type CharacterDetailRecord, type LexicalEditInput, type WordDetailRecord } from "@hanzi-learning-app/shared";
+import { ItemSource, type CharacterDetailRecord, type LexicalEditInput, type WordDetailRecord } from "@hanzi-learning-app/shared";
+import { syncLearningStatuses } from "../learning/level-progression-service.js";
 import { splitNumberedPinyinSyllable } from "../lexical/pinyin.js";
 import { getCharacterDetail, getWordDetail, SearchEntityNotFoundError } from "./search-service.js";
 
@@ -12,29 +13,6 @@ class InvalidLexicalEditError extends Error {
     super(message);
     this.name = "InvalidLexicalEditError";
   }
-}
-
-function nextStatusForLexicalEdit(status: ItemStatus, blockedReason: string | null, isComplete: boolean) {
-  if (status === ItemStatus.Learned || status === ItemStatus.Archived) {
-    return {
-      status,
-      blockedReason: isComplete && blockedReason === "missing_lexical_data" ? null : blockedReason
-    };
-  }
-
-  if (isComplete) {
-    return {
-      status: blockedReason === "missing_lexical_data" || status === ItemStatus.Blocked
-        ? ItemStatus.Ready
-        : status,
-      blockedReason: blockedReason === "missing_lexical_data" ? null : blockedReason
-    };
-  }
-
-  return {
-    status: ItemStatus.Blocked,
-    blockedReason: "missing_lexical_data"
-  };
 }
 
 export function updateCharacterLexical(
@@ -53,8 +31,6 @@ export function updateCharacterLexical(
 
   const nextPinyinDisplay = input.pinyinDisplay;
   const nextMeaningPrimary = input.meaningPrimary;
-  const isComplete = !isBlank(nextPinyinDisplay) && !isBlank(nextMeaningPrimary) && split !== null;
-  const nextState = nextStatusForLexicalEdit(current.status, current.blockedReason, isComplete);
 
   database.prepare(`
     UPDATE characters
@@ -68,8 +44,6 @@ export function updateCharacterLexical(
       meaning_primary = @meaningPrimary,
       meaning_source = @meaningSource,
       meaning_source_ref = @meaningSourceRef,
-      status = @status,
-      blocked_reason = @blockedReason,
       updated_at = @updatedAt
     WHERE id = @id
   `).run({
@@ -83,11 +57,10 @@ export function updateCharacterLexical(
     meaningPrimary: nextMeaningPrimary,
     meaningSource: nextMeaningPrimary === current.meaningPrimary ? current.meaningSource : ItemSource.Manual,
     meaningSourceRef: nextMeaningPrimary === current.meaningPrimary ? current.meaningSourceRef : input.provenanceNote,
-    status: nextState.status,
-    blockedReason: nextState.blockedReason,
     updatedAt: new Date().toISOString()
   });
 
+  syncLearningStatuses(database);
   return getCharacterDetail(database, id);
 }
 
@@ -99,8 +72,6 @@ export function updateWordLexical(
   const current = getWordDetail(database, id);
   const nextPinyinDisplay = input.pinyinDisplay;
   const nextMeaningPrimary = input.meaningPrimary;
-  const isComplete = !isBlank(nextPinyinDisplay) && !isBlank(nextMeaningPrimary);
-  const nextState = nextStatusForLexicalEdit(current.status, current.blockedReason, isComplete);
 
   database.prepare(`
     UPDATE words
@@ -111,8 +82,6 @@ export function updateWordLexical(
       meaning_primary = @meaningPrimary,
       meaning_source = @meaningSource,
       meaning_source_ref = @meaningSourceRef,
-      status = @status,
-      blocked_reason = @blockedReason,
       updated_at = @updatedAt
     WHERE id = @id
   `).run({
@@ -123,11 +92,10 @@ export function updateWordLexical(
     meaningPrimary: nextMeaningPrimary,
     meaningSource: nextMeaningPrimary === current.meaningPrimary ? current.meaningSource : ItemSource.Manual,
     meaningSourceRef: nextMeaningPrimary === current.meaningPrimary ? current.meaningSourceRef : input.provenanceNote,
-    status: nextState.status,
-    blockedReason: nextState.blockedReason,
     updatedAt: new Date().toISOString()
   });
 
+  syncLearningStatuses(database);
   return getWordDetail(database, id);
 }
 

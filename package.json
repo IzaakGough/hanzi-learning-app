@@ -21,6 +21,7 @@
     "reviews:verify": "npm run reviews:verify --workspace @hanzi-learning-app/api",
     "sentences:verify": "npm run sentences:verify --workspace @hanzi-learning-app/api",
     "audio:verify": "npm run audio:verify --workspace @hanzi-learning-app/api",
+    "custom-items:verify": "npm run custom-items:verify --workspace @hanzi-learning-app/api",
     "queue:verify": "npm run queue:verify --workspace @hanzi-learning-app/api && npm run queue:verify --workspace @hanzi-learning-app/web",
     "dashboard:verify": "npm run dashboard:verify --workspace @hanzi-learning-app/api && npm run dashboard:verify --workspace @hanzi-learning-app/web",
     "review-ui:verify": "npm run review:verify --workspace @hanzi-learning-app/web",
