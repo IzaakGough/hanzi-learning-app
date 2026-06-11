@@ -182,5 +182,20 @@ export const migrations: MigrationDefinition[] = [
       CREATE INDEX IF NOT EXISTS idx_props_name ON props(name);
       CREATE INDEX IF NOT EXISTS idx_props_meaning_or_image ON props(meaning_or_image);
     `
+  },
+  {
+    id: "003_lexical_provenance_fields",
+    description: "Add lexical provenance fields for character and word enrichment",
+    sql: `
+      ALTER TABLE characters ADD COLUMN pinyin_source TEXT CHECK (pinyin_source IN ('pleco_import', 'curriculum_import', 'manual', 'derived'));
+      ALTER TABLE characters ADD COLUMN pinyin_source_ref TEXT;
+      ALTER TABLE characters ADD COLUMN meaning_source TEXT CHECK (meaning_source IN ('pleco_import', 'curriculum_import', 'manual', 'derived'));
+      ALTER TABLE characters ADD COLUMN meaning_source_ref TEXT;
+
+      ALTER TABLE words ADD COLUMN pinyin_source TEXT CHECK (pinyin_source IN ('pleco_import', 'curriculum_import', 'manual', 'derived'));
+      ALTER TABLE words ADD COLUMN pinyin_source_ref TEXT;
+      ALTER TABLE words ADD COLUMN meaning_source TEXT CHECK (meaning_source IN ('pleco_import', 'curriculum_import', 'manual', 'derived'));
+      ALTER TABLE words ADD COLUMN meaning_source_ref TEXT;
+    `
   }
 ];

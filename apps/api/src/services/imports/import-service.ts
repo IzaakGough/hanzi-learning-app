@@ -15,15 +15,20 @@ import {
   type NormalizedImport,
   type PinyinMappingsImport
 } from "@hanzi-learning-app/shared";
+import { runLexicalEnrichment } from "./lexical-enrichment-service.js";
 
 interface CharacterRow {
   id: string;
   hanzi: string;
   pinyin_display: string | null;
+  pinyin_source: ItemSource | null;
+  pinyin_source_ref: string | null;
   pinyin_initial: string | null;
   pinyin_final: string | null;
   tone: string | null;
   meaning_primary: string | null;
+  meaning_source: ItemSource | null;
+  meaning_source_ref: string | null;
   meanings_other_json: string | null;
   status: ItemStatus;
   blocked_reason: string | null;
@@ -39,7 +44,11 @@ interface WordRow {
   id: string;
   simplified: string;
   pinyin_display: string | null;
+  pinyin_source: ItemSource | null;
+  pinyin_source_ref: string | null;
   meaning_primary: string | null;
+  meaning_source: ItemSource | null;
+  meaning_source_ref: string | null;
   meanings_other_json: string | null;
   status: ItemStatus;
   blocked_reason: string | null;
@@ -285,6 +294,68 @@ function applyTextFieldUpdate<TExisting extends CharacterRow | WordRow | LevelRo
   return existingValue;
 }
 
+function applyLexicalFieldUpdate(
+  context: ImportRunContext,
+  params: {
+    existingValue: string | null;
+    existingSource: ItemSource | null;
+    existingSourceRef: string | null;
+    incomingValue: string | undefined;
+    incomingSource: ItemSource;
+    incomingSourceRef: string | undefined;
+    entityType: ImportDiagnostic["entityType"];
+    entityKey: string;
+    field: string;
+    conflictCode: string;
+  }
+) {
+  const {
+    existingValue,
+    existingSource,
+    existingSourceRef,
+    incomingValue,
+    incomingSource,
+    incomingSourceRef,
+    entityType,
+    entityKey,
+    field,
+    conflictCode
+  } = params;
+
+  if (isBlank(incomingValue)) {
+    return {
+      value: existingValue,
+      source: isBlank(existingValue) ? existingSource : (existingSource ?? incomingSource),
+      sourceRef: isBlank(existingValue) ? existingSourceRef : (existingSourceRef ?? incomingSourceRef ?? null)
+    };
+  }
+
+  if (isBlank(existingValue)) {
+    return {
+      value: incomingValue!,
+      source: incomingSource,
+      sourceRef: incomingSourceRef ?? null
+    };
+  }
+
+  if (existingValue !== incomingValue) {
+    addDiagnostic(context, {
+      severity: "warning",
+      code: conflictCode,
+      message: `Incoming ${field} for ${entityKey} differs from stored value and was not overwritten.`,
+      entityType,
+      entityKey,
+      field
+    });
+  }
+
+  return {
+    value: existingValue,
+    source: existingSource ?? incomingSource,
+    sourceRef: existingSourceRef ?? incomingSourceRef ?? null
+  };
+}
+
 function upsertKnownCharacters(context: ImportRunContext, payload: KnownCharactersImport) {
   for (const item of payload.items) {
     const existing = findCharacterByHanzi(context.database, item.hanzi);
@@ -295,7 +366,11 @@ function upsertKnownCharacters(context: ImportRunContext, payload: KnownCharacte
           id,
           hanzi,
           pinyin_display,
+          pinyin_source,
+          pinyin_source_ref,
           meaning_primary,
+          meaning_source,
+          meaning_source_ref,
           status,
           blocked_reason,
           learned_at,
@@ -310,7 +385,11 @@ function upsertKnownCharacters(context: ImportRunContext, payload: KnownCharacte
           @id,
           @hanzi,
           @pinyinDisplay,
+          @pinyinSource,
+          @pinyinSourceRef,
           @meaningPrimary,
+          @meaningSource,
+          @meaningSourceRef,
           @status,
           NULL,
           @learnedAt,
@@ -325,7 +404,11 @@ function upsertKnownCharacters(context: ImportRunContext, payload: KnownCharacte
         id: randomUUID(),
         hanzi: item.hanzi,
         pinyinDisplay: item.pinyinDisplay ?? null,
+        pinyinSource: item.pinyinDisplay ? item.source : null,
+        pinyinSourceRef: item.pinyinDisplay ? (item.sourceRef ?? null) : null,
         meaningPrimary: item.meaningPrimary ?? null,
+        meaningSource: item.meaningPrimary ? item.source : null,
+        meaningSourceRef: item.meaningPrimary ? (item.sourceRef ?? null) : null,
         status: ItemStatus.Learned,
         learnedAt: context.now,
         source: item.source,
@@ -339,18 +422,26 @@ function upsertKnownCharacters(context: ImportRunContext, payload: KnownCharacte
       continue;
     }
 
-    const nextPinyin = applyTextFieldUpdate(context, {
+    const nextPinyin = applyLexicalFieldUpdate(context, {
       existingValue: existing.pinyin_display,
+      existingSource: existing.pinyin_source,
+      existingSourceRef: existing.pinyin_source_ref,
       incomingValue: item.pinyinDisplay,
+      incomingSource: item.source,
+      incomingSourceRef: item.sourceRef,
       entityType: "character",
       entityKey: item.hanzi,
       field: "pinyinDisplay",
       conflictCode: "character_field_conflict"
     });
 
-    const nextMeaning = applyTextFieldUpdate(context, {
+    const nextMeaning = applyLexicalFieldUpdate(context, {
       existingValue: existing.meaning_primary,
+      existingSource: existing.meaning_source,
+      existingSourceRef: existing.meaning_source_ref,
       incomingValue: item.meaningPrimary,
+      incomingSource: item.source,
+      incomingSourceRef: item.sourceRef,
       entityType: "character",
       entityKey: item.hanzi,
       field: "meaningPrimary",
@@ -379,8 +470,12 @@ function upsertKnownCharacters(context: ImportRunContext, payload: KnownCharacte
     const nextLearnedAt = existing.learned_at ?? context.now;
 
     const shouldUpdate =
-      nextPinyin !== existing.pinyin_display ||
-      nextMeaning !== existing.meaning_primary ||
+      nextPinyin.value !== existing.pinyin_display ||
+      nextPinyin.source !== existing.pinyin_source ||
+      nextPinyin.sourceRef !== existing.pinyin_source_ref ||
+      nextMeaning.value !== existing.meaning_primary ||
+      nextMeaning.source !== existing.meaning_source ||
+      nextMeaning.sourceRef !== existing.meaning_source_ref ||
       nextSourceRef !== existing.source_ref ||
       nextNotes !== existing.notes ||
       nextStatus !== existing.status ||
@@ -396,7 +491,11 @@ function upsertKnownCharacters(context: ImportRunContext, payload: KnownCharacte
       UPDATE characters
       SET
         pinyin_display = @pinyinDisplay,
+        pinyin_source = @pinyinSource,
+        pinyin_source_ref = @pinyinSourceRef,
         meaning_primary = @meaningPrimary,
+        meaning_source = @meaningSource,
+        meaning_source_ref = @meaningSourceRef,
         status = @status,
         blocked_reason = NULL,
         learned_at = @learnedAt,
@@ -407,8 +506,12 @@ function upsertKnownCharacters(context: ImportRunContext, payload: KnownCharacte
       WHERE id = @id
     `).run({
       id: existing.id,
-      pinyinDisplay: nextPinyin,
-      meaningPrimary: nextMeaning,
+      pinyinDisplay: nextPinyin.value,
+      pinyinSource: nextPinyin.source,
+      pinyinSourceRef: nextPinyin.sourceRef,
+      meaningPrimary: nextMeaning.value,
+      meaningSource: nextMeaning.source,
+      meaningSourceRef: nextMeaning.sourceRef,
       status: nextStatus,
       learnedAt: nextLearnedAt,
       sourceRef: nextSourceRef,
@@ -495,7 +598,11 @@ function upsertKnownWords(context: ImportRunContext, payload: KnownWordsImport) 
           id,
           simplified,
           pinyin_display,
+          pinyin_source,
+          pinyin_source_ref,
           meaning_primary,
+          meaning_source,
+          meaning_source_ref,
           status,
           blocked_reason,
           learned_at,
@@ -510,7 +617,11 @@ function upsertKnownWords(context: ImportRunContext, payload: KnownWordsImport) 
           @id,
           @simplified,
           @pinyinDisplay,
+          @pinyinSource,
+          @pinyinSourceRef,
           @meaningPrimary,
+          @meaningSource,
+          @meaningSourceRef,
           @status,
           NULL,
           @learnedAt,
@@ -525,7 +636,11 @@ function upsertKnownWords(context: ImportRunContext, payload: KnownWordsImport) 
         id: wordId,
         simplified: item.simplified,
         pinyinDisplay: item.pinyinDisplay ?? null,
+        pinyinSource: item.pinyinDisplay ? item.source : null,
+        pinyinSourceRef: item.pinyinDisplay ? (item.sourceRef ?? null) : null,
         meaningPrimary: item.meaningPrimary ?? null,
+        meaningSource: item.meaningPrimary ? item.source : null,
+        meaningSourceRef: item.meaningPrimary ? (item.sourceRef ?? null) : null,
         status: ItemStatus.Learned,
         learnedAt: context.now,
         source: item.source,
@@ -540,18 +655,26 @@ function upsertKnownWords(context: ImportRunContext, payload: KnownWordsImport) 
       continue;
     }
 
-    const nextPinyin = applyTextFieldUpdate(context, {
+    const nextPinyin = applyLexicalFieldUpdate(context, {
       existingValue: existing.pinyin_display,
+      existingSource: existing.pinyin_source,
+      existingSourceRef: existing.pinyin_source_ref,
       incomingValue: item.pinyinDisplay,
+      incomingSource: item.source,
+      incomingSourceRef: item.sourceRef,
       entityType: "word",
       entityKey: item.simplified,
       field: "pinyinDisplay",
       conflictCode: "word_field_conflict"
     });
 
-    const nextMeaning = applyTextFieldUpdate(context, {
+    const nextMeaning = applyLexicalFieldUpdate(context, {
       existingValue: existing.meaning_primary,
+      existingSource: existing.meaning_source,
+      existingSourceRef: existing.meaning_source_ref,
       incomingValue: item.meaningPrimary,
+      incomingSource: item.source,
+      incomingSourceRef: item.sourceRef,
       entityType: "word",
       entityKey: item.simplified,
       field: "meaningPrimary",
@@ -580,8 +703,12 @@ function upsertKnownWords(context: ImportRunContext, payload: KnownWordsImport) 
     const nextLearnedAt = existing.learned_at ?? context.now;
 
     const shouldUpdate =
-      nextPinyin !== existing.pinyin_display ||
-      nextMeaning !== existing.meaning_primary ||
+      nextPinyin.value !== existing.pinyin_display ||
+      nextPinyin.source !== existing.pinyin_source ||
+      nextPinyin.sourceRef !== existing.pinyin_source_ref ||
+      nextMeaning.value !== existing.meaning_primary ||
+      nextMeaning.source !== existing.meaning_source ||
+      nextMeaning.sourceRef !== existing.meaning_source_ref ||
       nextSourceRef !== existing.source_ref ||
       nextNotes !== existing.notes ||
       nextStatus !== existing.status ||
@@ -594,7 +721,11 @@ function upsertKnownWords(context: ImportRunContext, payload: KnownWordsImport) 
         UPDATE words
         SET
           pinyin_display = @pinyinDisplay,
+          pinyin_source = @pinyinSource,
+          pinyin_source_ref = @pinyinSourceRef,
           meaning_primary = @meaningPrimary,
+          meaning_source = @meaningSource,
+          meaning_source_ref = @meaningSourceRef,
           status = @status,
           blocked_reason = NULL,
           learned_at = @learnedAt,
@@ -605,8 +736,12 @@ function upsertKnownWords(context: ImportRunContext, payload: KnownWordsImport) 
         WHERE id = @id
       `).run({
         id: existing.id,
-        pinyinDisplay: nextPinyin,
-        meaningPrimary: nextMeaning,
+        pinyinDisplay: nextPinyin.value,
+        pinyinSource: nextPinyin.source,
+        pinyinSourceRef: nextPinyin.sourceRef,
+        meaningPrimary: nextMeaning.value,
+        meaningSource: nextMeaning.source,
+        meaningSourceRef: nextMeaning.sourceRef,
         status: nextStatus,
         learnedAt: nextLearnedAt,
         sourceRef: nextSourceRef,
@@ -958,6 +1093,12 @@ function applyImport(context: ImportRunContext, payload: NormalizedImport) {
   }
 }
 
+function applyLexicalEnrichment(context: ImportRunContext) {
+  const result = runLexicalEnrichment(context.database);
+  context.diagnostics.push(...result.diagnostics);
+  context.appliedCounts.updated += result.updatedCount;
+}
+
 export function runNormalizedImport(
   database: Database.Database,
   payload: NormalizedImport
@@ -1004,6 +1145,7 @@ export function runNormalizedImport(
 
   const executeImport = database.transaction(() => {
     applyImport(context, payload);
+    applyLexicalEnrichment(context);
     failIfErrors(context, payload.importType);
   });
 

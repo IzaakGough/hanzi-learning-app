@@ -78,24 +78,129 @@ async function main() {
     assert.equal(counts.completed_import_count, 8);
 
     const learnedCharacter = database.prepare(`
-      SELECT status, source
+      SELECT
+        status,
+        source,
+        pinyin_source,
+        meaning_source,
+        pinyin_initial,
+        pinyin_final,
+        tone
       FROM characters
       WHERE hanzi = '你'
-    `).get() as { status: string; source: string } | undefined;
+    `).get() as {
+      status: string;
+      source: string;
+      pinyin_source: string;
+      meaning_source: string;
+      pinyin_initial: string;
+      pinyin_final: string;
+      tone: string;
+    } | undefined;
 
     const learnedWord = database.prepare(`
-      SELECT status, source
+      SELECT status, source, pinyin_source, meaning_source
       FROM words
       WHERE simplified = '你好'
-    `).get() as { status: string; source: string } | undefined;
+    `).get() as {
+      status: string;
+      source: string;
+      pinyin_source: string;
+      meaning_source: string;
+    } | undefined;
+
+    const enrichedCharacter = database.prepare(`
+      SELECT
+        pinyin_display,
+        pinyin_source,
+        pinyin_source_ref,
+        pinyin_initial,
+        pinyin_final,
+        tone,
+        meaning_primary,
+        meaning_source,
+        meaning_source_ref,
+        status,
+        blocked_reason
+      FROM characters
+      WHERE hanzi = '学'
+    `).get() as {
+      pinyin_display: string;
+      pinyin_source: string;
+      pinyin_source_ref: string;
+      pinyin_initial: string;
+      pinyin_final: string;
+      tone: string;
+      meaning_primary: string;
+      meaning_source: string;
+      meaning_source_ref: string;
+      status: string;
+      blocked_reason: string | null;
+    } | undefined;
+
+    const enrichedWord = database.prepare(`
+      SELECT
+        pinyin_display,
+        pinyin_source,
+        pinyin_source_ref,
+        meaning_primary,
+        meaning_source,
+        meaning_source_ref,
+        status,
+        blocked_reason
+      FROM words
+      WHERE simplified = '学生'
+    `).get() as {
+      pinyin_display: string;
+      pinyin_source: string;
+      pinyin_source_ref: string;
+      meaning_primary: string;
+      meaning_source: string;
+      meaning_source_ref: string;
+      status: string;
+      blocked_reason: string | null;
+    } | undefined;
 
     assert.deepEqual(learnedCharacter, {
       status: "learned",
-      source: "pleco_import"
+      source: "pleco_import",
+      pinyin_source: "pleco_import",
+      meaning_source: "pleco_import",
+      pinyin_initial: "n",
+      pinyin_final: "i",
+      tone: "3"
     });
+
     assert.deepEqual(learnedWord, {
       status: "learned",
-      source: "pleco_import"
+      source: "pleco_import",
+      pinyin_source: "pleco_import",
+      meaning_source: "pleco_import"
+    });
+
+    assert.deepEqual(enrichedCharacter, {
+      pinyin_display: "xue2",
+      pinyin_source: "derived",
+      pinyin_source_ref: "repo_local_dictionary_v1",
+      pinyin_initial: "x",
+      pinyin_final: "ue",
+      tone: "2",
+      meaning_primary: "study",
+      meaning_source: "derived",
+      meaning_source_ref: "repo_local_dictionary_v1",
+      status: "blocked",
+      blocked_reason: null
+    });
+
+    assert.deepEqual(enrichedWord, {
+      pinyin_display: "xue2 sheng1",
+      pinyin_source: "derived",
+      pinyin_source_ref: "repo_local_dictionary_v1",
+      meaning_primary: "student",
+      meaning_source: "derived",
+      meaning_source_ref: "repo_local_dictionary_v1",
+      status: "ready",
+      blocked_reason: null
     });
 
     const levelWordLinks = database.prepare(`
@@ -133,6 +238,84 @@ async function main() {
         (diagnostic: ImportDiagnostic) => diagnostic.code === "duplicate_level_word_introduction"
       )
     );
+
+    const missingLexicalWarning = runNormalizedImport(database, {
+      importType: "levels",
+      version: 1,
+      sourceName: "missing-lexical-check",
+      items: [
+        {
+          course: "mandarin-blueprint",
+          sequenceNumber: 24,
+          title: "Level 24",
+          characters: [{ hanzi: "未" }],
+          words: [{ simplified: "未知" }]
+        }
+      ]
+    });
+
+    assert.equal(missingLexicalWarning.status, "completed");
+    assert.ok(
+      missingLexicalWarning.diagnostics.some(
+        (diagnostic: ImportDiagnostic) =>
+          diagnostic.code === "character_missing_lexical_data" &&
+          diagnostic.entityKey === "未"
+      )
+    );
+    assert.ok(
+      missingLexicalWarning.diagnostics.some(
+        (diagnostic: ImportDiagnostic) =>
+          diagnostic.code === "word_missing_lexical_data" &&
+          diagnostic.entityKey === "未知"
+      )
+    );
+
+    const unresolvedRows = database.prepare(`
+      SELECT
+        (SELECT blocked_reason FROM characters WHERE hanzi = '未') AS character_blocked_reason,
+        (SELECT blocked_reason FROM words WHERE simplified = '未知') AS word_blocked_reason
+    `).get() as {
+      character_blocked_reason: string | null;
+      word_blocked_reason: string | null;
+    };
+
+    assert.deepEqual(unresolvedRows, {
+      character_blocked_reason: "missing_lexical_data",
+      word_blocked_reason: "missing_lexical_data"
+    });
+
+    const zeroInitialImport = runNormalizedImport(database, {
+      importType: "levels",
+      version: 1,
+      sourceName: "zero-initial-check",
+      items: [
+        {
+          course: "mandarin-blueprint",
+          sequenceNumber: 25,
+          title: "Level 25",
+          characters: [{ hanzi: "爱" }],
+          words: []
+        }
+      ]
+    });
+
+    assert.equal(zeroInitialImport.status, "completed");
+
+    const zeroInitialCharacter = database.prepare(`
+      SELECT pinyin_initial, pinyin_final, tone
+      FROM characters
+      WHERE hanzi = '爱'
+    `).get() as {
+      pinyin_initial: string;
+      pinyin_final: string;
+      tone: string;
+    } | undefined;
+
+    assert.deepEqual(zeroInitialCharacter, {
+      pinyin_initial: "null",
+      pinyin_final: "ai",
+      tone: "4"
+    });
 
     console.log(`Import verification passed using ${pathToFileURL(verificationDatabasePath).href}`);
   } finally {

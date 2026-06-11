@@ -1,4 +1,4 @@
-Status: todo
+Status: done
 
 # 006 Lexical Enrichment
 

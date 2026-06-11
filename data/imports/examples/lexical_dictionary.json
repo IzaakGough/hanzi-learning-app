@@ -1,0 +1,47 @@
+{
+  "sourceName": "repo_local_dictionary_v1",
+  "characters": [
+    {
+      "text": "学",
+      "pinyinDisplay": "xue2",
+      "meaningPrimary": "study"
+    },
+    {
+      "text": "生",
+      "pinyinDisplay": "sheng1",
+      "meaningPrimary": "birth"
+    },
+    {
+      "text": "习",
+      "pinyinDisplay": "xi2",
+      "meaningPrimary": "practice"
+    },
+    {
+      "text": "练",
+      "pinyinDisplay": "lian4",
+      "meaningPrimary": "practice"
+    },
+    {
+      "text": "爱",
+      "pinyinDisplay": "ai4",
+      "meaningPrimary": "love"
+    }
+  ],
+  "words": [
+    {
+      "text": "学生",
+      "pinyinDisplay": "xue2 sheng1",
+      "meaningPrimary": "student"
+    },
+    {
+      "text": "学习",
+      "pinyinDisplay": "xue2 xi2",
+      "meaningPrimary": "study"
+    },
+    {
+      "text": "练习",
+      "pinyinDisplay": "lian4 xi2",
+      "meaningPrimary": "practice"
+    }
+  ]
+}

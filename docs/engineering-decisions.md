@@ -195,3 +195,35 @@ Reason:
 
 - the existing normalized example fixture already uses the string sentinel
 - it keeps the mapping table shape simple for imports, admin CRUD, and future lookup logic
+
+## 14. Lexical Provenance Columns
+
+For ticket `006` and future lexical editing work:
+
+- keep `source` / `sourceRef` as canonical record creation provenance only
+- store lexical provenance separately on characters and words:
+  - `pinyin_source`
+  - `pinyin_source_ref`
+  - `meaning_source`
+  - `meaning_source_ref`
+- when lexical data is filled from the local enrichment dictionary, use:
+  - `derived` as the field source
+  - the dictionary identifier as the field source ref
+
+Reason:
+
+- lexical fields can be enriched after record creation
+- pinyin and meaning may be updated independently later
+- this preserves the original record origin while keeping field-level provenance explicit
+
+## 15. Zero Initial And Zero Final Character Encoding
+
+For stored character pinyin splits:
+
+- encode a zero initial or zero final with the string sentinel `"null"`
+- do not store zero initials/finals as SQL `NULL` when the split is known
+
+Reason:
+
+- it aligns stored character splits with the pinyin mapping symbol contract
+- it distinguishes `known empty part` from `split not yet resolved`

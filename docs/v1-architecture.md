@@ -175,10 +175,14 @@ Stored separately for characters and words:
 - `id`
 - `hanzi`
 - `pinyin_display`
+- `pinyin_source`
+- `pinyin_source_ref`
 - `pinyin_initial`
 - `pinyin_final`
 - `tone`
 - `meaning_primary`
+- `meaning_source`
+- `meaning_source_ref`
 - `meanings_other_json`
 - `status`
 - `blocked_reason`
@@ -195,7 +199,11 @@ Stored separately for characters and words:
 - `id`
 - `simplified`
 - `pinyin_display`
+- `pinyin_source`
+- `pinyin_source_ref`
 - `meaning_primary`
+- `meaning_source`
+- `meaning_source_ref`
 - `meanings_other_json`
 - `status`
 - `blocked_reason`

@@ -1,7 +1,7 @@
 # Ticket Index
 
 ## Next Up
-- `006-lexical-enrichment.md`
+- `007-search-and-detail-views.md`
 
 ## Tickets
 - [x] `001-project-scaffold.md`
@@ -9,7 +9,7 @@
 - [x] `003-normalized-import-contracts.md`
 - [x] `004-import-pipeline.md`
 - [x] `005-mapping-admin-and-props.md`
-- [ ] `006-lexical-enrichment.md`
+- [x] `006-lexical-enrichment.md`
 - [ ] `007-search-and-detail-views.md`
 - [ ] `008-level-progression-and-learning-mode.md`
 - [ ] `009-raw-export-normalization-scripts.md`

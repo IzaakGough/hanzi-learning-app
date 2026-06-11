@@ -58,10 +58,14 @@ export interface BaseEntity extends TimestampColumns {
 export interface CharacterRecord extends BaseEntity {
   hanzi: string;
   pinyinDisplay: string | null;
+  pinyinSource: ItemSource | null;
+  pinyinSourceRef: string | null;
   pinyinInitial: string | null;
   pinyinFinal: string | null;
   tone: string | null;
   meaningPrimary: string | null;
+  meaningSource: ItemSource | null;
+  meaningSourceRef: string | null;
   meaningsOtherJson: string | null;
   status: ItemStatus;
   blockedReason: string | null;
@@ -76,7 +80,11 @@ export interface CharacterRecord extends BaseEntity {
 export interface WordRecord extends BaseEntity {
   simplified: string;
   pinyinDisplay: string | null;
+  pinyinSource: ItemSource | null;
+  pinyinSourceRef: string | null;
   meaningPrimary: string | null;
+  meaningSource: ItemSource | null;
+  meaningSourceRef: string | null;
   meaningsOtherJson: string | null;
   status: ItemStatus;
   blockedReason: string | null;
