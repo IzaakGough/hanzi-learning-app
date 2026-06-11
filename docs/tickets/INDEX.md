@@ -1,7 +1,7 @@
 # Ticket Index
 
 ## Next Up
-- `020-backup-export-and-reset-tools.md`
+- `021-v1-validation-and-polish.md`
 
 ## Tickets
 - [x] `001-project-scaffold.md`
@@ -23,5 +23,5 @@
 - [x] `017-manual-sentence-entry-and-sentence-bank.md`
 - [x] `018-audio-generation.md`
 - [x] `019-custom-items-archive-and-review-reset.md`
-- [ ] `020-backup-export-and-reset-tools.md`
+- [x] `020-backup-export-and-reset-tools.md`
 - [ ] `021-v1-validation-and-polish.md`

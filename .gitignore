@@ -15,3 +15,5 @@ coverage/
 tmp/
 temp/
 *.log
+data/exports/*
+!data/exports/README.md

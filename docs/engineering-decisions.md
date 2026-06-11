@@ -424,3 +424,49 @@ Reason:
 
 - the user intent is to restart scheduling, not delete study history
 - keeping old review events preserves auditability while making the item immediately due for a fresh first review
+
+## 28. Backup Export Dataset Shapes
+
+For ticket `020` and the first local backup/export tooling:
+
+- export learned non-archived known items using the existing normalized import JSON contracts:
+  - `known_characters`
+  - `known_words`
+- export props as a JSON admin snapshot that includes:
+  - `name`
+  - `type`
+  - `shapeRef`
+  - `meaningOrImage`
+  - `notes`
+  - `isActive`
+- export approved decompositions as JSON with:
+  - target `hanzi`
+  - decomposition provenance
+  - ordered parts with explicit `resolutionKind`
+  - embedded prop metadata when a part resolves to a prop
+
+Reason:
+
+- known characters and words should stay directly reusable by the existing import pipeline
+- props and approved decompositions do not yet have normalized import contracts, but still need inspectable portable exports
+- embedding prop metadata keeps approved decomposition exports understandable outside the live database
+
+## 29. Reset Workflow Scope
+
+For ticket `020` and the explicit local reset command:
+
+- `db:reset` must require an explicit confirmation flag
+- reset deletes only app-managed local state in the current database directory:
+  - the SQLite database file
+  - SQLite WAL/SHM sidecars
+  - generated media under the API data directory
+- reset must not delete:
+  - checked-in example imports
+  - generated backup/export files under `data/exports`
+- after deletion, reset reruns migrations to recreate a clean schema immediately
+
+Reason:
+
+- the reset flow should be scriptable but still hard to trigger accidentally
+- clearing media with the database avoids orphaned local files from old sentence audio state
+- preserving exports and checked-in fixtures makes reset safe for normal development iteration
