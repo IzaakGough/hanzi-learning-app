@@ -22,6 +22,7 @@ import {
   type QueueTypeCount,
   type QueueUnresolvedPropItem,
   type ReviewSubmissionResult,
+  type SentenceDisplayRecord,
   type WordDetailRecord,
   type WordReviewQueueResponse
 } from "@hanzi-learning-app/shared";
@@ -52,8 +53,10 @@ interface WordReviewSectionProps {
   detailLoading: boolean;
   revealDisabled: boolean;
   gradeSubmitting: boolean;
+  sentenceSubmitting: boolean;
   onReveal: () => void;
   onGrade: (grade: ReviewGrade) => void;
+  onAddManualSentence: (values: ManualSentenceFormValues) => Promise<boolean>;
 }
 
 interface DashboardOverviewSectionProps {
@@ -87,6 +90,12 @@ interface QueueHubSectionProps {
 }
 
 interface SentenceCandidateEditValues {
+  text: string;
+  translation: string;
+  pinyinFull: string;
+}
+
+interface ManualSentenceFormValues {
   text: string;
   translation: string;
   pinyinFull: string;
@@ -245,6 +254,49 @@ function LearningItemCard(props: {
         {props.actionBusy ? "Saving..." : props.actionLabel}
       </button>
     </article>
+  );
+}
+
+function SentenceBank(props: { sentences: SentenceDisplayRecord[] }) {
+  if (props.sentences.length === 0) {
+    return <p className="item-note">No approved sentence bank entries yet.</p>;
+  }
+
+  return (
+    <div className="learning-list">
+      {props.sentences.map((sentence) => (
+        <article className="queue-card" key={sentence.id}>
+          <div className="queue-card-header">
+            <div>
+              <p className="section-kicker">Approved Sentence</p>
+              <h3>{sentence.text}</h3>
+            </div>
+            <span className="summary-chip">
+              {sentence.audioStatus === "ready" ? "Audio ready" : "Audio unavailable"}
+            </span>
+          </div>
+          <p className="item-note">{formatNullable(sentence.translation)}</p>
+          <div className="queue-meta-grid">
+            <div className="queue-span">
+              <strong>Linked words</strong>
+              <p>{sentence.linkedWords.map((word) => word.simplified).join(", ")}</p>
+            </div>
+            <div className="queue-span">
+              <strong>Annotated spans</strong>
+              <p>
+                {sentence.displaySpans.map((span) => {
+                  const annotation = [span.showPinyin ? span.pinyinText : null, span.showGloss ? span.glossText : null]
+                    .filter((value): value is string => value != null)
+                    .join(" - ");
+
+                  return annotation.length > 0 ? `${span.text} (${annotation})` : span.text;
+                }).join(" ")}
+              </p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
   );
 }
 
@@ -821,6 +873,30 @@ export function CharacterReviewSection(props: CharacterReviewSectionProps) {
 }
 
 export function WordReviewSection(props: WordReviewSectionProps) {
+  const [draftSentenceText, setDraftSentenceText] = useState("");
+  const [draftSentenceTranslation, setDraftSentenceTranslation] = useState("");
+  const [draftSentencePinyin, setDraftSentencePinyin] = useState("");
+
+  useEffect(() => {
+    setDraftSentenceText("");
+    setDraftSentenceTranslation("");
+    setDraftSentencePinyin("");
+  }, [props.item?.id]);
+
+  async function handleManualSentenceSubmit() {
+    const saved = await props.onAddManualSentence({
+      text: draftSentenceText,
+      translation: draftSentenceTranslation,
+      pinyinFull: draftSentencePinyin
+    });
+
+    if (saved) {
+      setDraftSentenceText("");
+      setDraftSentenceTranslation("");
+      setDraftSentencePinyin("");
+    }
+  }
+
   return (
     <article className="panel panel-stack">
       <div className="panel-heading">
@@ -869,6 +945,51 @@ export function WordReviewSection(props: WordReviewSectionProps) {
                     ))}
                   </ul>
                 </div>
+                <div className="answer-grid-span">
+                  <strong>Sentence bank</strong>
+                  <SentenceBank sentences={props.detail.approvedSentences} />
+                </div>
+              </div>
+
+              <div className="panel-stack">
+                <div>
+                  <strong>Add manual sentence</strong>
+                  <p className="item-note">
+                    Manual entries auto-approve and can link other known words found in the sentence text.
+                  </p>
+                </div>
+                <label>
+                  Sentence text
+                  <textarea
+                    onChange={(event) => setDraftSentenceText(event.target.value)}
+                    rows={3}
+                    value={draftSentenceText}
+                  />
+                </label>
+                <label>
+                  Translation
+                  <input
+                    onChange={(event) => setDraftSentenceTranslation(event.target.value)}
+                    type="text"
+                    value={draftSentenceTranslation}
+                  />
+                </label>
+                <label>
+                  Full pinyin
+                  <input
+                    onChange={(event) => setDraftSentencePinyin(event.target.value)}
+                    type="text"
+                    value={draftSentencePinyin}
+                  />
+                </label>
+                <button
+                  className="primary-button"
+                  disabled={props.sentenceSubmitting || draftSentenceText.trim().length === 0}
+                  onClick={() => void handleManualSentenceSubmit()}
+                  type="button"
+                >
+                  {props.sentenceSubmitting ? "Saving..." : "Add Sentence"}
+                </button>
               </div>
             </section>
           ) : (
@@ -892,7 +1013,7 @@ export function WordReviewSection(props: WordReviewSectionProps) {
               {reviewGrades.map((grade) => (
                 <button
                   className={`grade-button grade-${grade}`}
-                  disabled={!props.detail || props.gradeSubmitting}
+                  disabled={!props.detail || props.gradeSubmitting || props.sentenceSubmitting}
                   key={grade}
                   onClick={() => props.onGrade(grade)}
                   type="button"
@@ -973,6 +1094,7 @@ export function App() {
   const [wordDetail, setWordDetail] = useState<WordDetailRecord | null>(null);
   const [wordDetailLoading, setWordDetailLoading] = useState(false);
   const [wordGradeSubmitting, setWordGradeSubmitting] = useState(false);
+  const [wordSentenceSubmitting, setWordSentenceSubmitting] = useState(false);
   const [wordFeedback, setWordFeedback] = useState<string | null>(null);
 
   const [learningSubmittingItemId, setLearningSubmittingItemId] = useState<string | null>(null);
@@ -1139,6 +1261,35 @@ export function App() {
       setWordFeedback(error instanceof Error ? error.message : "Unknown word grading error");
     } finally {
       setWordGradeSubmitting(false);
+    }
+  }
+
+  async function addManualSentence(values: ManualSentenceFormValues) {
+    if (!currentWord || !wordDetail) {
+      return false;
+    }
+
+    setWordSentenceSubmitting(true);
+
+    try {
+      const sentence = await expectPostWithBody<SentenceDisplayRecord>(
+        `/words/${currentWord.id}/manual-sentences`,
+        values
+      );
+      setWordDetail((current) => current && current.id === currentWord.id ? {
+        ...current,
+        approvedSentences: [
+          sentence,
+          ...current.approvedSentences.filter((item) => item.id !== sentence.id)
+        ]
+      } : current);
+      setWordFeedback("Manual sentence saved and added to the sentence bank.");
+      return true;
+    } catch (error) {
+      setWordFeedback(error instanceof Error ? error.message : "Unknown manual sentence error");
+      return false;
+    } finally {
+      setWordSentenceSubmitting(false);
     }
   }
 
@@ -1371,10 +1522,12 @@ export function App() {
               feedback={wordFeedback}
               gradeSubmitting={wordGradeSubmitting}
               item={currentWord}
+              onAddManualSentence={addManualSentence}
               onGrade={(grade) => void gradeWord(grade)}
               onReveal={() => void revealWord()}
               revealDisabled={!currentWord || wordDetailLoading || wordDetail !== null}
               reviewedCount={wordReviewedCount}
+              sentenceSubmitting={wordSentenceSubmitting}
               totalCount={wordTotalCount}
             />
           </section>

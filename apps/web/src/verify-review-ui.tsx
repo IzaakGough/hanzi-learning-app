@@ -1,9 +1,11 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import {
+  AudioStatus,
   ItemSource,
   ItemStatus,
   ReviewGrade,
   SchedulerType,
+  SentenceApprovalStatus,
   type CharacterDetailRecord,
   type DueCharacterReviewItem,
   type DueWordReviewItem,
@@ -158,6 +160,65 @@ const wordDetail: WordDetailRecord = {
       meaningPrimary: "country",
       status: ItemStatus.Learned
     }
+  ],
+  approvedSentences: [
+    {
+      id: "sentence-1",
+      text: "ä¸­å›½å¾ˆå¤§ã€‚",
+      translation: "China is big.",
+      pinyinFull: "zhong1 guo2 hen3 da4.",
+      approvalStatus: SentenceApprovalStatus.Approved,
+      audioStatus: AudioStatus.None,
+      audioPath: null,
+      generationSource: ItemSource.Manual,
+      notes: null,
+      createdAt: now,
+      updatedAt: now,
+      linkedWords: [
+        {
+          id: "word-2",
+          simplified: "ä¸­å›½",
+          pinyinDisplay: "zhong1 guo2",
+          meaningPrimary: "China",
+          status: ItemStatus.Learned
+        }
+      ],
+      analysisSpans: [],
+      displaySpans: [
+        {
+          id: "span-1",
+          sentenceId: "sentence-1",
+          sortOrder: 0,
+          text: "ä¸­å›½",
+          spanType: "known_word",
+          linkedWordId: "word-2",
+          linkedCharacterId: null,
+          glossText: "China",
+          pinyinText: "zhong1 guo2",
+          knowledgeState: "known",
+          showGloss: false,
+          showPinyin: false,
+          createdAt: now,
+          updatedAt: now
+        },
+        {
+          id: "span-2",
+          sentenceId: "sentence-1",
+          sortOrder: 1,
+          text: "å¾ˆå¤§",
+          spanType: "punctuation",
+          linkedWordId: null,
+          linkedCharacterId: null,
+          glossText: null,
+          pinyinText: null,
+          knowledgeState: "neutral",
+          showGloss: false,
+          showPinyin: false,
+          createdAt: now,
+          updatedAt: now
+        }
+      ]
+    }
   ]
 };
 
@@ -192,10 +253,12 @@ const wordMarkup = renderToStaticMarkup(
     feedback="Stored answer data revealed."
     gradeSubmitting={false}
     item={wordItem}
+    onAddManualSentence={async () => true}
     onGrade={(_grade: ReviewGrade) => undefined}
     onReveal={() => undefined}
     revealDisabled={true}
     reviewedCount={0}
+    sentenceSubmitting={false}
     totalCount={1}
   />
 );
@@ -203,6 +266,9 @@ const wordMarkup = renderToStaticMarkup(
 expectMatch(wordMarkup, /Word Review/);
 expectMatch(wordMarkup, />中国</);
 expectMatch(wordMarkup, /Component characters/);
+expectMatch(wordMarkup, /Sentence bank/);
+expectMatch(wordMarkup, /Audio unavailable/);
+expectMatch(wordMarkup, /Add manual sentence/);
 expectMatch(wordMarkup, /middle/);
 expectMatch(wordMarkup, /country/);
 expectMatch(wordMarkup, /Good/);

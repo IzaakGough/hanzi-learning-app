@@ -10,6 +10,7 @@ import {
   type WordDetailRecord,
   type WordRecord
 } from "@hanzi-learning-app/shared";
+import { listApprovedSentencesForWord } from "../sentences/sentence-service.js";
 
 interface SearchRow {
   id: string;
@@ -360,7 +361,8 @@ export function getWordDetail(database: Database.Database, id: string): WordDeta
       pinyinDisplay: character.pinyin_display,
       meaningPrimary: character.meaning_primary,
       status: character.status
-    }))
+    })),
+    approvedSentences: listApprovedSentencesForWord(database, id)
   };
 }
 

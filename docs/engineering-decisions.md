@@ -357,3 +357,18 @@ Reason:
 - regeneration should leave a clear moderation trail instead of mutating the old candidate in place
 - the queue should surface only currently actionable pending candidates
 - learning and detail views must never leak unapproved generated content
+
+## 24. Manual Sentence Auto-Linking
+
+For ticket `017` and the first manual sentence entry flow:
+
+- manual sentence creation is anchored to a current word
+- the submitted sentence text must include that current word's simplified text
+- the API should auto-link any additional non-archived canonical words whose simplified text also appears in the sentence
+- sentence analysis should then run against that full linked-word set so one stored sentence can appear in multiple word banks
+
+Reason:
+
+- this keeps the initial UI small while still satisfying shared sentence reuse across words
+- it avoids a separate multi-select word-picker before the repo has a fuller detail/edit surface
+- it preserves one canonical sentence record with many-to-many word links instead of duplicating manual entries per word

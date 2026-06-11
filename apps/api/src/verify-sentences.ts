@@ -17,7 +17,11 @@ const verificationDatabasePath = path.join(
 );
 
 async function expectJson<T>(response: Response, expectedStatus = 200) {
-  assert.equal(response.status, expectedStatus);
+  if (response.status !== expectedStatus) {
+    const errorBody = await response.text();
+    throw new Error(`Expected ${expectedStatus} but received ${response.status}: ${errorBody}`);
+  }
+
   return await response.json() as T;
 }
 
@@ -202,6 +206,45 @@ async function main() {
       assert(address && typeof address === "object");
       const baseUrl = `http://127.0.0.1:${address.port}`;
 
+      const manualSentence = await postJson<{
+        id: string;
+        text: string;
+        approvalStatus: SentenceApprovalStatus;
+        audioStatus: AudioStatus;
+        linkedWords: Array<{ id: string; simplified: string }>;
+        displaySpans: Array<{ text: string; linkedWordId: string | null }>;
+      }>(baseUrl, "/words/word-nihao/manual-sentences", {
+        text: "\u4f60\u597d\uff0c\u4f60\u5417\uff1f",
+        translation: "Hello, you?",
+        pinyinFull: "ni3 hao3, ni3 ma5?"
+      }, 201);
+      assert.equal(manualSentence.approvalStatus, SentenceApprovalStatus.Approved);
+      assert.equal(manualSentence.audioStatus, AudioStatus.None);
+      assert.deepEqual(
+        manualSentence.linkedWords.map((word) => word.id),
+        ["word-nihao", "word-nima"]
+      );
+      assert.equal(
+        manualSentence.displaySpans.some((span) => span.text === "\u4f60\u5417" && span.linkedWordId === "word-nima"),
+        true
+      );
+
+      const wordDetail = await expectJson<{
+        approvedSentences: Array<{ id: string; text: string }>;
+      }>(await fetch(`${baseUrl}/words/word-nihao`));
+      assert.equal(
+        wordDetail.approvedSentences.some((sentenceItem) => sentenceItem.id === manualSentence.id && sentenceItem.text === manualSentence.text),
+        true
+      );
+
+      const linkedWordDetail = await expectJson<{
+        approvedSentences: Array<{ id: string; text: string }>;
+      }>(await fetch(`${baseUrl}/words/word-nima`));
+      assert.equal(
+        linkedWordDetail.approvedSentences.some((sentenceItem) => sentenceItem.id === manualSentence.id),
+        true
+      );
+
       await postJson(baseUrl, "/words/word-nihao/sentence-generation-jobs", undefined, 202);
       const generatedCandidate = await waitForSentenceCandidate(baseUrl);
       assert.equal(generatedCandidate.sentence?.approvalStatus, SentenceApprovalStatus.Pending);
@@ -257,7 +300,7 @@ async function main() {
       });
     }
 
-    console.log("Ticket 016 sentence generation and approval verification passed.");
+    console.log("Ticket 017 manual sentence entry and sentence bank verification passed.");
   } finally {
     database.close();
     fs.rmSync(verificationDatabasePath, { force: true });

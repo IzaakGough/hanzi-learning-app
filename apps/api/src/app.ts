@@ -6,6 +6,7 @@ import {
   parseDecompositionCandidateCreateInput,
   parseDecompositionPartResolutionInput,
   parseLexicalEditInput,
+  parseManualSentenceCreateInput,
   parseMappingAdminInput,
   parsePropAdminInput,
   parseQueueActionInput,
@@ -63,7 +64,11 @@ import {
   QueueItemNotFoundError
 } from "./services/queue/queue-service.js";
 import { createSentenceGenerationJob } from "./services/sentences/sentence-generation-service.js";
-import { listApprovedSentencesForWord, SentenceNotFoundError } from "./services/sentences/sentence-service.js";
+import {
+  createManualSentenceForWord,
+  listApprovedSentencesForWord,
+  SentenceNotFoundError
+} from "./services/sentences/sentence-service.js";
 import {
   gradeCharacterReview,
   gradeWordReview,
@@ -175,6 +180,15 @@ export function createApp(database: Database.Database) {
   app.get("/words/:id/sentences", (request, response) => {
     try {
       response.json({ items: listApprovedSentencesForWord(database, request.params.id) });
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/words/:id/manual-sentences", (request, response) => {
+    try {
+      const input = parseManualSentenceCreateInput(request.body);
+      response.status(201).json(createManualSentenceForWord(database, request.params.id, input));
     } catch (error) {
       sendRouteError(response, error);
     }

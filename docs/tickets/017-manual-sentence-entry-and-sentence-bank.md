@@ -1,4 +1,4 @@
-Status: todo
+Status: done
 
 # 017 Manual Sentence Entry And Sentence Bank
 

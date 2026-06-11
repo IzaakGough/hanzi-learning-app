@@ -196,6 +196,7 @@ export interface CharacterDetailRecord extends CharacterRecord {
 
 export interface WordDetailRecord extends WordRecord {
   componentCharacters: WordComponentCharacter[];
+  approvedSentences: SentenceDisplayRecord[];
 }
 
 export interface WordSentenceListResponse {
@@ -291,6 +292,12 @@ export interface SentenceGenerationJobRecord extends BaseEntity {
   status: SentenceGenerationJobStatus;
   errorMessage: string | null;
   completedAt: string | null;
+}
+
+export interface ManualSentenceCreateInput {
+  text: string;
+  translation: string | null;
+  pinyinFull: string | null;
 }
 
 export type DecompositionPartResolutionKind = "prop" | "character" | "literal";
@@ -896,6 +903,18 @@ export const lexicalEditInputSchema = z.object({
   provenanceNote: z.string().trim().min(1)
 });
 
+export const manualSentenceCreateInputSchema = z.object({
+  text: z.string().trim().min(1),
+  translation: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
+  pinyinFull: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  )
+});
+
 export const decompositionCandidateCreateInputSchema = z.object({
   parts: z.array(z.string().trim().min(1)).min(1),
   notes: z.preprocess(
@@ -988,6 +1007,7 @@ export type NormalizedImport = z.infer<typeof normalizedImportSchema>;
 export type MappingAdminInputPayload = z.infer<typeof mappingAdminInputSchema>;
 export type PropAdminInputPayload = z.infer<typeof propAdminInputSchema>;
 export type LexicalEditInputPayload = z.infer<typeof lexicalEditInputSchema>;
+export type ManualSentenceCreateInputPayload = z.infer<typeof manualSentenceCreateInputSchema>;
 export type DecompositionCandidateCreateInputPayload = z.infer<typeof decompositionCandidateCreateInputSchema>;
 export type DecompositionPartResolutionInputPayload = z.infer<typeof decompositionPartResolutionInputSchema>;
 export type ReviewGradeInputPayload = z.infer<typeof reviewGradeInputSchema>;
@@ -1023,6 +1043,10 @@ export function parsePropAdminInput(input: unknown) {
 
 export function parseLexicalEditInput(input: unknown) {
   return lexicalEditInputSchema.parse(input);
+}
+
+export function parseManualSentenceCreateInput(input: unknown) {
+  return manualSentenceCreateInputSchema.parse(input);
 }
 
 export function parseDecompositionCandidateCreateInput(input: unknown) {

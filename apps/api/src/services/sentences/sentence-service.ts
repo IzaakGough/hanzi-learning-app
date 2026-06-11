@@ -1,7 +1,10 @@
 import { randomUUID } from "node:crypto";
 import type Database from "better-sqlite3";
 import {
+  AudioStatus,
+  ItemSource,
   ItemStatus,
+  type ManualSentenceCreateInput,
   SentenceApprovalStatus,
   type SentenceAnalysisSpanInput,
   type SentenceAnalysisSpanRecord,
@@ -498,6 +501,12 @@ function listLinkedWordRecords(database: Database.Database, linkedWords: Sentenc
   });
 }
 
+interface AutoLinkedWordRecord {
+  id: string;
+  simplified: string;
+  firstIndex: number;
+}
+
 function getCharacterIdByHanzi(database: Database.Database, hanzi: string) {
   const row = database.prepare(`
     SELECT id
@@ -578,6 +587,78 @@ function buildSentenceAnalysisSpans(
   }
 
   return spans;
+}
+
+function listAutoLinkedWordsFromSentenceText(
+  database: Database.Database,
+  primaryWordId: string,
+  text: string
+): SentenceWordLinkInput[] {
+  const normalizedText = text.trim();
+  if (normalizedText.length === 0) {
+    throw new Error("Sentence text is required.");
+  }
+
+  const primaryWord = database.prepare(`
+    SELECT id, simplified
+    FROM words
+    WHERE id = ?
+      AND archived_at IS NULL
+  `).get(primaryWordId) as { id: string; simplified: string } | undefined;
+
+  if (!primaryWord) {
+    throw new SentenceNotFoundError(`Word ${primaryWordId} was not found.`);
+  }
+
+  if (!normalizedText.includes(primaryWord.simplified)) {
+    throw new Error(`Manual sentence text must include ${primaryWord.simplified}.`);
+  }
+
+  const words = database.prepare(`
+    SELECT id, simplified
+    FROM words
+    WHERE archived_at IS NULL
+    ORDER BY length(simplified) DESC, simplified ASC
+  `).all() as Array<{ id: string; simplified: string }>;
+
+  const matchedWords = new Map<string, AutoLinkedWordRecord>();
+  for (const word of words) {
+    const firstIndex = normalizedText.indexOf(word.simplified);
+    if (firstIndex === -1) {
+      continue;
+    }
+
+    matchedWords.set(word.id, {
+      id: word.id,
+      simplified: word.simplified,
+      firstIndex
+    });
+  }
+
+  if (!matchedWords.has(primaryWord.id)) {
+    matchedWords.set(primaryWord.id, {
+      id: primaryWord.id,
+      simplified: primaryWord.simplified,
+      firstIndex: normalizedText.indexOf(primaryWord.simplified)
+    });
+  }
+
+  return [...matchedWords.values()]
+    .sort((left, right) => {
+      if (left.firstIndex !== right.firstIndex) {
+        return left.firstIndex - right.firstIndex;
+      }
+
+      if (left.simplified.length !== right.simplified.length) {
+        return right.simplified.length - left.simplified.length;
+      }
+
+      return left.simplified.localeCompare(right.simplified, "zh-Hans-CN");
+    })
+    .map((word, sortOrder) => ({
+      wordId: word.id,
+      sortOrder
+    }));
 }
 
 function replaceSentenceContent(
@@ -724,6 +805,29 @@ export function listApprovedSentencesForWord(
   `).all(wordId, SentenceApprovalStatus.Approved) as Array<{ id: string }>).map((row) => row.id);
 
   return sentenceIds.map((sentenceId) => recomputeSentenceDisplay(database, sentenceId));
+}
+
+export function createManualSentenceForWord(
+  database: Database.Database,
+  wordId: string,
+  input: ManualSentenceCreateInput
+) {
+  const linkedWords = listAutoLinkedWordsFromSentenceText(database, wordId, input.text);
+
+  const sentence = createSentence(database, {
+    text: input.text,
+    translation: input.translation,
+    pinyinFull: input.pinyinFull,
+    approvalStatus: SentenceApprovalStatus.Approved,
+    audioStatus: AudioStatus.None,
+    audioPath: null,
+    generationSource: ItemSource.Manual,
+    notes: null,
+    linkedWords,
+    analysisSpans: buildSentenceAnalysisSpans(database, input.text, linkedWords)
+  });
+
+  return recomputeSentenceDisplay(database, sentence.id);
 }
 
 export function buildGeneratedSentenceDraft(
