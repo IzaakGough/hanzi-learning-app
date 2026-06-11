@@ -1,7 +1,7 @@
 # Ticket Index
 
 ## Next Up
-- `013-dashboard-and-priority-flow.md`
+- `014-sentence-schema-and-analysis.md`
 
 ## Tickets
 - [x] `001-project-scaffold.md`
@@ -16,7 +16,7 @@
 - [x] `010-decomposition-approval-and-unresolved-props.md`
 - [x] `011-fsrs-review-engine.md`
 - [x] `012-review-mode-ui.md`
-- [ ] `013-dashboard-and-priority-flow.md`
+- [x] `013-dashboard-and-priority-flow.md`
 - [ ] `014-sentence-schema-and-analysis.md`
 - [ ] `015-content-queue-hub.md`
 - [ ] `016-sentence-generation-and-approval.md`

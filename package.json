@@ -19,6 +19,7 @@
     "decomposition:verify": "npm run decomposition:verify --workspace @hanzi-learning-app/api",
     "learning:verify": "npm run learning:verify --workspace @hanzi-learning-app/api",
     "reviews:verify": "npm run reviews:verify --workspace @hanzi-learning-app/api",
+    "dashboard:verify": "npm run dashboard:verify --workspace @hanzi-learning-app/api && npm run dashboard:verify --workspace @hanzi-learning-app/web",
     "review-ui:verify": "npm run review:verify --workspace @hanzi-learning-app/web",
     "normalize:pleco:characters": "node ./scripts/normalize-pleco-characters.mjs",
     "normalize:pleco:words": "node ./scripts/normalize-pleco-words.mjs",

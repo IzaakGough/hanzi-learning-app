@@ -54,6 +54,7 @@ import {
   listDecompositionWorkspace,
   resolveDecompositionPart
 } from "./services/decomposition/decomposition-service.js";
+import { getDashboardSummary } from "./services/dashboard/dashboard-service.js";
 import {
   gradeCharacterReview,
   gradeWordReview,
@@ -135,6 +136,10 @@ export function createApp(database: Database.Database) {
 
   app.get("/levels/current", (_request, response) => {
     response.json(getCurrentLevelProgress(database));
+  });
+
+  app.get("/dashboard", (_request, response) => {
+    response.json(getDashboardSummary(database));
   });
 
   app.get("/decompositions/workspace", (_request, response) => {

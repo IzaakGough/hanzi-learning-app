@@ -318,6 +318,24 @@ export interface CurrentLevelProgressResponse {
   totalLevelCount: number;
 }
 
+export interface DashboardDueReviewSummary {
+  characterCount: number;
+  wordCount: number;
+  totalCount: number;
+}
+
+export interface DashboardContentQueueSummary {
+  hasWork: boolean;
+  charactersNeedingApprovalCount: number;
+  unresolvedPropCount: number;
+}
+
+export interface DashboardSummaryResponse {
+  dueReview: DashboardDueReviewSummary;
+  learningProgress: CurrentLevelProgressResponse;
+  contentQueue: DashboardContentQueueSummary;
+}
+
 export type ReviewItemKind = "character" | "word";
 
 export interface ReviewStateRecord extends BaseEntity {

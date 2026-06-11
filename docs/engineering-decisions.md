@@ -277,3 +277,20 @@ Reason:
 
 - imported known items need to enter review without pretending they already have calibrated FSRS history
 - later review UI work can treat `NULL` stability/difficulty as a first-review state explicitly
+
+## 19. Dashboard Queue Summary Source
+
+For ticket `013` and before ticket `015` introduces a fuller queue hub:
+
+- the dashboard queue summary should stay lightweight
+- expose only counts that can be derived from the existing decomposition workspace:
+  - characters needing decomposition approval
+  - unresolved decomposition parts needing prop resolution
+- omit zero-count queue sections in the UI
+- do not introduce a broader `/queue` aggregate contract yet
+
+Reason:
+
+- ticket `013` needs queue visibility without taking on ticket `015`
+- the repo does not yet persist or surface all queue categories through a dedicated queue service
+- decomposition approval work is already real, actionable queue data in the current implementation
