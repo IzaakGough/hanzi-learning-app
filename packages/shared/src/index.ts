@@ -175,6 +175,7 @@ export interface WordComponentCharacter {
 }
 
 export interface CharacterDetailRecord extends CharacterRecord {
+  approvedDecomposition: CharacterDecompositionRecord | null;
   linkedWords: CharacterLinkWord[];
 }
 

@@ -1,8 +1,10 @@
 import type Database from "better-sqlite3";
 import {
+  type CharacterDecompositionRecord,
   type CharacterDetailRecord,
   type CharacterLinkWord,
   type CharacterRecord,
+  type DecompositionPartRecord,
   type SearchResultItem,
   type WordComponentCharacter,
   type WordDetailRecord,
@@ -33,6 +35,26 @@ interface WordComponentCharacterRow {
   pinyin_display: string | null;
   meaning_primary: string | null;
   status: WordComponentCharacter["status"];
+}
+
+interface DecompositionRow {
+  id: string;
+  character_id: string;
+  status: CharacterDecompositionRecord["status"];
+  source: CharacterDecompositionRecord["source"];
+  source_ref: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface DecompositionPartRow {
+  id: string;
+  decomposition_id: string;
+  prop_id: string | null;
+  character_id: string | null;
+  literal_text: string | null;
+  sort_order: number;
 }
 
 class SearchEntityNotFoundError extends Error {
@@ -206,6 +228,7 @@ export function getCharacterDetail(database: Database.Database, id: string): Cha
 
   return {
     ...mapCharacterRecord(row),
+    approvedDecomposition: loadApprovedCharacterDecomposition(database, id),
     linkedWords: linkedWords.map((linkedWord) => ({
       id: linkedWord.id,
       simplified: linkedWord.simplified,
@@ -214,6 +237,97 @@ export function getCharacterDetail(database: Database.Database, id: string): Cha
       status: linkedWord.status
     }))
   };
+}
+
+function loadApprovedCharacterDecomposition(
+  database: Database.Database,
+  characterId: string
+): CharacterDecompositionRecord | null {
+  const row = database.prepare(`
+    SELECT
+      id,
+      character_id,
+      status,
+      source,
+      source_ref,
+      notes,
+      created_at,
+      updated_at
+    FROM character_decompositions
+    WHERE character_id = ? AND status = 'approved'
+    LIMIT 1
+  `).get(characterId) as DecompositionRow | undefined;
+
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.id,
+    characterId: row.character_id,
+    status: row.status,
+    source: row.source,
+    sourceRef: row.source_ref,
+    notes: row.notes,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    parts: loadApprovedCharacterDecompositionParts(database, row.id)
+  };
+}
+
+function loadApprovedCharacterDecompositionParts(
+  database: Database.Database,
+  decompositionId: string
+): DecompositionPartRecord[] {
+  const rows = database.prepare(`
+    SELECT
+      id,
+      decomposition_id,
+      prop_id,
+      character_id,
+      literal_text,
+      sort_order
+    FROM character_decomposition_parts
+    WHERE decomposition_id = ?
+    ORDER BY sort_order ASC
+  `).all(decompositionId) as DecompositionPartRow[];
+
+  return rows.map((row) => ({
+    id: row.id,
+    sortOrder: row.sort_order,
+    resolutionKind: row.prop_id ? "prop" : row.character_id ? "character" : "literal",
+    text: getDecompositionPartText(database, row),
+    propId: row.prop_id,
+    characterId: row.character_id
+  }));
+}
+
+function getDecompositionPartText(database: Database.Database, row: DecompositionPartRow) {
+  if (row.literal_text) {
+    return row.literal_text;
+  }
+
+  if (row.prop_id) {
+    const prop = database.prepare(`
+      SELECT name, shape_ref
+      FROM props
+      WHERE id = ?
+    `).get(row.prop_id) as { name: string; shape_ref: string | null } | undefined;
+
+    return prop?.shape_ref ?? prop?.name ?? row.prop_id;
+  }
+
+  if (row.character_id) {
+    const character = database.prepare(`
+      SELECT hanzi
+      FROM characters
+      WHERE id = ?
+    `).get(row.character_id) as { hanzi: string } | undefined;
+
+    return character?.hanzi ?? row.character_id;
+  }
+
+  return "";
 }
 
 export function getWordDetail(database: Database.Database, id: string): WordDetailRecord {
