@@ -47,3 +47,4 @@ Usage and input-shape assumptions for those scripts live in `scripts/README.md`.
 
 - JSON is the only required format for ticket `003`
 - CSV support can be added later if useful
+- repo-example decomposition fixtures are not imported by default; set `HANZI_SEED_EXAMPLE_DECOMPOSITIONS=1` only when you intentionally want the example approved/candidate decomposition data seeded during import

@@ -41,6 +41,7 @@ function expectLoadFailure(filePath: string, expectedPattern: RegExp) {
 
 async function main() {
   fs.rmSync(verificationDatabasePath, { force: true });
+  process.env.HANZI_SEED_EXAMPLE_DECOMPOSITIONS = "1";
 
   const database = await createVerificationDatabase();
   const invalidImportDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "hanzi-import-invalid-"));

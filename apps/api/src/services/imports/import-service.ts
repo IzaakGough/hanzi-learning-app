@@ -1110,6 +1110,10 @@ function applyExampleDecompositionCandidates(context: ImportRunContext) {
   seedExampleDecompositionCandidates(context.database);
 }
 
+function shouldSeedExampleDecompositions() {
+  return process.env.HANZI_SEED_EXAMPLE_DECOMPOSITIONS === "1";
+}
+
 function applyReviewStateSeeding(context: ImportRunContext) {
   ensureReviewStatesForLearnedItems(context.database);
 }
@@ -1161,8 +1165,10 @@ export function runNormalizedImport(
   const executeImport = database.transaction(() => {
     applyImport(context, payload);
     applyLexicalEnrichment(context);
-    applyExampleApprovedDecompositions(context);
-    applyExampleDecompositionCandidates(context);
+    if (shouldSeedExampleDecompositions()) {
+      applyExampleApprovedDecompositions(context);
+      applyExampleDecompositionCandidates(context);
+    }
     applyReviewStateSeeding(context);
     failIfErrors(context, payload.importType);
   });

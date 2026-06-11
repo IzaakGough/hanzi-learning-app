@@ -54,6 +54,7 @@ function getCount(queue: QueueResponse, type: QueueItemType) {
 
 async function main() {
   process.env.HANZI_DB_PATH = verificationDatabasePath;
+  process.env.HANZI_SEED_EXAMPLE_DECOMPOSITIONS = "1";
   fs.rmSync(verificationDatabasePath, { force: true });
 
   const { createDatabaseConnection } = await import("./db/connection.js");
