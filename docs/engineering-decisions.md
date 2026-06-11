@@ -294,3 +294,21 @@ Reason:
 - ticket `013` needs queue visibility without taking on ticket `015`
 - the repo does not yet persist or surface all queue categories through a dedicated queue service
 - decomposition approval work is already real, actionable queue data in the current implementation
+
+## 20. Sentence Analysis Span Link Storage
+
+For ticket `014` and future sentence-bank work:
+
+- store sentence analysis links with two nullable foreign keys:
+  - `linked_word_id`
+  - `linked_character_id`
+- word spans (`known_word`, `unknown_word`) must populate only `linked_word_id`
+- fallback character spans must populate only `linked_character_id`
+- punctuation spans must populate neither
+- do not use a single polymorphic `linked_item_id` column in SQLite
+
+Reason:
+
+- SQLite cannot enforce polymorphic foreign keys cleanly
+- this keeps stored sentence analysis referentially valid
+- render-time visibility can still apply the documented word-first annotation rules

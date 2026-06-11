@@ -43,6 +43,14 @@ export enum AudioStatus {
   Failed = "failed"
 }
 
+export type SentenceAnalysisSpanType =
+  | "known_word"
+  | "unknown_word"
+  | "fallback_character"
+  | "punctuation";
+
+export type SentenceSpanKnowledgeState = "known" | "unknown" | "neutral";
+
 export enum SchedulerType {
   Fsrs = "fsrs"
 }
@@ -181,6 +189,90 @@ export interface CharacterDetailRecord extends CharacterRecord {
 
 export interface WordDetailRecord extends WordRecord {
   componentCharacters: WordComponentCharacter[];
+}
+
+export interface SentenceRecord extends BaseEntity {
+  text: string;
+  translation: string | null;
+  pinyinFull: string | null;
+  approvalStatus: SentenceApprovalStatus;
+  audioStatus: AudioStatus;
+  audioPath: string | null;
+  generationSource: ItemSource | null;
+  notes: string | null;
+}
+
+export interface SentenceWordLinkRecord {
+  sentenceId: string;
+  wordId: string;
+  sortOrder: number;
+  createdAt: string;
+}
+
+export interface SentenceAnalysisSpanRecord extends BaseEntity {
+  sentenceId: string;
+  sortOrder: number;
+  text: string;
+  spanType: SentenceAnalysisSpanType;
+  linkedWordId: string | null;
+  linkedCharacterId: string | null;
+  glossText: string | null;
+  pinyinText: string | null;
+}
+
+export interface SentenceLinkedWordSummary {
+  id: string;
+  simplified: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  status: ItemStatus;
+}
+
+export interface SentenceDetailRecord extends SentenceRecord {
+  linkedWords: SentenceLinkedWordSummary[];
+  analysisSpans: SentenceAnalysisSpanRecord[];
+}
+
+export interface SentenceKnownItemSets {
+  wordIds: string[];
+  characterIds: string[];
+}
+
+export interface SentenceDisplaySpan extends SentenceAnalysisSpanRecord {
+  knowledgeState: SentenceSpanKnowledgeState;
+  showGloss: boolean;
+  showPinyin: boolean;
+}
+
+export interface SentenceDisplayRecord extends SentenceDetailRecord {
+  displaySpans: SentenceDisplaySpan[];
+}
+
+export interface SentenceWordLinkInput {
+  wordId: string;
+  sortOrder: number;
+}
+
+export interface SentenceAnalysisSpanInput {
+  text: string;
+  spanType: SentenceAnalysisSpanType;
+  linkedWordId: string | null;
+  linkedCharacterId: string | null;
+  glossText: string | null;
+  pinyinText: string | null;
+}
+
+export interface SentenceCreateInput {
+  text: string;
+  translation: string | null;
+  pinyinFull: string | null;
+  approvalStatus: SentenceApprovalStatus;
+  audioStatus: AudioStatus;
+  audioPath: string | null;
+  generationSource: ItemSource | null;
+  notes: string | null;
+  linkedWords: SentenceWordLinkInput[];
+  analysisSpans: SentenceAnalysisSpanInput[];
 }
 
 export type DecompositionPartResolutionKind = "prop" | "character" | "literal";

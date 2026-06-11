@@ -1,4 +1,4 @@
-Status: todo
+Status: done
 
 # 014 Sentence Schema And Analysis
 

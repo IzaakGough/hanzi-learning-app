@@ -255,5 +255,66 @@ export const migrations: MigrationDefinition[] = [
       CREATE INDEX IF NOT EXISTS idx_word_review_state_due_at ON word_review_state(due_at);
       CREATE INDEX IF NOT EXISTS idx_review_events_item ON review_events(item_kind, item_id, reviewed_at DESC);
     `
+  },
+  {
+    id: "005_sentence_schema_and_analysis",
+    description: "Add sentence storage, word links, and stored sentence analysis spans",
+    sql: `
+      CREATE TABLE IF NOT EXISTS sentences (
+        id TEXT PRIMARY KEY,
+        text TEXT NOT NULL UNIQUE,
+        translation TEXT,
+        pinyin_full TEXT,
+        approval_status TEXT NOT NULL CHECK (approval_status IN ('pending', 'approved', 'rejected')),
+        audio_status TEXT NOT NULL CHECK (audio_status IN ('none', 'pending', 'ready', 'failed')),
+        audio_path TEXT,
+        generation_source TEXT CHECK (generation_source IN ('pleco_import', 'curriculum_import', 'manual', 'derived')),
+        notes TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS word_sentences (
+        sentence_id TEXT NOT NULL,
+        word_id TEXT NOT NULL,
+        sort_order INTEGER NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(sentence_id, sort_order),
+        UNIQUE(sentence_id, word_id),
+        FOREIGN KEY(sentence_id) REFERENCES sentences(id) ON DELETE CASCADE,
+        FOREIGN KEY(word_id) REFERENCES words(id) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS sentence_analysis_spans (
+        id TEXT PRIMARY KEY,
+        sentence_id TEXT NOT NULL,
+        sort_order INTEGER NOT NULL,
+        text TEXT NOT NULL,
+        span_type TEXT NOT NULL CHECK (span_type IN ('known_word', 'unknown_word', 'fallback_character', 'punctuation')),
+        linked_word_id TEXT,
+        linked_character_id TEXT,
+        gloss_text TEXT,
+        pinyin_text TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(sentence_id, sort_order),
+        CHECK (
+          (linked_word_id IS NULL OR linked_character_id IS NULL)
+          AND (
+            (span_type IN ('known_word', 'unknown_word') AND linked_word_id IS NOT NULL AND linked_character_id IS NULL)
+            OR (span_type = 'fallback_character' AND linked_word_id IS NULL AND linked_character_id IS NOT NULL)
+            OR (span_type = 'punctuation' AND linked_word_id IS NULL AND linked_character_id IS NULL)
+          )
+        ),
+        FOREIGN KEY(sentence_id) REFERENCES sentences(id) ON DELETE CASCADE,
+        FOREIGN KEY(linked_word_id) REFERENCES words(id) ON DELETE CASCADE,
+        FOREIGN KEY(linked_character_id) REFERENCES characters(id) ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_word_sentences_word_id ON word_sentences(word_id);
+      CREATE INDEX IF NOT EXISTS idx_sentence_analysis_spans_sentence_id ON sentence_analysis_spans(sentence_id);
+      CREATE INDEX IF NOT EXISTS idx_sentence_analysis_spans_word_id ON sentence_analysis_spans(linked_word_id);
+      CREATE INDEX IF NOT EXISTS idx_sentence_analysis_spans_character_id ON sentence_analysis_spans(linked_character_id);
+    `
   }
 ];
