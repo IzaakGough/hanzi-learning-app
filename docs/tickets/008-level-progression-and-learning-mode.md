@@ -1,3 +1,5 @@
+Status: todo
+
 # 008 Level Progression And Learning Mode
 
 ## Goal
@@ -47,3 +49,4 @@ Implement the first usable learning workflow using imported levels and enriched 
 - FSRS review
 - sentence generation
 - audio generation
+

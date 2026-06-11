@@ -1,3 +1,5 @@
+Status: done
+
 # 001 Project Scaffold
 
 ## Goal
@@ -42,3 +44,4 @@ None.
 ## Notes For Agent
 
 Do not invent alternative stacks. Follow `docs/v1-architecture.md`.
+

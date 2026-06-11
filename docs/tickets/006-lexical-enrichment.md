@@ -1,3 +1,5 @@
+Status: todo
+
 # 006 Lexical Enrichment
 
 ## Goal
@@ -35,3 +37,4 @@ Enrich curriculum-imported characters and words with pinyin, pinyin split, and m
 - sentence generation
 - audio
 - live external service dependency at study time
+

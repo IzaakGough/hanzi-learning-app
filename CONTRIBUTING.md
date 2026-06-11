@@ -6,15 +6,24 @@ This repository is primarily built by ticket-focused agents. The goal of this fi
 
 Before making code changes for a ticket, read in this order:
 
-1. `docs/tickets/<current-ticket>.md`
-2. `docs/v1-architecture.md`
-3. `docs/engineering-decisions.md`
-4. the relevant existing code in the repo
+1. `docs/tickets/INDEX.md`
+2. the next ticket marked `todo` there
+3. `docs/v1-architecture.md`
+4. `docs/engineering-decisions.md`
+5. the relevant existing code in the repo
 
 Optional background:
 
 - `docs/product-spec.md`
 - `docs/mvp-plan.md`
+
+## Ticket Status Tracking
+
+- `docs/tickets/INDEX.md` is the canonical source of ticket order and completion state.
+- Each ticket file must include a top-level `Status:` line.
+- Allowed status values are `todo`, `in_progress`, `done`, and `blocked`.
+- Agents should work only on the first ticket marked `todo` in the index unless explicitly told otherwise.
+- When finishing a ticket, update both the ticket file status and `docs/tickets/INDEX.md`.
 
 ## Ticket Execution Rules
 

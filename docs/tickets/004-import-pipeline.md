@@ -1,3 +1,5 @@
+Status: todo
+
 # 004 Import Pipeline
 
 ## Goal
@@ -40,3 +42,4 @@ Import normalized files into SQLite with validation, provenance tracking, and ba
 
 - lexical enrichment
 - raw export adapter scripts
+

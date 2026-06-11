@@ -1,3 +1,5 @@
+Status: todo
+
 # 005 Mapping Admin And Props
 
 ## Goal
@@ -37,3 +39,4 @@ Build the first admin UI/API for pinyin mappings and props.
 
 - decomposition approval flow
 - advanced archive management
+

@@ -1,3 +1,5 @@
+Status: done
+
 # 003 Normalized Import Contracts
 
 ## Goal
@@ -39,3 +41,4 @@ Define and validate the normalized import formats the app will accept.
 ## Non-Goals
 
 - importing raw Pleco or raw Notion exports directly
+

@@ -1,3 +1,5 @@
+Status: done
+
 # 002 Schema And Shared Types
 
 ## Goal
@@ -47,3 +49,4 @@ Establish the initial SQLite schema and shared enum/type contracts.
 
 - FSRS review tables can wait if they complicate the first migration
 - sentence tables can be included now or in the next migration if cleaner
+

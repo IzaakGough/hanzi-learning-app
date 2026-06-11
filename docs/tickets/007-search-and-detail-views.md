@@ -1,3 +1,5 @@
+Status: todo
+
 # 007 Search And Detail Views
 
 ## Goal
@@ -40,3 +42,4 @@ Expose imported and enriched data for inspection via search and item detail view
 
 - sentence banks
 - review summaries beyond placeholders if review is not implemented yet
+
