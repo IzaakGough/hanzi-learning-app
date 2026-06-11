@@ -28,10 +28,22 @@ function loadExampleImport(fileName: string) {
   return loadNormalizedImportFile(path.join(exampleImportsDirectory, fileName));
 }
 
+function expectLoadFailure(filePath: string, expectedPattern: RegExp) {
+  assert.throws(
+    () => loadNormalizedImportFile(filePath),
+    (error: unknown) => {
+      assert(error instanceof Error);
+      assert.match(error.message, expectedPattern);
+      return true;
+    }
+  );
+}
+
 async function main() {
   fs.rmSync(verificationDatabasePath, { force: true });
 
   const database = await createVerificationDatabase();
+  const invalidImportDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "hanzi-import-invalid-"));
 
   try {
     const firstPassResults = [
@@ -317,10 +329,39 @@ async function main() {
       tone: "4"
     });
 
+    const duplicateLevelsPath = path.join(invalidImportDirectory, "duplicate-levels.json");
+    fs.writeFileSync(duplicateLevelsPath, JSON.stringify({
+      importType: "levels",
+      version: 1,
+      sourceName: "duplicate-levels",
+      items: [
+        {
+          course: "mandarin-blueprint",
+          sequenceNumber: 31,
+          title: "Level 31",
+          characters: [],
+          words: []
+        },
+        {
+          course: "mandarin-blueprint",
+          sequenceNumber: 31,
+          title: "Level 31 Duplicate",
+          characters: [],
+          words: []
+        }
+      ]
+    }, null, 2));
+    expectLoadFailure(duplicateLevelsPath, /Duplicate level entry: mandarin-blueprint::31/);
+
+    const malformedJsonPath = path.join(invalidImportDirectory, "malformed.json");
+    fs.writeFileSync(malformedJsonPath, "{ invalid json");
+    expectLoadFailure(malformedJsonPath, /Invalid JSON/);
+
     console.log(`Import verification passed using ${pathToFileURL(verificationDatabasePath).href}`);
   } finally {
     database.close();
     fs.rmSync(verificationDatabasePath, { force: true });
+    fs.rmSync(invalidImportDirectory, { recursive: true, force: true });
   }
 }
 

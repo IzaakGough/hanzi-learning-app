@@ -29,6 +29,7 @@
     "queue:verify": "npm run queue:verify --workspace @hanzi-learning-app/api && npm run queue:verify --workspace @hanzi-learning-app/web",
     "dashboard:verify": "npm run dashboard:verify --workspace @hanzi-learning-app/api && npm run dashboard:verify --workspace @hanzi-learning-app/web",
     "review-ui:verify": "npm run review:verify --workspace @hanzi-learning-app/web",
+    "v1:verify": "npm run imports:validate-examples --workspace @hanzi-learning-app/api && npm run imports:verify && npm run admin:verify && npm run search:verify && npm run decomposition:verify && npm run dashboard:verify && npm run queue:verify && npm run learning:verify && npm run reviews:verify && npm run review-ui:verify && npm run sentences:verify && npm run audio:verify && npm run custom-items:verify && npm run backup:verify",
     "normalize:pleco:characters": "node ./scripts/normalize-pleco-characters.mjs",
     "normalize:pleco:words": "node ./scripts/normalize-pleco-words.mjs",
     "normalize:notion:levels": "node ./scripts/normalize-notion-levels.mjs",

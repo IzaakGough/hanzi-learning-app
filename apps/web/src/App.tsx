@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import {
+  getLearningBlockReasonMeta,
   HEALTHCHECK_PATH,
   ItemStatus,
   QueueItemType,
   ReviewGrade,
+  type LearningBlockReason,
   type CharacterDetailRecord,
   type CharacterReviewQueueResponse,
   type CurrentLevelProgressResponse,
@@ -87,6 +89,7 @@ interface QueueHubSectionProps {
   onApproveSentence: (item: QueueSentenceCandidateItem) => void;
   onRejectSentence: (item: QueueSentenceCandidateItem) => void;
   onEditApproveSentence: (item: QueueSentenceCandidateItem, values: SentenceCandidateEditValues) => void;
+  onEditMissingLexical: (item: QueueMissingLexicalDataItem, values: MissingLexicalEditValues) => void;
   onRegenerateSentence: (item: QueueSentenceCandidateItem) => void;
   onRegenerateAudio: (item: QueueAudioFailureItem) => void;
 }
@@ -101,6 +104,12 @@ interface ManualSentenceFormValues {
   text: string;
   translation: string;
   pinyinFull: string;
+}
+
+interface MissingLexicalEditValues {
+  pinyinDisplay: string;
+  meaningPrimary: string;
+  provenanceNote: string;
 }
 
 const reviewGrades = [
@@ -141,8 +150,9 @@ function formatStatusLabel(status: ItemStatus) {
   return status[0].toUpperCase() + status.slice(1);
 }
 
-function formatBlockedReason(reason: string) {
-  return reason.replaceAll("_", " ");
+function formatBlockedReasonSummary(reason: LearningBlockReason) {
+  const meta = getLearningBlockReasonMeta(reason);
+  return `${meta.label}. ${meta.guidance}`;
 }
 
 function getAudioUrl(audioPath: string | null) {
@@ -251,7 +261,7 @@ function LearningItemCard(props: {
   title: string;
   subtitle: string;
   status: ItemStatus;
-  blockedReasons: string[];
+  blockedReasons: LearningBlockReason[];
   actionLabel: string;
   actionDisabled: boolean;
   actionBusy: boolean;
@@ -268,7 +278,7 @@ function LearningItemCard(props: {
       </div>
 
       {props.blockedReasons.length > 0 ? (
-        <p className="item-note">Blocked by: {props.blockedReasons.map(formatBlockedReason).join(", ")}</p>
+        <p className="item-note">Blocked: {props.blockedReasons.map(formatBlockedReasonSummary).join(" ")}</p>
       ) : null}
 
       {props.status === ItemStatus.Learned ? (
@@ -637,7 +647,17 @@ function QueueUnresolvedPropCard(props: {
   );
 }
 
-function QueueMissingLexicalCard(props: { item: QueueMissingLexicalDataItem }) {
+function QueueMissingLexicalCard(props: {
+  item: QueueMissingLexicalDataItem;
+  actionItemId: string | null;
+  onSave: (item: QueueMissingLexicalDataItem, values: MissingLexicalEditValues) => void;
+}) {
+  const [pinyinDisplay, setPinyinDisplay] = useState(props.item.currentPinyinDisplay ?? "");
+  const [meaningPrimary, setMeaningPrimary] = useState(props.item.currentMeaningPrimary ?? "");
+  const [provenanceNote, setProvenanceNote] = useState("Queue lexical cleanup");
+  const isBusy = props.actionItemId === props.item.id;
+  const blockedMeta = getLearningBlockReasonMeta(props.item.blockedReason);
+
   return (
     <article className="queue-card">
       <div className="queue-card-header">
@@ -647,7 +667,40 @@ function QueueMissingLexicalCard(props: { item: QueueMissingLexicalDataItem }) {
         </div>
         <span className="summary-chip">{props.item.target.kind}</span>
       </div>
-      <p className="item-note">Missing {props.item.missingFields.join(", ")}. Edit this item through the existing lexical detail flow.</p>
+      <p className="item-note">Blocked: {blockedMeta.label}. {blockedMeta.guidance}</p>
+      <p className="item-note">Missing {props.item.missingFields.join(", ")}. Save here to clear the queue item once the data is complete.</p>
+      <label className="field-group">
+        <span>Pinyin</span>
+        <input
+          onChange={(event) => setPinyinDisplay(event.target.value)}
+          type="text"
+          value={pinyinDisplay}
+        />
+      </label>
+      <label className="field-group">
+        <span>Primary meaning</span>
+        <input
+          onChange={(event) => setMeaningPrimary(event.target.value)}
+          type="text"
+          value={meaningPrimary}
+        />
+      </label>
+      <label className="field-group">
+        <span>Provenance note</span>
+        <input
+          onChange={(event) => setProvenanceNote(event.target.value)}
+          type="text"
+          value={provenanceNote}
+        />
+      </label>
+      <button
+        className="primary-button"
+        disabled={isBusy || provenanceNote.trim().length === 0}
+        onClick={() => props.onSave(props.item, { pinyinDisplay, meaningPrimary, provenanceNote })}
+        type="button"
+      >
+        {isBusy ? "Saving..." : "Save Lexical Data"}
+      </button>
     </article>
   );
 }
@@ -804,7 +857,14 @@ export function QueueHubSection(props: QueueHubSectionProps) {
                     />
                   );
                 case QueueItemType.MissingLexicalData:
-                  return <QueueMissingLexicalCard item={item} key={item.id} />;
+                  return (
+                    <QueueMissingLexicalCard
+                      actionItemId={props.actionItemId}
+                      item={item}
+                      key={item.id}
+                      onSave={props.onEditMissingLexical}
+                    />
+                  );
                 case QueueItemType.SentenceCandidate:
                   return (
                     <QueueSentenceCandidateCard
@@ -1514,13 +1574,26 @@ export function App() {
     }, 50);
   }
 
+  async function editMissingLexical(item: QueueMissingLexicalDataItem, values: MissingLexicalEditValues) {
+    await updateQueueHub(
+      item.id,
+      {
+        action: "edit_missing_lexical_data",
+        pinyinDisplay: values.pinyinDisplay,
+        meaningPrimary: values.meaningPrimary,
+        provenanceNote: values.provenanceNote
+      },
+      `${item.target.text} lexical data updated.`
+    );
+  }
+
   return (
     <main className="page">
       <section className="hero">
-        <p className="eyebrow">Ticket 015</p>
-        <h1>Content Queue Hub</h1>
+        <p className="eyebrow">Ticket 021</p>
+        <h1>V1 Study Workspace</h1>
         <p className="hero-copy">
-          One queue area now tracks decomposition candidates, unresolved props, sentence moderation, audio failures, and lexical cleanup work.
+          Review, learning, queue cleanup, sentence work, and audio recovery now share one local V1 shell with actionable blocker states.
         </p>
         <div className="hero-status">
           <span>API: {health ? `${health.status} @ ${health.databasePath}` : pageError ?? "Loading..."}</span>
@@ -1565,6 +1638,7 @@ export function App() {
             onApproveSentence={(item) => void approveSentence(item)}
             onCreateLiteralProp={(item) => void createLiteralProp(item)}
             onEditApproveSentence={(item, values) => void editApproveSentence(item, values)}
+            onEditMissingLexical={(item, values) => void editMissingLexical(item, values)}
             onRegenerateAudio={(item) => void regenerateAudio(item)}
             onRegenerateSentence={(item) => void regenerateSentence(item)}
             onRejectSentence={(item) => void rejectSentence(item)}

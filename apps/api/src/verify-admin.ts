@@ -3,17 +3,18 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createServer } from "node:http";
-import { createDatabaseConnection } from "./db/connection.js";
-import { runMigrations } from "./db/migrate.js";
-import { createApp } from "./app.js";
-import { exampleImportsDirectory } from "./imports/paths.js";
-import { loadNormalizedImportFile } from "./imports/load-import-file.js";
-import { runNormalizedImport } from "./services/imports/import-service.js";
 
 async function main() {
   const tempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "hanzi-ticket-005-"));
   const databasePath = path.join(tempDirectory, "verify.sqlite");
   process.env.HANZI_DB_PATH = databasePath;
+
+  const { createDatabaseConnection } = await import("./db/connection.js");
+  const { runMigrations } = await import("./db/migrate.js");
+  const { createApp } = await import("./app.js");
+  const { exampleImportsDirectory } = await import("./imports/paths.js");
+  const { loadNormalizedImportFile } = await import("./imports/load-import-file.js");
+  const { runNormalizedImport } = await import("./services/imports/import-service.js");
 
   const database = createDatabaseConnection();
   runMigrations(database);

@@ -19,6 +19,10 @@ import {
   queueSentenceAudioGeneration
 } from "../audio/audio-generation-service.js";
 import {
+  updateCharacterLexical,
+  updateWordLexical
+} from "../search/lexical-edit-service.js";
+import {
   approveDecompositionCandidate,
   listDecompositionWorkspace,
   resolveDecompositionPart
@@ -203,7 +207,9 @@ function listMissingLexicalData(database: Database.Database) {
           kind: row.kind
         },
         blockedReason: row.blocked_reason,
-        missingFields: getMissingFields(row)
+        missingFields: getMissingFields(row),
+        currentPinyinDisplay: row.pinyin_display,
+        currentMeaningPrimary: row.meaning_primary
       }
     } satisfies PendingQueueDefinition));
 }
@@ -362,7 +368,7 @@ function mapQueueItem(row: QueueItemRow): QueueListItem {
     case QueueItemType.MissingLexicalData: {
       const payload = JSON.parse(row.payload_json) as Pick<
         QueueMissingLexicalDataItem,
-        "target" | "blockedReason" | "missingFields"
+        "target" | "blockedReason" | "missingFields" | "currentPinyinDisplay" | "currentMeaningPrimary"
       >;
 
       return {
@@ -560,8 +566,24 @@ export function applyQueueAction(
     }
 
     queueSentenceAudioGeneration(database, item.sentence.id, { forceRegenerate: true });
-  } else {
-    throw new QueueActionNotSupportedError(`Queue actions for ${item.type} are not implemented yet.`);
+  } else if (item.type === QueueItemType.MissingLexicalData) {
+    if (input.action !== "edit_missing_lexical_data") {
+      throw new QueueActionNotSupportedError("Missing lexical data items only support lexical edits.");
+    }
+
+    if (item.target.kind === "character") {
+      updateCharacterLexical(database, item.target.id, {
+        pinyinDisplay: input.pinyinDisplay,
+        meaningPrimary: input.meaningPrimary,
+        provenanceNote: input.provenanceNote
+      });
+    } else {
+      updateWordLexical(database, item.target.id, {
+        pinyinDisplay: input.pinyinDisplay,
+        meaningPrimary: input.meaningPrimary,
+        provenanceNote: input.provenanceNote
+      });
+    }
   }
 
   return listQueueItems(database);

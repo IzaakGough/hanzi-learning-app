@@ -397,6 +397,40 @@ export type LearningBlockReason =
   | "missing_approved_decomposition"
   | "component_characters_unlearned";
 
+export const learningBlockReasonMeta: Record<
+  LearningBlockReason,
+  { label: string; guidance: string }
+> = {
+  missing_text: {
+    label: "Missing text",
+    guidance: "Add the canonical character or word text before continuing."
+  },
+  missing_pinyin: {
+    label: "Missing pinyin",
+    guidance: "Add numbered pinyin so the item can be studied and reviewed."
+  },
+  missing_pinyin_split: {
+    label: "Missing pinyin split",
+    guidance: "Save a valid single-syllable numbered pinyin value so the split can be derived."
+  },
+  missing_primary_meaning: {
+    label: "Missing primary meaning",
+    guidance: "Add a primary meaning before continuing."
+  },
+  missing_approved_decomposition: {
+    label: "Missing approved decomposition",
+    guidance: "Approve a decomposition candidate before learning this character."
+  },
+  component_characters_unlearned: {
+    label: "Component characters not learned",
+    guidance: "Learn the linked component characters before learning this word."
+  }
+};
+
+export function getLearningBlockReasonMeta(reason: LearningBlockReason) {
+  return learningBlockReasonMeta[reason];
+}
+
 export interface LearningCharacterState {
   id: string;
   hanzi: string;
@@ -529,6 +563,8 @@ export interface QueueMissingLexicalDataItem extends QueueItemBase {
   };
   blockedReason: LearningBlockReason;
   missingFields: string[];
+  currentPinyinDisplay: string | null;
+  currentMeaningPrimary: string | null;
 }
 
 export type QueueListItem =
@@ -568,6 +604,12 @@ export type QueueActionInput =
     }
   | {
       action: "regenerate_audio";
+    }
+  | {
+      action: "edit_missing_lexical_data";
+      pinyinDisplay: string | null;
+      meaningPrimary: string | null;
+      provenanceNote: string;
     };
 
 export type ReviewItemKind = "character" | "word";
@@ -1050,6 +1092,18 @@ export const queueActionInputSchema = z.discriminatedUnion("action", [
   }),
   z.object({
     action: z.literal("regenerate_audio")
+  }),
+  z.object({
+    action: z.literal("edit_missing_lexical_data"),
+    pinyinDisplay: z.preprocess(
+      nullableTrimmedString,
+      z.string().min(1).nullable()
+    ),
+    meaningPrimary: z.preprocess(
+      nullableTrimmedString,
+      z.string().min(1).nullable()
+    ),
+    provenanceNote: z.string().trim().min(1)
   })
 ]);
 

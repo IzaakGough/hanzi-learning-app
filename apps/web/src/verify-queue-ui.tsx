@@ -232,7 +232,9 @@ const queue: QueueListResponse = {
         kind: "word"
       },
       blockedReason: "missing_pinyin",
-      missingFields: ["pinyin", "primary meaning"]
+      missingFields: ["pinyin", "primary meaning"],
+      currentPinyinDisplay: null,
+      currentMeaningPrimary: null
     }
   ]
 };
@@ -246,6 +248,7 @@ const decompositionMarkup = renderToStaticMarkup(
     onApproveSentence={() => undefined}
     onCreateLiteralProp={() => undefined}
     onEditApproveSentence={() => undefined}
+    onEditMissingLexical={() => undefined}
     onRegenerateAudio={() => undefined}
     onRegenerateSentence={() => undefined}
     onRejectSentence={() => undefined}
@@ -269,6 +272,7 @@ const unresolvedMarkup = renderToStaticMarkup(
     onApproveSentence={() => undefined}
     onCreateLiteralProp={() => undefined}
     onEditApproveSentence={() => undefined}
+    onEditMissingLexical={() => undefined}
     onRegenerateAudio={() => undefined}
     onRegenerateSentence={() => undefined}
     onRejectSentence={() => undefined}
@@ -291,6 +295,7 @@ const sentenceMarkup = renderToStaticMarkup(
     onApproveSentence={() => undefined}
     onCreateLiteralProp={() => undefined}
     onEditApproveSentence={() => undefined}
+    onEditMissingLexical={() => undefined}
     onRegenerateAudio={() => undefined}
     onRegenerateSentence={() => undefined}
     onRejectSentence={() => undefined}
@@ -316,6 +321,7 @@ const audioMarkup = renderToStaticMarkup(
     onApproveSentence={() => undefined}
     onCreateLiteralProp={() => undefined}
     onEditApproveSentence={() => undefined}
+    onEditMissingLexical={() => undefined}
     onRegenerateAudio={() => undefined}
     onRegenerateSentence={() => undefined}
     onRejectSentence={() => undefined}
@@ -328,5 +334,28 @@ const audioMarkup = renderToStaticMarkup(
 expectMatch(audioMarkup, /Audio Failures/);
 expectMatch(audioMarkup, /Regenerate Audio/);
 expectMatch(audioMarkup, /stays available while audio is retried/i);
+
+const lexicalMarkup = renderToStaticMarkup(
+  <QueueHubSection
+    actionItemId={null}
+    activeType={QueueItemType.MissingLexicalData}
+    feedback="Ready"
+    onApproveCandidate={() => undefined}
+    onApproveSentence={() => undefined}
+    onCreateLiteralProp={() => undefined}
+    onEditApproveSentence={() => undefined}
+    onEditMissingLexical={() => undefined}
+    onRegenerateAudio={() => undefined}
+    onRegenerateSentence={() => undefined}
+    onRejectSentence={() => undefined}
+    onResolveWithSuggestion={() => undefined}
+    onSelectType={() => undefined}
+    queue={queue}
+  />
+);
+
+expectMatch(lexicalMarkup, /Missing Lexical/);
+expectMatch(lexicalMarkup, /Save Lexical Data/);
+expectMatch(lexicalMarkup, /Provenance note/);
 
 console.log("Ticket 016 queue UI verification passed.");
