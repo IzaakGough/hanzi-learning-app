@@ -344,5 +344,26 @@ export const migrations: MigrationDefinition[] = [
       CREATE INDEX IF NOT EXISTS idx_queue_items_type_state ON queue_items(type, state);
       CREATE INDEX IF NOT EXISTS idx_queue_items_state_updated_at ON queue_items(state, updated_at DESC);
     `
+  },
+  {
+    id: "007_sentence_generation_jobs",
+    description: "Add async sentence generation job tracking",
+    sql: `
+      CREATE TABLE IF NOT EXISTS sentence_generation_jobs (
+        id TEXT PRIMARY KEY,
+        word_id TEXT NOT NULL,
+        status TEXT NOT NULL CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
+        error_message TEXT,
+        completed_at TEXT,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(word_id) REFERENCES words(id) ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_sentence_generation_jobs_status_created_at
+        ON sentence_generation_jobs(status, created_at);
+      CREATE INDEX IF NOT EXISTS idx_sentence_generation_jobs_word_id
+        ON sentence_generation_jobs(word_id, created_at DESC);
+    `
   }
 ];

@@ -62,6 +62,8 @@ import {
   QueueActionNotSupportedError,
   QueueItemNotFoundError
 } from "./services/queue/queue-service.js";
+import { createSentenceGenerationJob } from "./services/sentences/sentence-generation-service.js";
+import { listApprovedSentencesForWord, SentenceNotFoundError } from "./services/sentences/sentence-service.js";
 import {
   gradeCharacterReview,
   gradeWordReview,
@@ -157,6 +159,22 @@ export function createApp(database: Database.Database) {
     try {
       const input = parseQueueActionInput(request.body);
       response.json(applyQueueAction(database, request.params.id, input));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/words/:id/sentence-generation-jobs", (request, response) => {
+    try {
+      response.status(202).json(createSentenceGenerationJob(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.get("/words/:id/sentences", (request, response) => {
+    try {
+      response.json({ items: listApprovedSentencesForWord(database, request.params.id) });
     } catch (error) {
       sendRouteError(response, error);
     }
@@ -290,6 +308,11 @@ function sendRouteError(
   }
 
   if (error instanceof SearchEntityNotFoundError) {
+    response.status(404).json({ error: error.message });
+    return;
+  }
+
+  if (error instanceof SentenceNotFoundError) {
     response.status(404).json({ error: error.message });
     return;
   }

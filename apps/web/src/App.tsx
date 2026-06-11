@@ -18,6 +18,7 @@ import {
   type QueueListItem,
   type QueueListResponse,
   type QueueMissingLexicalDataItem,
+  type QueueSentenceCandidateItem,
   type QueueTypeCount,
   type QueueUnresolvedPropItem,
   type ReviewSubmissionResult,
@@ -79,6 +80,16 @@ interface QueueHubSectionProps {
   onApproveCandidate: (item: QueueDecompositionCandidateItem) => void;
   onResolveWithSuggestion: (item: QueueUnresolvedPropItem) => void;
   onCreateLiteralProp: (item: QueueUnresolvedPropItem) => void;
+  onApproveSentence: (item: QueueSentenceCandidateItem) => void;
+  onRejectSentence: (item: QueueSentenceCandidateItem) => void;
+  onEditApproveSentence: (item: QueueSentenceCandidateItem, values: SentenceCandidateEditValues) => void;
+  onRegenerateSentence: (item: QueueSentenceCandidateItem) => void;
+}
+
+interface SentenceCandidateEditValues {
+  text: string;
+  translation: string;
+  pinyinFull: string;
 }
 
 const reviewGrades = [
@@ -550,7 +561,74 @@ function QueueMissingLexicalCard(props: { item: QueueMissingLexicalDataItem }) {
   );
 }
 
-function QueueGenericSentenceCard(props: { item: Extract<QueueListItem, { type: QueueItemType.SentenceCandidate | QueueItemType.AudioFailure }> }) {
+function QueueSentenceCandidateCard(props: {
+  item: QueueSentenceCandidateItem;
+  actionItemId: string | null;
+  onApprove: (item: QueueSentenceCandidateItem) => void;
+  onReject: (item: QueueSentenceCandidateItem) => void;
+  onEditApprove: (item: QueueSentenceCandidateItem, values: SentenceCandidateEditValues) => void;
+  onRegenerate: (item: QueueSentenceCandidateItem) => void;
+}) {
+  const [draftText, setDraftText] = useState(props.item.sentence.text);
+  const [draftTranslation, setDraftTranslation] = useState(props.item.sentence.translation ?? "");
+  const [draftPinyin, setDraftPinyin] = useState(props.item.sentence.pinyinFull ?? "");
+  const isBusy = props.actionItemId === props.item.id;
+
+  return (
+    <article className="queue-card">
+      <div className="queue-card-header">
+        <div>
+          <p className="section-kicker">Sentence Candidate</p>
+          <h3>{props.item.sentence.text}</h3>
+        </div>
+        <span className="summary-chip">{props.item.sentence.linkedWords.map((word) => word.simplified).join(", ")}</span>
+      </div>
+      <div className="queue-meta-grid">
+        <div className="queue-span">
+          <strong>Linked words</strong>
+          <p>{props.item.sentence.linkedWords.map((word) => `${word.simplified} - ${formatNullable(word.meaningPrimary)}`).join(", ")}</p>
+        </div>
+      </div>
+      <label className="field-group">
+        <span>Sentence text</span>
+        <textarea value={draftText} onChange={(event) => setDraftText(event.target.value)} />
+      </label>
+      <label className="field-group">
+        <span>Translation</span>
+        <input value={draftTranslation} onChange={(event) => setDraftTranslation(event.target.value)} type="text" />
+      </label>
+      <label className="field-group">
+        <span>Pinyin</span>
+        <input value={draftPinyin} onChange={(event) => setDraftPinyin(event.target.value)} type="text" />
+      </label>
+      <div className="queue-actions-row">
+        <button className="primary-button" disabled={isBusy} onClick={() => props.onApprove(props.item)} type="button">
+          {isBusy ? "Saving..." : "Approve"}
+        </button>
+        <button className="secondary-button" disabled={isBusy} onClick={() => props.onReject(props.item)} type="button">
+          {isBusy ? "Saving..." : "Reject"}
+        </button>
+        <button
+          className="secondary-button"
+          disabled={isBusy || draftText.trim().length === 0}
+          onClick={() => props.onEditApprove(props.item, {
+            text: draftText,
+            translation: draftTranslation,
+            pinyinFull: draftPinyin
+          })}
+          type="button"
+        >
+          {isBusy ? "Saving..." : "Edit + Approve"}
+        </button>
+        <button className="secondary-button" disabled={isBusy} onClick={() => props.onRegenerate(props.item)} type="button">
+          {isBusy ? "Saving..." : "Regenerate"}
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function QueueGenericSentenceCard(props: { item: Extract<QueueListItem, { type: QueueItemType.AudioFailure }> }) {
   return (
     <article className="queue-card">
       <div className="queue-card-header">
@@ -622,6 +700,17 @@ export function QueueHubSection(props: QueueHubSectionProps) {
                 case QueueItemType.MissingLexicalData:
                   return <QueueMissingLexicalCard item={item} key={item.id} />;
                 case QueueItemType.SentenceCandidate:
+                  return (
+                    <QueueSentenceCandidateCard
+                      actionItemId={props.actionItemId}
+                      item={item}
+                      key={item.id}
+                      onApprove={props.onApproveSentence}
+                      onEditApprove={props.onEditApproveSentence}
+                      onRegenerate={props.onRegenerateSentence}
+                      onReject={props.onRejectSentence}
+                    />
+                  );
                 case QueueItemType.AudioFailure:
                   return <QueueGenericSentenceCard item={item} key={item.id} />;
               }
@@ -1148,6 +1237,53 @@ export function App() {
     );
   }
 
+  async function approveSentence(item: QueueSentenceCandidateItem) {
+    await updateQueueHub(
+      item.id,
+      { action: "approve_sentence_candidate" },
+      "Sentence candidate approved."
+    );
+  }
+
+  async function rejectSentence(item: QueueSentenceCandidateItem) {
+    await updateQueueHub(
+      item.id,
+      { action: "reject_sentence_candidate" },
+      "Sentence candidate rejected."
+    );
+  }
+
+  async function editApproveSentence(item: QueueSentenceCandidateItem, values: SentenceCandidateEditValues) {
+    await updateQueueHub(
+      item.id,
+      {
+        action: "edit_and_approve_sentence_candidate",
+        text: values.text,
+        translation: values.translation,
+        pinyinFull: values.pinyinFull
+      },
+      "Sentence candidate edited and approved."
+    );
+  }
+
+  async function regenerateSentence(item: QueueSentenceCandidateItem) {
+    await updateQueueHub(
+      item.id,
+      { action: "regenerate_sentence_candidate" },
+      "Sentence candidate regenerated."
+    );
+    setTimeout(() => {
+      void refreshDashboard();
+      void expectJson<QueueListResponse>("/queue").then((nextQueueHub) => {
+        setQueueHub(nextQueueHub);
+        setActiveQueueType((current) => {
+          const stillVisible = nextQueueHub.counts.some((count) => count.type === current && count.count > 0);
+          return stillVisible ? current : getDefaultQueueType(nextQueueHub);
+        });
+      }).catch(() => undefined);
+    }, 50);
+  }
+
   return (
     <main className="page">
       <section className="hero">
@@ -1196,7 +1332,11 @@ export function App() {
             activeType={activeQueueType}
             feedback={queueFeedback}
             onApproveCandidate={(item) => void approveCandidate(item)}
+            onApproveSentence={(item) => void approveSentence(item)}
             onCreateLiteralProp={(item) => void createLiteralProp(item)}
+            onEditApproveSentence={(item, values) => void editApproveSentence(item, values)}
+            onRegenerateSentence={(item) => void regenerateSentence(item)}
+            onRejectSentence={(item) => void rejectSentence(item)}
             onResolveWithSuggestion={(item) => void resolveWithSuggestion(item)}
             onSelectType={setActiveQueueType}
             queue={queueHub}

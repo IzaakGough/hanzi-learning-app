@@ -43,6 +43,13 @@ export enum AudioStatus {
   Failed = "failed"
 }
 
+export enum SentenceGenerationJobStatus {
+  Pending = "pending",
+  Processing = "processing",
+  Completed = "completed",
+  Failed = "failed"
+}
+
 export type SentenceAnalysisSpanType =
   | "known_word"
   | "unknown_word"
@@ -191,6 +198,10 @@ export interface WordDetailRecord extends WordRecord {
   componentCharacters: WordComponentCharacter[];
 }
 
+export interface WordSentenceListResponse {
+  items: SentenceDisplayRecord[];
+}
+
 export interface SentenceRecord extends BaseEntity {
   text: string;
   translation: string | null;
@@ -273,6 +284,13 @@ export interface SentenceCreateInput {
   notes: string | null;
   linkedWords: SentenceWordLinkInput[];
   analysisSpans: SentenceAnalysisSpanInput[];
+}
+
+export interface SentenceGenerationJobRecord extends BaseEntity {
+  wordId: string;
+  status: SentenceGenerationJobStatus;
+  errorMessage: string | null;
+  completedAt: string | null;
 }
 
 export type DecompositionPartResolutionKind = "prop" | "character" | "literal";
@@ -433,7 +451,10 @@ export type QueueItemState = "open" | "resolved";
 export type QueueActionKind =
   | "approve_decomposition_candidate"
   | "resolve_unresolved_prop"
-  | "review_sentence_candidate"
+  | "approve_sentence_candidate"
+  | "reject_sentence_candidate"
+  | "edit_and_approve_sentence_candidate"
+  | "regenerate_sentence_candidate"
   | "regenerate_audio"
   | "edit_missing_lexical_data";
 
@@ -508,6 +529,21 @@ export type QueueActionInput =
   | {
       action: "resolve_unresolved_prop";
       resolution: DecompositionPartResolutionInput;
+    }
+  | {
+      action: "approve_sentence_candidate";
+    }
+  | {
+      action: "reject_sentence_candidate";
+    }
+  | {
+      action: "edit_and_approve_sentence_candidate";
+      text: string;
+      translation: string | null;
+      pinyinFull: string | null;
+    }
+  | {
+      action: "regenerate_sentence_candidate";
     };
 
 export type ReviewItemKind = "character" | "word";
@@ -916,6 +952,27 @@ export const queueActionInputSchema = z.discriminatedUnion("action", [
   z.object({
     action: z.literal("resolve_unresolved_prop"),
     resolution: decompositionPartResolutionInputSchema
+  }),
+  z.object({
+    action: z.literal("approve_sentence_candidate")
+  }),
+  z.object({
+    action: z.literal("reject_sentence_candidate")
+  }),
+  z.object({
+    action: z.literal("edit_and_approve_sentence_candidate"),
+    text: z.string().trim().min(1),
+    translation: z.preprocess(
+      nullableTrimmedString,
+      z.string().min(1).nullable()
+    ),
+    pinyinFull: z.preprocess(
+      nullableTrimmedString,
+      z.string().min(1).nullable()
+    )
+  }),
+  z.object({
+    action: z.literal("regenerate_sentence_candidate")
   })
 ]);
 

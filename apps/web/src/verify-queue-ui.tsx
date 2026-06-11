@@ -1,8 +1,10 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import {
+  AudioStatus,
   ItemSource,
   ItemStatus,
   QueueItemType,
+  SentenceApprovalStatus,
   type QueueListResponse
 } from "@hanzi-learning-app/shared";
 import { QueueHubSection } from "./App";
@@ -17,7 +19,7 @@ const queue: QueueListResponse = {
   counts: [
     { type: QueueItemType.DecompositionCandidate, count: 1 },
     { type: QueueItemType.UnresolvedProp, count: 1 },
-    { type: QueueItemType.SentenceCandidate, count: 0 },
+    { type: QueueItemType.SentenceCandidate, count: 1 },
     { type: QueueItemType.AudioFailure, count: 0 },
     { type: QueueItemType.MissingLexicalData, count: 1 }
   ],
@@ -111,6 +113,72 @@ const queue: QueueListResponse = {
       }
     },
     {
+      id: "queue-sentence-1",
+      dedupeKey: "sentence_candidate:sentence-1",
+      type: QueueItemType.SentenceCandidate,
+      state: "open",
+      title: "ä½ å¥½ã€‚",
+      description: "hello",
+      createdAt: "2026-06-11T08:00:00.000Z",
+      updatedAt: "2026-06-11T08:00:00.000Z",
+      availableActions: [
+        { action: "approve_sentence_candidate", label: "Approve sentence" },
+        { action: "reject_sentence_candidate", label: "Reject sentence" },
+        { action: "edit_and_approve_sentence_candidate", label: "Edit then approve" },
+        { action: "regenerate_sentence_candidate", label: "Regenerate candidate" }
+      ],
+      sentence: {
+        id: "sentence-1",
+        text: "ä½ å¥½ã€‚",
+        translation: "hello",
+        pinyinFull: "ni3 hao3",
+        approvalStatus: SentenceApprovalStatus.Pending,
+        audioStatus: AudioStatus.None,
+        audioPath: null,
+        generationSource: ItemSource.Derived,
+        notes: "generated",
+        createdAt: "2026-06-11T08:00:00.000Z",
+        updatedAt: "2026-06-11T08:00:00.000Z",
+        linkedWords: [
+          {
+            id: "word-hello",
+            simplified: "ä½ å¥½",
+            pinyinDisplay: "ni3 hao3",
+            meaningPrimary: "hello",
+            status: ItemStatus.Ready
+          }
+        ],
+        analysisSpans: [
+          {
+            id: "span-1",
+            sentenceId: "sentence-1",
+            sortOrder: 0,
+            text: "ä½ å¥½",
+            spanType: "unknown_word",
+            linkedWordId: "word-hello",
+            linkedCharacterId: null,
+            glossText: "hello",
+            pinyinText: "ni3 hao3",
+            createdAt: "2026-06-11T08:00:00.000Z",
+            updatedAt: "2026-06-11T08:00:00.000Z"
+          },
+          {
+            id: "span-2",
+            sentenceId: "sentence-1",
+            sortOrder: 1,
+            text: "ã€‚",
+            spanType: "punctuation",
+            linkedWordId: null,
+            linkedCharacterId: null,
+            glossText: null,
+            pinyinText: null,
+            createdAt: "2026-06-11T08:00:00.000Z",
+            updatedAt: "2026-06-11T08:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
       id: "queue-lex-1",
       dedupeKey: "missing_lexical_data:word:word-3",
       type: QueueItemType.MissingLexicalData,
@@ -139,7 +207,11 @@ const decompositionMarkup = renderToStaticMarkup(
     activeType={QueueItemType.DecompositionCandidate}
     feedback="Ready"
     onApproveCandidate={() => undefined}
+    onApproveSentence={() => undefined}
     onCreateLiteralProp={() => undefined}
+    onEditApproveSentence={() => undefined}
+    onRegenerateSentence={() => undefined}
+    onRejectSentence={() => undefined}
     onResolveWithSuggestion={() => undefined}
     onSelectType={() => undefined}
     queue={queue}
@@ -157,7 +229,11 @@ const unresolvedMarkup = renderToStaticMarkup(
     activeType={QueueItemType.UnresolvedProp}
     feedback="Ready"
     onApproveCandidate={() => undefined}
+    onApproveSentence={() => undefined}
     onCreateLiteralProp={() => undefined}
+    onEditApproveSentence={() => undefined}
+    onRegenerateSentence={() => undefined}
+    onRejectSentence={() => undefined}
     onResolveWithSuggestion={() => undefined}
     onSelectType={() => undefined}
     queue={queue}
@@ -168,4 +244,28 @@ expectMatch(unresolvedMarkup, /Unresolved Props/);
 expectMatch(unresolvedMarkup, /Match Feather/);
 expectMatch(unresolvedMarkup, /Create Prop/);
 
-console.log("Ticket 015 queue UI verification passed.");
+const sentenceMarkup = renderToStaticMarkup(
+  <QueueHubSection
+    actionItemId={null}
+    activeType={QueueItemType.SentenceCandidate}
+    feedback="Ready"
+    onApproveCandidate={() => undefined}
+    onApproveSentence={() => undefined}
+    onCreateLiteralProp={() => undefined}
+    onEditApproveSentence={() => undefined}
+    onRegenerateSentence={() => undefined}
+    onRejectSentence={() => undefined}
+    onResolveWithSuggestion={() => undefined}
+    onSelectType={() => undefined}
+    queue={queue}
+  />
+);
+
+expectMatch(sentenceMarkup, /Sentence Candidates/);
+expectMatch(sentenceMarkup, /Approve/);
+expectMatch(sentenceMarkup, /Reject/);
+expectMatch(sentenceMarkup, /Edit \+ Approve/);
+expectMatch(sentenceMarkup, /Regenerate/);
+expectMatch(sentenceMarkup, /hello/);
+
+console.log("Ticket 016 queue UI verification passed.");

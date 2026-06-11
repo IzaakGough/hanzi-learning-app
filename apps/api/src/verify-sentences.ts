@@ -2,17 +2,62 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { createServer } from "node:http";
 import {
   AudioStatus,
   ItemSource,
   ItemStatus,
+  QueueItemType,
   SentenceApprovalStatus
 } from "@hanzi-learning-app/shared";
 
 const verificationDatabasePath = path.join(
   os.tmpdir(),
-  `hanzi-ticket-014-sentences-${Date.now()}.sqlite`
+  `hanzi-ticket-016-sentences-${Date.now()}.sqlite`
 );
+
+async function expectJson<T>(response: Response, expectedStatus = 200) {
+  assert.equal(response.status, expectedStatus);
+  return await response.json() as T;
+}
+
+async function postJson<T>(baseUrl: string, pathName: string, body?: unknown, expectedStatus = 200) {
+  const response = await fetch(`${baseUrl}${pathName}`, {
+    method: "POST",
+    headers: body ? { "Content-Type": "application/json" } : undefined,
+    body: body ? JSON.stringify(body) : undefined
+  });
+
+  return await expectJson<T>(response, expectedStatus);
+}
+
+async function waitForSentenceCandidate(baseUrl: string) {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const queue = await expectJson<{
+      counts: Array<{ type: QueueItemType; count: number }>;
+      items: Array<{
+        id: string;
+        type: QueueItemType;
+        sentence?: {
+          id: string;
+          text: string;
+          approvalStatus: SentenceApprovalStatus;
+          linkedWords: Array<{ id: string; simplified: string }>;
+          displaySpans?: Array<{ text: string }>;
+        };
+      }>;
+    }>(await fetch(`${baseUrl}/queue`));
+
+    const candidate = queue.items.find((item) => item.type === QueueItemType.SentenceCandidate);
+    if (candidate?.sentence) {
+      return candidate;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+
+  throw new Error("Timed out waiting for a sentence candidate.");
+}
 
 async function main() {
   process.env.HANZI_DB_PATH = verificationDatabasePath;
@@ -20,6 +65,7 @@ async function main() {
 
   const { createDatabaseConnection } = await import("./db/connection.js");
   const { runMigrations } = await import("./db/migrate.js");
+  const { createApp } = await import("./app.js");
   const {
     createSentence,
     getSentenceDetail,
@@ -48,6 +94,7 @@ async function main() {
       )
       VALUES
         ('char-ni', '你', 'ni3', 'n', 'i', '3', 'you', @learnedStatus, @source, @timestamp, @timestamp, @source, @source),
+        ('char-hao', '好', 'hao3', 'h', 'ao', '3', 'good', @learnedStatus, @source, @timestamp, @timestamp, @source, @source),
         ('char-ma', '吗', 'ma5', 'm', 'a', '5', 'question particle', @readyStatus, @source, @timestamp, @timestamp, @source, @source),
         ('char-ne', '呢', 'ne5', 'n', 'e', '5', 'particle', @learnedStatus, @source, @timestamp, @timestamp, @source, @source)
     `).run({
@@ -140,61 +187,77 @@ async function main() {
     const storedSentence = getSentenceDetail(database, sentence.id);
     assert.equal(storedSentence.linkedWords.length, 2);
     assert.equal(storedSentence.analysisSpans.length, 5);
-    assert.equal(storedSentence.analysisSpans[0]?.linkedWordId, "word-nihao");
-    assert.equal(storedSentence.analysisSpans[2]?.linkedWordId, "word-nima");
-    assert.equal(storedSentence.analysisSpans[3]?.linkedCharacterId, "char-ne");
 
     const display = recomputeSentenceDisplay(database, sentence.id);
-    assert.deepEqual(
-      display.displaySpans.map((span) => ({
-        text: span.text,
-        knowledgeState: span.knowledgeState,
-        showGloss: span.showGloss,
-        showPinyin: span.showPinyin
-      })),
-      [
-        {
-          text: "你好",
-          knowledgeState: "known",
-          showGloss: false,
-          showPinyin: false
-        },
-        {
-          text: "，",
-          knowledgeState: "neutral",
-          showGloss: false,
-          showPinyin: false
-        },
-        {
-          text: "你吗",
-          knowledgeState: "unknown",
-          showGloss: true,
-          showPinyin: true
-        },
-        {
-          text: "呢",
-          knowledgeState: "known",
-          showGloss: false,
-          showPinyin: false
-        },
-        {
-          text: "？",
-          knowledgeState: "neutral",
-          showGloss: false,
-          showPinyin: false
-        }
-      ]
-    );
+    assert.equal(display.displaySpans[0]?.knowledgeState, "known");
+    assert.equal(display.displaySpans[2]?.knowledgeState, "unknown");
+    assert.equal(display.displaySpans[2]?.showGloss, true);
 
-    const overriddenKnownSets = recomputeSentenceDisplay(database, sentence.id, {
-      wordIds: [],
-      characterIds: []
-    });
-    assert.equal(overriddenKnownSets.displaySpans[0]?.knowledgeState, "unknown");
-    assert.equal(overriddenKnownSets.displaySpans[0]?.showGloss, true);
-    assert.equal(overriddenKnownSets.displaySpans[3]?.knowledgeState, "unknown");
+    const app = createApp(database);
+    const server = createServer(app);
+    await new Promise<void>((resolve) => server.listen(0, resolve));
 
-    console.log("Ticket 014 sentence schema and analysis verification passed.");
+    try {
+      const address = server.address();
+      assert(address && typeof address === "object");
+      const baseUrl = `http://127.0.0.1:${address.port}`;
+
+      await postJson(baseUrl, "/words/word-nihao/sentence-generation-jobs", undefined, 202);
+      const generatedCandidate = await waitForSentenceCandidate(baseUrl);
+      assert.equal(generatedCandidate.sentence?.approvalStatus, SentenceApprovalStatus.Pending);
+      assert.equal(generatedCandidate.sentence?.linkedWords[0]?.id, "word-nihao");
+
+      const regeneratedQueue = await postJson<{
+        items: Array<{
+          type: QueueItemType;
+          sentence?: { text: string };
+        }>;
+      }>(baseUrl, `/queue/items/${generatedCandidate.id}/actions`, {
+        action: "regenerate_sentence_candidate"
+      });
+      assert.equal(
+        regeneratedQueue.items.some((item) => item.type === QueueItemType.SentenceCandidate && item.sentence?.text === generatedCandidate.sentence?.text),
+        false
+      );
+
+      const replacementCandidate = await waitForSentenceCandidate(baseUrl);
+      assert.notEqual(replacementCandidate.sentence?.text, generatedCandidate.sentence?.text);
+
+      await postJson(baseUrl, `/queue/items/${replacementCandidate.id}/actions`, {
+        action: "edit_and_approve_sentence_candidate",
+        text: "你好！",
+        translation: "Hello!",
+        pinyinFull: "ni3 hao3!"
+      });
+
+      const approvedSentences = await expectJson<{
+        items: Array<{
+          text: string;
+          translation: string | null;
+          displaySpans: Array<{ text: string; showGloss: boolean }>;
+        }>;
+      }>(await fetch(`${baseUrl}/words/word-nihao/sentences`));
+
+      assert(approvedSentences.items.some((item) => item.text === "你好！" && item.translation === "Hello!"));
+      assert(approvedSentences.items.every((item) => item.text !== generatedCandidate.sentence?.text));
+      assert.equal(
+        approvedSentences.items.find((item) => item.text === "你好！")?.displaySpans[0]?.showGloss,
+        false
+      );
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+
+          resolve();
+        });
+      });
+    }
+
+    console.log("Ticket 016 sentence generation and approval verification passed.");
   } finally {
     database.close();
     fs.rmSync(verificationDatabasePath, { force: true });

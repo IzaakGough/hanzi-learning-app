@@ -328,3 +328,32 @@ Reason:
 - decomposition, unresolved prop, sentence, audio, and lexical queue items point at different canonical tables
 - a synced registry gives the dashboard and queue hub one reusable contract now without forcing polymorphic foreign keys into SQLite
 - stable queue ids and dedupe keys make queue actions and future audit views simpler
+
+## 22. Local Sentence Generation Fallback
+
+For ticket `016` and until a real AI provider is wired:
+
+- keep sentence generation behind a service abstraction
+- create async sentence-generation jobs in SQLite and process them through a lightweight in-process worker
+- use a deterministic repo-local fallback generator to create pending candidates for moderation
+- keep generated candidates marked `pending` and `derived`
+
+Reason:
+
+- the architecture still wants AI-first generation eventually
+- the current repo should not block ticket `016` on external model wiring
+- the approval workflow and queue behavior are the primary contract for v1
+
+## 23. Sentence Regeneration Semantics
+
+For ticket `016` moderation actions:
+
+- regenerating a pending sentence candidate should reject the current candidate first
+- regeneration should create a fresh async generation job for the candidate's primary linked word
+- approved sentence retrieval should return only `approved` sentences, never `pending` or `rejected`
+
+Reason:
+
+- regeneration should leave a clear moderation trail instead of mutating the old candidate in place
+- the queue should surface only currently actionable pending candidates
+- learning and detail views must never leak unapproved generated content

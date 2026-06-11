@@ -21,7 +21,13 @@ import {
   resolveDecompositionPart
 } from "../decomposition/decomposition-service.js";
 import { syncLearningStatuses } from "../learning/level-progression-service.js";
-import { getSentenceDetail } from "../sentences/sentence-service.js";
+import { createSentenceGenerationJob } from "../sentences/sentence-generation-service.js";
+import {
+  approveSentenceCandidate,
+  editAndApproveSentenceCandidate,
+  getSentenceDetail,
+  rejectSentenceCandidate
+} from "../sentences/sentence-service.js";
 
 interface QueueItemRow {
   id: string;
@@ -317,8 +323,20 @@ function mapQueueItem(row: QueueItemRow): QueueListItem {
         ...payload,
         availableActions: [
           {
-            action: "review_sentence_candidate",
-            label: "Review sentence"
+            action: "approve_sentence_candidate",
+            label: "Approve sentence"
+          },
+          {
+            action: "reject_sentence_candidate",
+            label: "Reject sentence"
+          },
+          {
+            action: "edit_and_approve_sentence_candidate",
+            label: "Edit then approve"
+          },
+          {
+            action: "regenerate_sentence_candidate",
+            label: "Regenerate candidate"
           }
         ]
       };
@@ -508,6 +526,29 @@ export function applyQueueAction(
     }
 
     resolveDecompositionPart(database, item.part.partId, input.resolution);
+  } else if (item.type === QueueItemType.SentenceCandidate) {
+    if (input.action === "approve_sentence_candidate") {
+      approveSentenceCandidate(database, item.sentence.id);
+    } else if (input.action === "reject_sentence_candidate") {
+      rejectSentenceCandidate(database, item.sentence.id);
+    } else if (input.action === "edit_and_approve_sentence_candidate") {
+      editAndApproveSentenceCandidate(database, item.sentence.id, {
+        text: input.text,
+        translation: input.translation,
+        pinyinFull: input.pinyinFull
+      });
+    } else if (input.action === "regenerate_sentence_candidate") {
+      rejectSentenceCandidate(database, item.sentence.id);
+      const linkedWordId = item.sentence.linkedWords[0]?.id;
+
+      if (!linkedWordId) {
+        throw new QueueActionNotSupportedError("Sentence candidate is missing a linked word for regeneration.");
+      }
+
+      createSentenceGenerationJob(database, linkedWordId);
+    } else {
+      throw new QueueActionNotSupportedError("Sentence candidate items only support moderation actions.");
+    }
   } else {
     throw new QueueActionNotSupportedError(`Queue actions for ${item.type} are not implemented yet.`);
   }
