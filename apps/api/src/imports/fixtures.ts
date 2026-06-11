@@ -1,32 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import {
   parseKnownCharactersImport,
   parseKnownWordsImport,
   parseLevelsImport,
   parsePinyinMappingsImport
 } from "@hanzi-learning-app/shared";
-
-const currentFilePath = fileURLToPath(import.meta.url);
-const currentDirPath = path.dirname(currentFilePath);
-const repoRoot = path.resolve(
-  currentDirPath,
-  "..",
-  "..",
-  "..",
-  "..",
-);
-
-const examplesDirectory = path.resolve(
-  repoRoot,
-  "data",
-  "imports",
-  "examples",
-);
+import { exampleImportsDirectory } from "./paths.js";
 
 function readJsonFile<T>(fileName: string) {
-  const filePath = path.join(examplesDirectory, fileName);
+  const filePath = path.join(exampleImportsDirectory, fileName);
   const raw = fs.readFileSync(filePath, "utf8");
   return JSON.parse(raw) as T;
 }

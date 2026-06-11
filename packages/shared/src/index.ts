@@ -120,6 +120,46 @@ export interface ImportRecord extends BaseEntity {
   errorMessage: string | null;
 }
 
+export type ImportType =
+  | "known_characters"
+  | "known_words"
+  | "levels"
+  | "pinyin_mappings";
+
+export type ImportDiagnosticSeverity = "warning" | "error";
+export type ImportDiagnosticEntityType =
+  | "character"
+  | "word"
+  | "level"
+  | "mapping"
+  | "import";
+
+export interface ImportDiagnostic {
+  severity: ImportDiagnosticSeverity;
+  code: string;
+  message: string;
+  entityType?: ImportDiagnosticEntityType;
+  entityKey?: string;
+  field?: string;
+}
+
+export interface ImportAppliedCounts {
+  created: number;
+  updated: number;
+  linked: number;
+  placeholdersCreated: number;
+}
+
+export interface ImportRunSummary {
+  importId: string;
+  importType: ImportType;
+  sourceName: string;
+  sourceRef: string | null;
+  status: "completed" | "failed";
+  diagnostics: ImportDiagnostic[];
+  appliedCounts: ImportAppliedCounts;
+}
+
 function uniqueBy<T>(
   items: T[],
   getKey: (item: T) => string,
@@ -212,6 +252,20 @@ export const levelImportSchema = z.object({
   characters: z.array(levelCharacterImportSchema),
   words: z.array(levelWordImportSchema),
   notes: z.string().optional()
+}).superRefine((value, context) => {
+  uniqueBy(
+    value.characters,
+    (item) => item.hanzi,
+    context,
+    (key) => `Duplicate level character entry: ${key}`,
+  );
+
+  uniqueBy(
+    value.words,
+    (item) => item.simplified,
+    context,
+    (key) => `Duplicate level word entry: ${key}`,
+  );
 });
 
 export const levelsImportSchema = z.object({

@@ -5,5 +5,11 @@ const currentFilePath = fileURLToPath(import.meta.url);
 const currentDirPath = path.dirname(currentFilePath);
 const apiRoot = path.resolve(currentDirPath, "..", "..");
 
-export const databaseDirectory = path.join(apiRoot, "data");
-export const databaseFilePath = path.join(databaseDirectory, "hanzi-learning-app.sqlite");
+const defaultDatabaseDirectory = path.join(apiRoot, "data");
+const defaultDatabaseFilePath = path.join(defaultDatabaseDirectory, "hanzi-learning-app.sqlite");
+
+export const databaseFilePath = process.env.HANZI_DB_PATH
+  ? path.resolve(process.env.HANZI_DB_PATH)
+  : defaultDatabaseFilePath;
+
+export const databaseDirectory = path.dirname(databaseFilePath);
