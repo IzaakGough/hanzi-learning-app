@@ -17,3 +17,4 @@ temp/
 *.log
 data/exports/*
 !data/exports/README.md
+data/imports/private/
