@@ -12,8 +12,7 @@
         { "hanzi": "生" }
       ],
       "words": [
-        { "simplified": "学生" },
-        { "simplified": "学习" }
+        { "simplified": "学生" }
       ]
     },
     {
@@ -21,9 +20,11 @@
       "sequenceNumber": 22,
       "title": "Level 22",
       "characters": [
-        { "hanzi": "习" }
+        { "hanzi": "习" },
+        { "hanzi": "练" }
       ],
       "words": [
+        { "simplified": "学习" },
         { "simplified": "练习" }
       ]
     }

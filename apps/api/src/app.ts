@@ -34,6 +34,13 @@ import {
   searchItems,
   SearchEntityNotFoundError
 } from "./services/search/search-service.js";
+import {
+  getCurrentLevelProgress,
+  LearningItemNotFoundError,
+  LearningItemNotReadyError,
+  markCharacterLearned,
+  markWordLearned
+} from "./services/learning/level-progression-service.js";
 
 export function createApp(database: Database.Database) {
   const app = express();
@@ -105,6 +112,26 @@ export function createApp(database: Database.Database) {
     response.json({ items: searchItems(database, query) });
   });
 
+  app.get("/levels/current", (_request, response) => {
+    response.json(getCurrentLevelProgress(database));
+  });
+
+  app.post("/learning/characters/:id/learned", (request, response) => {
+    try {
+      response.json(markCharacterLearned(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
+  app.post("/learning/words/:id/learned", (request, response) => {
+    try {
+      response.json(markWordLearned(database, request.params.id));
+    } catch (error) {
+      sendRouteError(response, error);
+    }
+  });
+
   app.get("/characters/:id", (request, response) => {
     try {
       response.json(getCharacterDetail(database, request.params.id));
@@ -156,8 +183,18 @@ function sendRouteError(
     return;
   }
 
+  if (error instanceof LearningItemNotFoundError) {
+    response.status(404).json({ error: error.message });
+    return;
+  }
+
   if (error instanceof MappingConflictError || error instanceof PropConflictError) {
     response.status(409).json({ error: error.message });
+    return;
+  }
+
+  if (error instanceof LearningItemNotReadyError) {
+    response.status(422).json({ error: error.message });
     return;
   }
 

@@ -15,6 +15,7 @@ import {
   type NormalizedImport,
   type PinyinMappingsImport
 } from "@hanzi-learning-app/shared";
+import { seedExampleApprovedDecompositions } from "./approved-decomposition-fixture-service.js";
 import { runLexicalEnrichment } from "./lexical-enrichment-service.js";
 
 interface CharacterRow {
@@ -1099,6 +1100,10 @@ function applyLexicalEnrichment(context: ImportRunContext) {
   context.appliedCounts.updated += result.updatedCount;
 }
 
+function applyExampleApprovedDecompositions(context: ImportRunContext) {
+  seedExampleApprovedDecompositions(context.database);
+}
+
 export function runNormalizedImport(
   database: Database.Database,
   payload: NormalizedImport
@@ -1146,6 +1151,7 @@ export function runNormalizedImport(
   const executeImport = database.transaction(() => {
     applyImport(context, payload);
     applyLexicalEnrichment(context);
+    applyExampleApprovedDecompositions(context);
     failIfErrors(context, payload.importType);
   });
 

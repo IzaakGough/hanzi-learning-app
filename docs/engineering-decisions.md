@@ -227,3 +227,17 @@ Reason:
 
 - it aligns stored character splits with the pinyin mapping symbol contract
 - it distinguishes `known empty part` from `split not yet resolved`
+
+## 16. Example Approved Decomposition Seed Data
+
+For ticket `008` and the repo example curriculum:
+
+- allow a repo-local curated fixture of approved decompositions for the sample level characters
+- seed those rows idempotently during import/enrichment so learning mode is usable before ticket `010`
+- do not treat this as general auto-approval for imported decomposition data
+
+Reason:
+
+- ticket `008` requires approved decompositions for learnable characters
+- ticket `010` owns the actual approval workflow and broader decomposition management
+- the sample curriculum still needs contract-valid study data in the meantime

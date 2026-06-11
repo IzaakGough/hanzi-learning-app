@@ -213,7 +213,7 @@ async function main() {
 
     assert.deepEqual(levelWordLinks, [
       { sequence_number: 21, simplified: "学生" },
-      { sequence_number: 21, simplified: "学习" },
+      { sequence_number: 22, simplified: "学习" },
       { sequence_number: 22, simplified: "练习" }
     ]);
 

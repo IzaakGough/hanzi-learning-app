@@ -1,7 +1,7 @@
 # Ticket Index
 
 ## Next Up
-- `008-level-progression-and-learning-mode.md`
+- `009-raw-export-normalization-scripts.md`
 
 ## Tickets
 - [x] `001-project-scaffold.md`
@@ -11,7 +11,7 @@
 - [x] `005-mapping-admin-and-props.md`
 - [x] `006-lexical-enrichment.md`
 - [x] `007-search-and-detail-views.md`
-- [ ] `008-level-progression-and-learning-mode.md`
+- [x] `008-level-progression-and-learning-mode.md`
 - [ ] `009-raw-export-normalization-scripts.md`
 - [ ] `010-decomposition-approval-and-unresolved-props.md`
 - [ ] `011-fsrs-review-engine.md`

@@ -171,6 +171,66 @@ export interface WordDetailRecord extends WordRecord {
   componentCharacters: WordComponentCharacter[];
 }
 
+export type LearningBlockReason =
+  | "missing_text"
+  | "missing_pinyin"
+  | "missing_pinyin_split"
+  | "missing_primary_meaning"
+  | "missing_approved_decomposition"
+  | "component_characters_unlearned";
+
+export interface LearningCharacterState {
+  id: string;
+  hanzi: string;
+  pinyinDisplay: string | null;
+  pinyinInitial: string | null;
+  pinyinFinal: string | null;
+  tone: string | null;
+  meaningPrimary: string | null;
+  status: ItemStatus;
+  learnedAt: string | null;
+  isLearnable: boolean;
+  blockedReasons: LearningBlockReason[];
+  hasApprovedDecomposition: boolean;
+}
+
+export interface LearningWordComponentState {
+  id: string;
+  hanzi: string;
+  status: ItemStatus;
+}
+
+export interface LearningWordState {
+  id: string;
+  simplified: string;
+  pinyinDisplay: string | null;
+  meaningPrimary: string | null;
+  status: ItemStatus;
+  learnedAt: string | null;
+  isLearnable: boolean;
+  blockedReasons: LearningBlockReason[];
+  componentCharacters: LearningWordComponentState[];
+}
+
+export interface LearningLevelState {
+  id: string;
+  course: string;
+  sequenceNumber: number;
+  title: string | null;
+  isComplete: boolean;
+  nextCharacterId: string | null;
+  characters: LearningCharacterState[];
+  words: LearningWordState[];
+}
+
+export interface CurrentLevelProgressResponse {
+  level: LearningLevelState | null;
+  courseComplete: boolean;
+  learnedCharacterCount: number;
+  learnedWordCount: number;
+  totalLevelCount: number;
+}
+
 export interface LexicalEditInput {
   pinyinDisplay: string | null;
   meaningPrimary: string | null;
