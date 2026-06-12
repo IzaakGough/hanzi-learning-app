@@ -76,8 +76,6 @@ async function main() {
         name: "Sun Wheel",
         type: "component",
         shapeRef: "日",
-        meaningOrImage: "A bright wheel blazing across the sky",
-        notes: "Starter prop",
         isActive: true
       })
     });
@@ -85,7 +83,7 @@ async function main() {
 
     const createdProp = await createPropResponse.json() as { id: string };
 
-    const searchPropsResponse = await fetch(`${baseUrl}/props?search=bright`);
+    const searchPropsResponse = await fetch(`${baseUrl}/props?search=Sun`);
     assert.equal(searchPropsResponse.status, 200);
     const searchPropsPayload = await searchPropsResponse.json() as {
       items: Array<{ id: string; name: string }>;
@@ -99,8 +97,6 @@ async function main() {
         name: "Sun Wheel",
         type: "component",
         shapeRef: "日",
-        meaningOrImage: "A blazing sun disk",
-        notes: "Edited by verification",
         isActive: false
       })
     });

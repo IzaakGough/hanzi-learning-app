@@ -87,6 +87,7 @@ const dashboardMarkup = renderToStaticMarkup(
   <DashboardOverviewSection
     dashboard={dashboard}
     onOpenLearning={() => undefined}
+    onOpenProps={() => undefined}
     onOpenQueue={() => undefined}
     onOpenReview={() => undefined}
   />
@@ -96,13 +97,16 @@ expectMatch(dashboardMarkup, /Review first, queue work visible/);
 expectMatch(dashboardMarkup, /Start Review/);
 expectMatch(dashboardMarkup, /Continue Learning/);
 expectMatch(dashboardMarkup, /Open Queue Hub/);
+expectMatch(dashboardMarkup, /Manage Props/);
 expectMatch(dashboardMarkup, /Shared content queue counts/);
 expectMatch(dashboardMarkup, /Decomposition/);
 expectMatch(dashboardMarkup, /Unresolved Props/);
 
 const learningMarkup = renderToStaticMarkup(
   <LearningSection
+    decompositionSubmittingCharacterId={null}
     feedback={`Saved at ${now}`}
+    onCreateDecompositionCandidate={() => undefined}
     onMarkCharacterLearned={() => undefined}
     onMarkWordLearned={() => undefined}
     progress={dashboard.learningProgress}

@@ -314,6 +314,7 @@ function createPropFromResolution(
   const now = new Date().toISOString();
   const propId = randomUUID();
   const type: PropType = resolution.action === "create_known_character_prop" ? "known_character" : "component";
+  const meaningOrImage = resolution.meaningOrImage ?? resolution.shapeRef ?? resolution.name;
 
   database.prepare(`
     INSERT INTO props (
@@ -343,7 +344,7 @@ function createPropFromResolution(
     name: resolution.name,
     type,
     shapeRef: resolution.shapeRef,
-    meaningOrImage: resolution.meaningOrImage,
+    meaningOrImage,
     notes: resolution.notes,
     createdAt: now,
     updatedAt: now

@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   getLearningBlockReasonMeta,
   HEALTHCHECK_PATH,
   ItemStatus,
   QueueItemType,
   ReviewGrade,
+  type DecompositionCandidateCreateInputPayload,
+  type PropAdminInput,
+  type PropRecord,
+  type PropType,
   type LearningBlockReason,
   type CharacterDetailRecord,
   type CharacterReviewQueueResponse,
@@ -67,13 +71,16 @@ interface DashboardOverviewSectionProps {
   onOpenReview: () => void;
   onOpenLearning: () => void;
   onOpenQueue: () => void;
+  onOpenProps: () => void;
 }
 
 interface LearningSectionProps {
   progress: CurrentLevelProgressResponse;
   feedback: string | null;
   submittingItemId: string | null;
+  decompositionSubmittingCharacterId: string | null;
   onMarkCharacterLearned: (character: LearningCharacterState) => void;
+  onCreateDecompositionCandidate: (character: LearningCharacterState, values: DecompositionCandidateFormValues) => void;
   onMarkWordLearned: (word: LearningWordState) => void;
 }
 
@@ -112,12 +119,27 @@ interface MissingLexicalEditValues {
   provenanceNote: string;
 }
 
+interface DecompositionCandidateFormValues {
+  partsText: string;
+  notes: string;
+}
+
+interface PropSectionProps {
+  propsList: PropRecord[];
+  loading: boolean;
+  feedback: string | null;
+  editingPropId: string | null;
+  onSave: (input: PropAdminInput, propId: string | null) => void;
+}
+
 const reviewGrades = [
   ReviewGrade.Again,
   ReviewGrade.Hard,
   ReviewGrade.Good,
   ReviewGrade.Easy
 ] as const;
+
+const propTypes: PropType[] = ["component", "known_character"];
 
 const queueTypeLabels: Record<QueueItemType, string> = {
   [QueueItemType.DecompositionCandidate]: "Decomposition",
@@ -153,6 +175,10 @@ function formatStatusLabel(status: ItemStatus) {
 function formatBlockedReasonSummary(reason: LearningBlockReason) {
   const meta = getLearningBlockReasonMeta(reason);
   return `${meta.label}. ${meta.guidance}`;
+}
+
+function formatPropType(type: PropType) {
+  return type === "known_character" ? "Known character" : "Component";
 }
 
 function getAudioUrl(audioPath: string | null) {
@@ -257,6 +283,70 @@ function QueueCountsList(props: { counts: QueueTypeCount[] }) {
   );
 }
 
+function parseDecompositionParts(partsText: string) {
+  return partsText
+    .split(/[+,\s，]+/)
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0);
+}
+
+function DecompositionCandidateComposer(props: {
+  character: LearningCharacterState;
+  isSubmitting: boolean;
+  onSubmit: (values: DecompositionCandidateFormValues) => void;
+}) {
+  const [partsText, setPartsText] = useState("");
+  const [notes, setNotes] = useState("");
+  const parsedParts = parseDecompositionParts(partsText);
+
+  function handleSubmit() {
+    props.onSubmit({
+      partsText,
+      notes
+    });
+  }
+
+  return (
+    <div className="panel-stack">
+      <div>
+        <strong>Create decomposition candidate</strong>
+        <p className="item-note">
+          Enter parts separated by <code>+</code>, spaces, or commas. Literal parts will appear in the queue for prop resolution before approval.
+        </p>
+      </div>
+      <label className="form-field">
+        <span>Parts</span>
+        <input
+          onChange={(event) => setPartsText(event.target.value)}
+          placeholder="⺍ + 冖 + 子"
+          type="text"
+          value={partsText}
+        />
+      </label>
+      <label className="form-field">
+        <span>Notes</span>
+        <input
+          onChange={(event) => setNotes(event.target.value)}
+          placeholder="Optional provenance or reasoning"
+          type="text"
+          value={notes}
+        />
+      </label>
+      <p className="item-note">
+        Preview: {parsedParts.length > 0 ? parsedParts.join(" + ") : "Add at least one part."}
+      </p>
+      <button
+        className="primary-button"
+        disabled={props.isSubmitting || parsedParts.length === 0}
+        onClick={handleSubmit}
+        type="button"
+      >
+        {props.isSubmitting ? `Saving ${props.character.hanzi}...` : `Create ${props.character.hanzi} candidate`}
+      </button>
+    </div>
+  );
+}
+
 function LearningItemCard(props: {
   title: string;
   subtitle: string;
@@ -266,6 +356,7 @@ function LearningItemCard(props: {
   actionDisabled: boolean;
   actionBusy: boolean;
   onAction: () => void;
+  extraContent?: ReactNode;
 }) {
   return (
     <article className="learning-item-card">
@@ -284,6 +375,8 @@ function LearningItemCard(props: {
       {props.status === ItemStatus.Learned ? (
         <p className="item-note">Already learned and available for review scheduling.</p>
       ) : null}
+
+      {props.extraContent}
 
       <button
         className="secondary-button"
@@ -394,6 +487,9 @@ export function DashboardOverviewSection(props: DashboardOverviewSectionProps) {
           </button>
           <button className="secondary-button" onClick={props.onOpenQueue} type="button">
             Open Queue Hub
+          </button>
+          <button className="secondary-button" onClick={props.onOpenProps} type="button">
+            Manage Props
           </button>
         </div>
       </article>
@@ -508,6 +604,13 @@ export function LearningSection(props: LearningSectionProps) {
                       actionDisabled={character.status !== ItemStatus.Ready || props.submittingItemId !== null}
                       actionLabel="Mark Character Learned"
                       blockedReasons={character.blockedReasons}
+                      extraContent={character.blockedReasons.includes("missing_approved_decomposition") ? (
+                        <DecompositionCandidateComposer
+                          character={character}
+                          isSubmitting={props.decompositionSubmittingCharacterId === character.id}
+                          onSubmit={(values) => props.onCreateDecompositionCandidate(character, values)}
+                        />
+                      ) : undefined}
                       key={character.id}
                       onAction={() => props.onMarkCharacterLearned(character)}
                       status={character.status}
@@ -556,6 +659,173 @@ export function LearningSection(props: LearningSectionProps) {
   );
 }
 
+export function PropsSection(props: PropSectionProps) {
+  const [selectedPropId, setSelectedPropId] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [type, setType] = useState<PropType>("component");
+  const [shapeRef, setShapeRef] = useState("");
+  const [isActive, setIsActive] = useState(true);
+  const selectedProp = props.propsList.find((prop) => prop.id === selectedPropId) ?? null;
+
+  useEffect(() => {
+    if (!selectedProp) {
+      return;
+    }
+
+    setName(selectedProp.name);
+    setType(selectedProp.type);
+    setShapeRef(selectedProp.shapeRef ?? "");
+    setIsActive(selectedProp.isActive === 1);
+  }, [selectedProp]);
+
+  function resetForm() {
+    setSelectedPropId(null);
+    setName("");
+    setType("component");
+    setShapeRef("");
+    setIsActive(true);
+  }
+
+  function handleSelect(prop: PropRecord) {
+    setSelectedPropId(prop.id);
+  }
+
+  function handleSubmit() {
+    props.onSave(
+      {
+        name,
+        type,
+        shapeRef: shapeRef.trim().length > 0 ? shapeRef : null,
+        meaningOrImage: null,
+        notes: null,
+        isActive
+      },
+      selectedPropId
+    );
+  }
+
+  return (
+    <section className="workspace" id="props-section">
+      <article className="panel panel-stack">
+        <div className="panel-heading">
+          <div>
+            <p className="section-kicker">Props</p>
+            <h2>Manage mnemonic props</h2>
+          </div>
+          <div className="summary-chip-group">
+            <span className="summary-chip">{props.propsList.length} loaded</span>
+            <span className="summary-chip">{props.propsList.filter((prop) => prop.isActive === 1).length} active</span>
+          </div>
+        </div>
+
+        <section className="learning-columns">
+          <div className="learning-column">
+            <div className="panel-heading">
+              <div>
+                <p className="section-kicker">Library</p>
+                <h3>Existing props</h3>
+              </div>
+            </div>
+            {props.loading ? (
+              <p className="item-note">Loading props...</p>
+            ) : props.propsList.length > 0 ? (
+              <div className="props-library-list">
+                {props.propsList.map((prop) => (
+                  <article className="prop-card" key={prop.id}>
+                    <div className="prop-card-header">
+                      <div>
+                        <h3>{prop.name}</h3>
+                        <p>{prop.shapeRef ?? formatPropType(prop.type)}</p>
+                      </div>
+                      <span className={`status-pill status-${prop.isActive === 1 ? "ready" : "blocked"}`}>
+                        {prop.isActive === 1 ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+                    <dl className="prop-meta-list">
+                      <div>
+                        <dt>Type</dt>
+                        <dd>{formatPropType(prop.type)}</dd>
+                      </div>
+                      <div>
+                        <dt>Shape</dt>
+                        <dd>{prop.shapeRef ?? "None"}</dd>
+                      </div>
+                      <div className="prop-meta-span">
+                        <dt>Stored value</dt>
+                        <dd>{prop.meaningOrImage}</dd>
+                      </div>
+                    </dl>
+                    <div className="prop-card-actions">
+                      <button className="secondary-button" onClick={() => handleSelect(prop)} type="button">
+                        Edit Prop
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="item-note">No props yet.</p>
+            )}
+          </div>
+
+          <div className="learning-column">
+            <div className="panel-heading">
+              <div>
+                <p className="section-kicker">Editor</p>
+                <h3>{selectedProp ? `Edit ${selectedProp.name}` : "Create a new prop"}</h3>
+              </div>
+            </div>
+            <div className="prop-editor-card">
+              <p className="item-note">
+                Define the reusable prop label and optional shape reference used during decomposition approval.
+              </p>
+              <div className="prop-form-grid">
+              <label className="form-field">
+                <span>Name</span>
+                <input onChange={(event) => setName(event.target.value)} placeholder="Roof cover" type="text" value={name} />
+              </label>
+              <label className="form-field">
+                <span>Type</span>
+                <select onChange={(event) => setType(event.target.value as PropType)} value={type}>
+                  {propTypes.map((propType) => (
+                    <option key={propType} value={propType}>
+                      {formatPropType(propType)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="form-field">
+                <span>Shape ref</span>
+                <input onChange={(event) => setShapeRef(event.target.value)} placeholder="冖" type="text" value={shapeRef} />
+              </label>
+              </div>
+              <label className="prop-toggle">
+                <input checked={isActive} onChange={(event) => setIsActive(event.target.checked)} type="checkbox" />
+                <span>Keep this prop active for suggestions and decomposition work</span>
+              </label>
+              <div className="queue-actions-row">
+                <button
+                  className="primary-button"
+                  disabled={props.editingPropId !== null || name.trim().length === 0}
+                  onClick={handleSubmit}
+                  type="button"
+                >
+                  {props.editingPropId !== null ? "Saving..." : selectedProp ? "Save Prop" : "Create Prop"}
+                </button>
+                <button className="secondary-button" disabled={props.editingPropId !== null} onClick={resetForm} type="button">
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <p className="form-message left">{props.feedback ?? " "}</p>
+      </article>
+    </section>
+  );
+}
+
 function QueueDecompositionCard(props: {
   item: QueueDecompositionCandidateItem;
   actionItemId: string | null;
@@ -581,10 +851,15 @@ function QueueDecompositionCard(props: {
           <p>{formatNullable(props.item.character.pinyinDisplay)}</p>
         </div>
         <div className="queue-span">
+          <strong>Candidate parts</strong>
+          <p>{props.item.candidate.parts.map((part) => part.text).join(" + ")}</p>
+        </div>
+        <div className="queue-span">
           <strong>Linked words</strong>
           <p>{props.item.linkedWords.length > 0 ? props.item.linkedWords.map((word) => word.simplified).join(", ") : "None"}</p>
         </div>
       </div>
+      {props.item.candidate.notes ? <p className="item-note">Notes: {props.item.candidate.notes}</p> : null}
       <button
         className="primary-button"
         disabled={props.actionItemId === props.item.id}
@@ -1193,10 +1468,28 @@ async function expectPostWithBody<T>(path: string, body: unknown) {
   return await response.json() as T;
 }
 
+async function expectPutWithBody<T>(path: string, body: unknown) {
+  const response = await fetch(`${apiBaseUrl}${path}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    const payload = await response.json() as { error?: string };
+    throw new Error(payload.error ?? `${path} failed with status ${response.status}`);
+  }
+
+  return await response.json() as T;
+}
+
 export function App() {
   const [health, setHealth] = useState<HealthcheckResponse | null>(null);
   const [dashboard, setDashboard] = useState<DashboardSummaryResponse | null>(null);
   const [queueHub, setQueueHub] = useState<QueueListResponse | null>(null);
+  const [propsList, setPropsList] = useState<PropRecord[]>([]);
   const [activeQueueType, setActiveQueueType] = useState<QueueItemType>(QueueItemType.DecompositionCandidate);
   const [pageError, setPageError] = useState<string | null>(null);
   const [loadingPage, setLoadingPage] = useState(true);
@@ -1219,7 +1512,11 @@ export function App() {
   const [wordFeedback, setWordFeedback] = useState<string | null>(null);
 
   const [learningSubmittingItemId, setLearningSubmittingItemId] = useState<string | null>(null);
+  const [decompositionSubmittingCharacterId, setDecompositionSubmittingCharacterId] = useState<string | null>(null);
   const [learningFeedback, setLearningFeedback] = useState<string | null>(null);
+  const [propEditingId, setPropEditingId] = useState<string | null>(null);
+  const [propsLoading, setPropsLoading] = useState(false);
+  const [propsFeedback, setPropsFeedback] = useState<string | null>(null);
   const [queueActionItemId, setQueueActionItemId] = useState<string | null>(null);
   const [queueFeedback, setQueueFeedback] = useState<string | null>(null);
 
@@ -1231,21 +1528,34 @@ export function App() {
     setDashboard(nextDashboard);
   }
 
+  async function loadProps() {
+    setPropsLoading(true);
+
+    try {
+      const response = await expectJson<{ items: PropRecord[] }>("/props");
+      setPropsList(response.items);
+    } finally {
+      setPropsLoading(false);
+    }
+  }
+
   async function loadPage(signal?: AbortSignal) {
     setLoadingPage(true);
 
     try {
-      const [nextHealth, nextDashboard, nextCharacterQueue, nextWordQueue, nextQueueHub] = await Promise.all([
+      const [nextHealth, nextDashboard, nextCharacterQueue, nextWordQueue, nextQueueHub, nextPropsResponse] = await Promise.all([
         expectJson<HealthcheckResponse>(HEALTHCHECK_PATH, signal),
         expectJson<DashboardSummaryResponse>("/dashboard", signal),
         expectJson<CharacterReviewQueueResponse>("/reviews/characters/due", signal),
         expectJson<WordReviewQueueResponse>("/reviews/words/due", signal),
-        expectJson<QueueListResponse>("/queue", signal)
+        expectJson<QueueListResponse>("/queue", signal),
+        expectJson<{ items: PropRecord[] }>("/props", signal)
       ]);
 
       setHealth(nextHealth);
       setDashboard(nextDashboard);
       setQueueHub(nextQueueHub);
+      setPropsList(nextPropsResponse.items);
       setActiveQueueType((current) => {
         const stillVisible = nextQueueHub.counts.some((count) => count.type === current && count.count > 0);
         return stillVisible ? current : getDefaultQueueType(nextQueueHub);
@@ -1260,6 +1570,7 @@ export function App() {
       setWordReviewedCount(0);
       setWordDetail(null);
       setWordFeedback(null);
+      setPropsFeedback(null);
       setQueueFeedback(null);
       setPageError(null);
     } catch (error) {
@@ -1441,6 +1752,59 @@ export function App() {
       setLearningFeedback(error instanceof Error ? error.message : "Unknown learning update error");
     } finally {
       setLearningSubmittingItemId(null);
+    }
+  }
+
+  async function createDecompositionCandidate(
+    character: LearningCharacterState,
+    values: DecompositionCandidateFormValues
+  ) {
+    const payload: DecompositionCandidateCreateInputPayload = {
+      parts: parseDecompositionParts(values.partsText),
+      notes: values.notes.trim().length > 0 ? values.notes : null
+    };
+
+    setDecompositionSubmittingCharacterId(character.id);
+
+    try {
+      await expectPostWithBody(`/characters/${character.id}/decomposition-candidates`, payload);
+      await loadPage();
+      setLearningFeedback(
+        `${character.hanzi} candidate created. Resolve any literal parts in the queue, then approve the candidate.`
+      );
+      setActiveQueueType(QueueItemType.DecompositionCandidate);
+      scrollToSection("queue-section");
+    } catch (error) {
+      setLearningFeedback(error instanceof Error ? error.message : "Unknown decomposition candidate error");
+    } finally {
+      setDecompositionSubmittingCharacterId(null);
+    }
+  }
+
+  async function saveProp(input: PropAdminInput, propId: string | null) {
+    setPropEditingId(propId ?? "__new__");
+
+    try {
+      if (propId) {
+        await expectPutWithBody<PropRecord>(`/props/${propId}`, input);
+        setPropsFeedback(`${input.name} updated.`);
+      } else {
+        await expectPostWithBody<PropRecord>("/props", input);
+        setPropsFeedback(`${input.name} created.`);
+      }
+
+      await loadProps();
+      void expectJson<QueueListResponse>("/queue").then((nextQueueHub) => {
+        setQueueHub(nextQueueHub);
+        setActiveQueueType((current) => {
+          const stillVisible = nextQueueHub.counts.some((count) => count.type === current && count.count > 0);
+          return stillVisible ? current : getDefaultQueueType(nextQueueHub);
+        });
+      }).catch(() => undefined);
+    } catch (error) {
+      setPropsFeedback(error instanceof Error ? error.message : "Unknown prop save error");
+    } finally {
+      setPropEditingId(null);
     }
   }
 
@@ -1626,6 +1990,7 @@ export function App() {
           <DashboardOverviewSection
             dashboard={dashboard}
             onOpenLearning={() => scrollToSection("learning-section")}
+            onOpenProps={() => scrollToSection("props-section")}
             onOpenQueue={() => scrollToSection("queue-section")}
             onOpenReview={() => scrollToSection("review-section")}
           />
@@ -1648,11 +2013,21 @@ export function App() {
           />
 
           <LearningSection
+            decompositionSubmittingCharacterId={decompositionSubmittingCharacterId}
             feedback={learningFeedback}
+            onCreateDecompositionCandidate={(character, values) => void createDecompositionCandidate(character, values)}
             onMarkCharacterLearned={(character) => void markCharacterLearned(character)}
             onMarkWordLearned={(word) => void markWordLearned(word)}
             progress={dashboard.learningProgress}
             submittingItemId={learningSubmittingItemId}
+          />
+
+          <PropsSection
+            editingPropId={propEditingId}
+            feedback={propsFeedback}
+            loading={propsLoading}
+            onSave={(input, propId) => void saveProp(input, propId)}
+            propsList={propsList}
           />
 
           <section className="workspace review-layout" id="review-section">

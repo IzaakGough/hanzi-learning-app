@@ -224,7 +224,8 @@ h3 {
 
 .summary-list,
 .learning-list,
-.queue-list {
+.queue-list,
+.props-library-list {
   display: grid;
   gap: 14px;
 }
@@ -239,13 +240,22 @@ h3 {
 .answer-card,
 .empty-state,
 .learning-item-card,
-.queue-card {
+.queue-card,
+.prop-card,
+.prop-editor-card {
   display: grid;
   gap: 12px;
   padding: 18px;
   border-radius: 22px;
   border: 1px solid rgba(78, 52, 46, 0.08);
   background: rgba(255, 251, 240, 0.82);
+}
+
+.prop-card,
+.prop-editor-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 248, 236, 0.86));
+  border-color: rgba(120, 53, 15, 0.12);
 }
 
 .answer-card-muted {
@@ -342,6 +352,57 @@ h3 {
   justify-content: space-between;
 }
 
+.prop-card-header {
+  display: flex;
+  gap: 16px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.prop-card-header p {
+  margin-top: 6px;
+  color: #5f4b32;
+  line-height: 1.5;
+}
+
+.prop-card-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.prop-meta-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+}
+
+.prop-meta-list div {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.prop-meta-list dt {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9a3412;
+}
+
+.prop-meta-list dd {
+  margin: 0;
+  color: #3f3324;
+  line-height: 1.5;
+}
+
+.prop-meta-span {
+  grid-column: 1 / -1;
+}
+
 .queue-meta-grid {
   display: grid;
   gap: 14px;
@@ -363,6 +424,60 @@ h3 {
 .learning-column {
   display: grid;
   gap: 16px;
+}
+
+.prop-form-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-field {
+  display: grid;
+  gap: 8px;
+}
+
+.form-field span {
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #7c2d12;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(120, 53, 15, 0.16);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #2f2418;
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.form-field-span {
+  grid-column: 1 / -1;
+}
+
+.prop-toggle {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.64);
+  color: #5f4b32;
+}
+
+.prop-toggle input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
 }
 
 .learning-item-header {
@@ -463,7 +578,9 @@ h3 {
   .meta-row,
   .summary-row,
   .learning-item-header,
-  .queue-card-header {
+  .queue-card-header,
+  .prop-card-header,
+  .prop-toggle {
     flex-direction: column;
     align-items: stretch;
   }
@@ -473,7 +590,9 @@ h3 {
     grid-template-columns: 1fr;
   }
 
-  .queue-meta-grid {
+  .queue-meta-grid,
+  .prop-meta-list,
+  .prop-form-grid {
     grid-template-columns: 1fr;
   }
 }

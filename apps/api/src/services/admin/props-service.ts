@@ -28,6 +28,14 @@ function mapRow(row: PropRow): PropRecord {
   };
 }
 
+function getStoredMeaningOrImage(input: {
+  name: string;
+  shapeRef: string | null;
+  meaningOrImage: string | null;
+}) {
+  return input.meaningOrImage ?? input.shapeRef ?? input.name;
+}
+
 export class PropConflictError extends Error {
   constructor(message: string) {
     super(message);
@@ -127,7 +135,7 @@ export function createProp(database: Database.Database, input: PropAdminInputPay
     name: input.name,
     type: input.type,
     shapeRef: input.shapeRef,
-    meaningOrImage: input.meaningOrImage,
+    meaningOrImage: getStoredMeaningOrImage(input),
     notes: input.notes,
     isActive: input.isActive ? 1 : 0,
     createdAt: now,
@@ -174,7 +182,7 @@ export function updateProp(
     name: input.name,
     type: input.type,
     shapeRef: input.shapeRef,
-    meaningOrImage: input.meaningOrImage,
+    meaningOrImage: getStoredMeaningOrImage(input),
     notes: input.notes,
     isActive: input.isActive ? 1 : 0,
     updatedAt: new Date().toISOString()

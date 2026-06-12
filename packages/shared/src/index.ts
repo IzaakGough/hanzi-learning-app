@@ -156,7 +156,7 @@ export interface PropAdminInput {
   name: string;
   type: PropType;
   shapeRef: string | null;
-  meaningOrImage: string;
+  meaningOrImage: string | null;
   notes: string | null;
   isActive: boolean;
 }
@@ -770,6 +770,10 @@ export interface ImportRunSummary {
 }
 
 function nullableTrimmedString(input: unknown) {
+  if (input == null) {
+    return null;
+  }
+
   if (typeof input !== "string") {
     return input;
   }
@@ -948,7 +952,10 @@ export const propAdminInputSchema = z.object({
     nullableTrimmedString,
     z.string().min(1).nullable()
   ),
-  meaningOrImage: z.string().trim().min(1),
+  meaningOrImage: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
   notes: z.preprocess(
     nullableTrimmedString,
     z.string().min(1).nullable()
@@ -1029,7 +1036,10 @@ export const decompositionPartResolutionInputSchema = z.discriminatedUnion("acti
     action: z.literal("create_known_character_prop"),
     name: z.string().trim().min(1),
     shapeRef: z.string().trim().min(1),
-    meaningOrImage: z.string().trim().min(1),
+    meaningOrImage: z.preprocess(
+      nullableTrimmedString,
+      z.string().min(1).nullable()
+    ),
     notes: z.preprocess(
       nullableTrimmedString,
       z.string().min(1).nullable()
@@ -1042,7 +1052,10 @@ export const decompositionPartResolutionInputSchema = z.discriminatedUnion("acti
       nullableTrimmedString,
       z.string().min(1).nullable()
     ),
-    meaningOrImage: z.string().trim().min(1),
+    meaningOrImage: z.preprocess(
+      nullableTrimmedString,
+      z.string().min(1).nullable()
+    ),
     notes: z.preprocess(
       nullableTrimmedString,
       z.string().min(1).nullable()
