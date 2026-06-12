@@ -207,6 +207,25 @@ async function main() {
       blocked_reason: string | null;
     } | undefined;
 
+    const structuralCandidates = database.prepare(`
+      SELECT
+        c.hanzi,
+        cd.source_ref,
+        GROUP_CONCAT(COALESCE(cdp.literal_text, p.shape_ref), '|') AS parts_signature
+      FROM character_decompositions cd
+      INNER JOIN characters c ON c.id = cd.character_id
+      INNER JOIN character_decomposition_parts cdp ON cdp.decomposition_id = cd.id
+      LEFT JOIN props p ON p.id = cdp.prop_id
+      WHERE cd.status = 'candidate'
+        AND c.hanzi IN ('学', '习', '练')
+      GROUP BY c.hanzi, cd.id, cd.source_ref
+      ORDER BY c.hanzi ASC, cd.created_at ASC
+    `).all() as Array<{
+      hanzi: string;
+      source_ref: string | null;
+      parts_signature: string;
+    }>;
+
     assert.deepEqual(learnedCharacter, {
       status: "learned",
       source: "pleco_import",
@@ -248,6 +267,22 @@ async function main() {
       status: "blocked",
       blocked_reason: "component_characters_unlearned"
     });
+
+    assert(structuralCandidates.some((candidate) =>
+      candidate.hanzi === "学"
+      && candidate.source_ref === "sample:U+5B66"
+      && candidate.parts_signature === "⺍|冖|子"
+    ));
+    assert(structuralCandidates.some((candidate) =>
+      candidate.hanzi === "习"
+      && candidate.source_ref === "sample:U+4E60"
+      && candidate.parts_signature === "乙|丶"
+    ));
+    assert(structuralCandidates.some((candidate) =>
+      candidate.hanzi === "练"
+      && candidate.source_ref === "sample:U+7EC3"
+      && candidate.parts_signature === "纟|东"
+    ));
 
     const levelWordLinks = database.prepare(`
       SELECT l.sequence_number, w.simplified

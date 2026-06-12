@@ -15,6 +15,7 @@
     "admin:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-admin.ts",
     "search:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-search.ts",
     "decomposition:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-decomposition.ts",
+    "structural-decomposition:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-structural-decomposition.ts",
     "learning:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-learning.ts",
     "reviews:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-reviews.ts",
     "sentences:verify": "npm run build --workspace @hanzi-learning-app/shared && tsx src/verify-sentences.ts",

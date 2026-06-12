@@ -7,8 +7,10 @@ import {
   parseKnownCharactersImport,
   parseKnownWordsImport,
   parseLevelsImport,
-  parsePinyinMappingsImport
+  parsePinyinMappingsImport,
+  parseStructuralDecompositionImport
 } from "../packages/shared/dist/index.js";
+import { normalizeChiseIds } from "./normalize-chise-ids.mjs";
 import { normalizePlecoCharacters, normalizePlecoWords } from "./lib/normalize-pleco.mjs";
 import { normalizeNotionLevels, normalizeNotionMappings } from "./lib/normalize-notion.mjs";
 import { writeJsonFile } from "./lib/normalization-helpers.mjs";
@@ -40,16 +42,22 @@ function main() {
       sourceName: "mandarin-blueprint-pinyin-mappings",
       options: {}
     });
+    const structural = normalizeChiseIds({
+      inputPath: path.join(rawExamplesDirectory, "chise-ids-sample.txt"),
+      sourceName: "chise_ids_curated_v1"
+    });
 
     writeJsonFile(path.join(tempDirectory, "known_characters.json"), characters);
     writeJsonFile(path.join(tempDirectory, "known_words.json"), words);
     writeJsonFile(path.join(tempDirectory, "levels.json"), levels);
     writeJsonFile(path.join(tempDirectory, "pinyin_mappings.json"), mappings);
+    writeJsonFile(path.join(tempDirectory, "chise_ids.json"), structural);
 
     assert.equal(parseKnownCharactersImport(characters).items.length, 2);
     assert.equal(parseKnownWordsImport(words).items.length, 2);
     assert.equal(parseLevelsImport(levels).items.length, 2);
     assert.equal(parsePinyinMappingsImport(mappings).items.length, 5);
+    assert.equal(parseStructuralDecompositionImport(structural).characters.length, 4);
 
     assert.deepEqual(characters.items[0], {
       hanzi: "你",
@@ -80,6 +88,18 @@ function main() {
       kind: "initial",
       symbol: "null",
       mappedValue: "Null Actor"
+    });
+
+    assert.deepEqual(structural.characters[0], {
+      hanzi: "学",
+      structures: [
+        {
+          ids: "⿳⺍冖子",
+          parts: ["⺍", "冖", "子"],
+          sourceRef: "U+5B66",
+          notes: "Normalized from chise-ids-sample.txt"
+        }
+      ]
     });
 
     console.log(`Raw normalization verification passed using ${tempDirectory}`);

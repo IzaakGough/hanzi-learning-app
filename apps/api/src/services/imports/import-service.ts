@@ -18,6 +18,7 @@ import {
 import { seedExampleApprovedDecompositions } from "./approved-decomposition-fixture-service.js";
 import { seedExampleDecompositionCandidates } from "./decomposition-candidate-fixture-service.js";
 import { runLexicalEnrichment } from "./lexical-enrichment-service.js";
+import { seedStructuralDecompositionCandidates } from "./structural-decomposition-service.js";
 import { ensureReviewStatesForLearnedItems } from "../reviews/review-service.js";
 
 interface CharacterRow {
@@ -1110,6 +1111,10 @@ function applyExampleDecompositionCandidates(context: ImportRunContext) {
   seedExampleDecompositionCandidates(context.database);
 }
 
+function applyStructuralDecompositionCandidates(context: ImportRunContext) {
+  seedStructuralDecompositionCandidates(context.database);
+}
+
 function shouldSeedExampleDecompositions() {
   return process.env.HANZI_SEED_EXAMPLE_DECOMPOSITIONS === "1";
 }
@@ -1165,6 +1170,7 @@ export function runNormalizedImport(
   const executeImport = database.transaction(() => {
     applyImport(context, payload);
     applyLexicalEnrichment(context);
+    applyStructuralDecompositionCandidates(context);
     if (shouldSeedExampleDecompositions()) {
       applyExampleApprovedDecompositions(context);
       applyExampleDecompositionCandidates(context);

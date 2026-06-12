@@ -4,7 +4,8 @@ import {
   parseKnownCharactersImport,
   parseKnownWordsImport,
   parseLevelsImport,
-  parsePinyinMappingsImport
+  parsePinyinMappingsImport,
+  parseStructuralDecompositionImport
 } from "@hanzi-learning-app/shared";
 import { exampleImportsDirectory } from "./paths.js";
 
@@ -19,4 +20,5 @@ export function validateExampleFixtures() {
   parseKnownWordsImport(readJsonFile("known_words.json"));
   parseLevelsImport(readJsonFile("levels.json"));
   parsePinyinMappingsImport(readJsonFile("pinyin_mappings.json"));
+  parseStructuralDecompositionImport(readJsonFile(path.join("..", "structural", "chise_ids.json")));
 }

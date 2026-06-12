@@ -6,6 +6,7 @@ Raw Pleco and Notion exports are not consumed directly by the app in this phase.
 
 Example fixtures live in `data/imports/examples/`.
 The lexical dictionary is not an import fixture; it lives under `data/dictionaries/`.
+The structural decomposition dataset lives under `data/imports/structural/` because it seeds decomposition candidates but is not consumed by `imports:run` as a user-supplied normalized import payload.
 
 Raw export examples that match the ticket `009` normalization scripts live in `data/imports/raw-examples/`.
 Usage and input-shape assumptions for those scripts live in `scripts/README.md`.
@@ -16,6 +17,7 @@ Usage and input-shape assumptions for those scripts live in `scripts/README.md`.
 - `known_words.json`
 - `levels.json`
 - `pinyin_mappings.json`
+- `structural/chise_ids.json`
 
 ## Shared Rules
 
@@ -49,4 +51,5 @@ Usage and input-shape assumptions for those scripts live in `scripts/README.md`.
 - JSON is the only required format for ticket `003`
 - CSV support can be added later if useful
 - repo-example decomposition fixtures are not imported by default; set `HANZI_SEED_EXAMPLE_DECOMPOSITIONS=1` only when you intentionally want the example approved/candidate decomposition data seeded during import
+- repo-local structural decomposition data is seeded automatically after normalized imports so blocked characters can receive candidate decompositions without auto-approval
 - lexical dictionary generation and verification are documented in `data/dictionaries/README.md`

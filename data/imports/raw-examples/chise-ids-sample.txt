@@ -1,0 +1,6 @@
+# Extracted CHISE IDS sample rows for normalization verification.
+# Format used by the repo normalizer: codepoint<TAB>hanzi<TAB>ids
+U+5B66	学	⿳⺍冖子
+U+751F	生	⿱丿土
+U+4E60	习	⿹乙丶
+U+7EC3	练	⿰纟东

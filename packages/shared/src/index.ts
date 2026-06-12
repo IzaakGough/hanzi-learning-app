@@ -769,6 +769,25 @@ export interface ImportRunSummary {
   appliedCounts: ImportAppliedCounts;
 }
 
+export interface StructuralDecompositionStructure {
+  ids: string;
+  parts: string[];
+  sourceRef: string | null;
+  notes: string | null;
+}
+
+export interface StructuralDecompositionCharacter {
+  hanzi: string;
+  structures: StructuralDecompositionStructure[];
+}
+
+export interface StructuralDecompositionImport {
+  importType: "decomposition_structures";
+  version: 1;
+  sourceName: string;
+  characters: StructuralDecompositionCharacter[];
+}
+
 function nullableTrimmedString(input: unknown) {
   if (input == null) {
     return null;
@@ -922,6 +941,45 @@ export const pinyinMappingsImportSchema = z.object({
     (item) => `${item.kind}::${item.symbol}`,
     context,
     (key) => `Duplicate pinyin mapping entry: ${key}`,
+  );
+});
+
+export const structuralDecompositionStructureSchema = z.object({
+  ids: z.string().min(1),
+  parts: z.array(z.string().trim().min(1)).min(1),
+  sourceRef: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  ),
+  notes: z.preprocess(
+    nullableTrimmedString,
+    z.string().min(1).nullable()
+  )
+});
+
+export const structuralDecompositionCharacterSchema = z.object({
+  hanzi: z.string().min(1),
+  structures: z.array(structuralDecompositionStructureSchema).min(1)
+}).superRefine((value, context) => {
+  uniqueBy(
+    value.structures,
+    (structure) => `${structure.ids}::${structure.parts.join("|")}`,
+    context,
+    (key) => `Duplicate structural decomposition structure: ${key}`,
+  );
+});
+
+export const structuralDecompositionImportSchema = z.object({
+  importType: z.literal("decomposition_structures"),
+  version: z.literal(1),
+  sourceName: z.string().min(1),
+  characters: z.array(structuralDecompositionCharacterSchema)
+}).superRefine((value, context) => {
+  uniqueBy(
+    value.characters,
+    (item) => item.hanzi,
+    context,
+    (key) => `Duplicate structural decomposition entry: ${key}`,
   );
 });
 
@@ -1129,6 +1187,7 @@ export type LevelsImport = z.infer<typeof levelsImportSchema>;
 export type PinyinMappingImportItem = z.infer<typeof pinyinMappingImportItemSchema>;
 export type PinyinMappingsImport = z.infer<typeof pinyinMappingsImportSchema>;
 export type NormalizedImport = z.infer<typeof normalizedImportSchema>;
+export type StructuralDecompositionImportPayload = z.infer<typeof structuralDecompositionImportSchema>;
 export type MappingAdminInputPayload = z.infer<typeof mappingAdminInputSchema>;
 export type PropAdminInputPayload = z.infer<typeof propAdminInputSchema>;
 export type LexicalEditInputPayload = z.infer<typeof lexicalEditInputSchema>;
@@ -1158,6 +1217,10 @@ export function parsePinyinMappingsImport(input: unknown) {
 
 export function parseNormalizedImport(input: unknown) {
   return normalizedImportSchema.parse(input);
+}
+
+export function parseStructuralDecompositionImport(input: unknown) {
+  return structuralDecompositionImportSchema.parse(input);
 }
 
 export function parseMappingAdminInput(input: unknown) {

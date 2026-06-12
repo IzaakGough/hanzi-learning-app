@@ -1,0 +1,51 @@
+{
+  "importType": "decomposition_structures",
+  "version": 1,
+  "sourceName": "chise_ids_curated_v1",
+  "characters": [
+    {
+      "hanzi": "学",
+      "structures": [
+        {
+          "ids": "⿳⺍冖子",
+          "parts": ["⺍", "冖", "子"],
+          "sourceRef": "sample:U+5B66",
+          "notes": "Curated CHISE IDS structure for the vertical-slice dataset"
+        }
+      ]
+    },
+    {
+      "hanzi": "生",
+      "structures": [
+        {
+          "ids": "⿱丿土",
+          "parts": ["丿", "土"],
+          "sourceRef": "sample:U+751F",
+          "notes": "Curated CHISE IDS structure for the vertical-slice dataset"
+        }
+      ]
+    },
+    {
+      "hanzi": "习",
+      "structures": [
+        {
+          "ids": "⿹乙丶",
+          "parts": ["乙", "丶"],
+          "sourceRef": "sample:U+4E60",
+          "notes": "Curated CHISE IDS structure for the vertical-slice dataset"
+        }
+      ]
+    },
+    {
+      "hanzi": "练",
+      "structures": [
+        {
+          "ids": "⿰纟东",
+          "parts": ["纟", "东"],
+          "sourceRef": "sample:U+7EC3",
+          "notes": "Curated CHISE IDS structure for the vertical-slice dataset"
+        }
+      ]
+    }
+  ]
+}
