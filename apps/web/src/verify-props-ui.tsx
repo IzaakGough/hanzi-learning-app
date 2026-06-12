@@ -51,6 +51,7 @@ const markup = renderToStaticMarkup(
     loading={false}
     onSave={() => undefined}
     propsList={[sampleProp]}
+    saveSuccessCount={0}
   />
 );
 

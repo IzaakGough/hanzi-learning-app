@@ -129,6 +129,7 @@ interface PropSectionProps {
   loading: boolean;
   feedback: string | null;
   editingPropId: string | null;
+  saveSuccessCount: number;
   onSave: (input: PropAdminInput, propId: string | null) => void;
 }
 
@@ -731,6 +732,17 @@ export function PropsSection(props: PropSectionProps) {
       nameInputRef.current?.select();
     }, 0);
   }, [selectedPropId]);
+
+  useEffect(() => {
+    if (props.saveSuccessCount === 0) {
+      return;
+    }
+
+    resetForm();
+    window.setTimeout(() => {
+      nameInputRef.current?.focus();
+    }, 0);
+  }, [props.saveSuccessCount]);
 
   function resetForm() {
     const emptyDraft = getPropEditorDraft(null);
@@ -1584,6 +1596,7 @@ export function App() {
   const [decompositionSubmittingCharacterId, setDecompositionSubmittingCharacterId] = useState<string | null>(null);
   const [learningFeedback, setLearningFeedback] = useState<string | null>(null);
   const [propEditingId, setPropEditingId] = useState<string | null>(null);
+  const [propSaveSuccessCount, setPropSaveSuccessCount] = useState(0);
   const [propsLoading, setPropsLoading] = useState(false);
   const [propsFeedback, setPropsFeedback] = useState<string | null>(null);
   const [queueActionItemId, setQueueActionItemId] = useState<string | null>(null);
@@ -1863,6 +1876,7 @@ export function App() {
       }
 
       await loadProps();
+      setPropSaveSuccessCount((current) => current + 1);
       void expectJson<QueueListResponse>("/queue").then((nextQueueHub) => {
         setQueueHub(nextQueueHub);
         setActiveQueueType((current) => {
@@ -2097,6 +2111,7 @@ export function App() {
             loading={propsLoading}
             onSave={(input, propId) => void saveProp(input, propId)}
             propsList={propsList}
+            saveSuccessCount={propSaveSuccessCount}
           />
 
           <section className="workspace review-layout" id="review-section">
