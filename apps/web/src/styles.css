@@ -258,6 +258,11 @@ h3 {
   border-color: rgba(120, 53, 15, 0.12);
 }
 
+.prop-card-selected {
+  border-color: rgba(154, 52, 18, 0.52);
+  box-shadow: 0 0 0 3px rgba(154, 52, 18, 0.14);
+}
+
 .answer-card-muted {
   color: #6b5b4a;
 }

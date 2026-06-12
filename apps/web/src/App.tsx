@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   getLearningBlockReasonMeta,
   HEALTHCHECK_PATH,
@@ -690,6 +690,8 @@ export function PropsSection(props: PropSectionProps) {
   const [type, setType] = useState<PropType>(getPropEditorDraft(null).type);
   const [shapeRef, setShapeRef] = useState(getPropEditorDraft(null).shapeRef);
   const [isActive, setIsActive] = useState(getPropEditorDraft(null).isActive);
+  const editorCardRef = useRef<HTMLDivElement | null>(null);
+  const nameInputRef = useRef<HTMLInputElement | null>(null);
   const selectedProp = props.propsList.find((prop) => prop.id === selectedPropId) ?? null;
 
   useEffect(() => {
@@ -713,6 +715,22 @@ export function PropsSection(props: PropSectionProps) {
     setShapeRef(draft.shapeRef);
     setIsActive(draft.isActive);
   }, [props.propsList, selectedProp, selectedPropId]);
+
+  useEffect(() => {
+    if (!selectedPropId) {
+      return;
+    }
+
+    editorCardRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
+    });
+
+    window.setTimeout(() => {
+      nameInputRef.current?.focus();
+      nameInputRef.current?.select();
+    }, 0);
+  }, [selectedPropId]);
 
   function resetForm() {
     const emptyDraft = getPropEditorDraft(null);
@@ -773,7 +791,10 @@ export function PropsSection(props: PropSectionProps) {
             ) : props.propsList.length > 0 ? (
               <div className="props-library-list">
                 {props.propsList.map((prop) => (
-                  <article className="prop-card" key={prop.id}>
+                  <article
+                    className={prop.id === selectedPropId ? "prop-card prop-card-selected" : "prop-card"}
+                    key={prop.id}
+                  >
                     <div className="prop-card-header">
                       <div>
                         <h3>{prop.name}</h3>
@@ -799,7 +820,7 @@ export function PropsSection(props: PropSectionProps) {
                     </dl>
                     <div className="prop-card-actions">
                       <button className="secondary-button" onClick={() => handleSelect(prop)} type="button">
-                        Edit Prop
+                        {prop.id === selectedPropId ? "Editing" : "Edit Prop"}
                       </button>
                     </div>
                   </article>
@@ -817,14 +838,20 @@ export function PropsSection(props: PropSectionProps) {
                 <h3>{selectedProp ? `Edit ${selectedProp.name}` : "Create a new prop"}</h3>
               </div>
             </div>
-            <div className="prop-editor-card">
+            <div className="prop-editor-card" ref={editorCardRef}>
               <p className="item-note">
                 Define the reusable prop label and optional shape reference used during decomposition approval.
               </p>
               <div className="prop-form-grid">
               <label className="form-field">
                 <span>Name</span>
-                <input onChange={(event) => setName(event.target.value)} placeholder="Roof cover" type="text" value={name} />
+                <input
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="Roof cover"
+                  ref={nameInputRef}
+                  type="text"
+                  value={name}
+                />
               </label>
               <label className="form-field">
                 <span>Type</span>
