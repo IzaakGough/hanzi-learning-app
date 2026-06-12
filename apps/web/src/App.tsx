@@ -132,6 +132,13 @@ interface PropSectionProps {
   onSave: (input: PropAdminInput, propId: string | null) => void;
 }
 
+interface PropEditorDraft {
+  name: string;
+  type: PropType;
+  shapeRef: string;
+  isActive: boolean;
+}
+
 const reviewGrades = [
   ReviewGrade.Again,
   ReviewGrade.Hard,
@@ -179,6 +186,24 @@ function formatBlockedReasonSummary(reason: LearningBlockReason) {
 
 function formatPropType(type: PropType) {
   return type === "known_character" ? "Known character" : "Component";
+}
+
+export function getPropEditorDraft(prop: PropRecord | null): PropEditorDraft {
+  if (!prop) {
+    return {
+      name: "",
+      type: "component",
+      shapeRef: "",
+      isActive: true
+    };
+  }
+
+  return {
+    name: prop.name,
+    type: prop.type,
+    shapeRef: prop.shapeRef ?? "",
+    isActive: prop.isActive === 1
+  };
 }
 
 function getAudioUrl(audioPath: string | null) {
@@ -661,33 +686,50 @@ export function LearningSection(props: LearningSectionProps) {
 
 export function PropsSection(props: PropSectionProps) {
   const [selectedPropId, setSelectedPropId] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [type, setType] = useState<PropType>("component");
-  const [shapeRef, setShapeRef] = useState("");
-  const [isActive, setIsActive] = useState(true);
+  const [name, setName] = useState(getPropEditorDraft(null).name);
+  const [type, setType] = useState<PropType>(getPropEditorDraft(null).type);
+  const [shapeRef, setShapeRef] = useState(getPropEditorDraft(null).shapeRef);
+  const [isActive, setIsActive] = useState(getPropEditorDraft(null).isActive);
   const selectedProp = props.propsList.find((prop) => prop.id === selectedPropId) ?? null;
 
   useEffect(() => {
-    if (!selectedProp) {
+    if (selectedPropId === null) {
       return;
     }
 
-    setName(selectedProp.name);
-    setType(selectedProp.type);
-    setShapeRef(selectedProp.shapeRef ?? "");
-    setIsActive(selectedProp.isActive === 1);
-  }, [selectedProp]);
+    if (!selectedProp) {
+      const emptyDraft = getPropEditorDraft(null);
+      setSelectedPropId(null);
+      setName(emptyDraft.name);
+      setType(emptyDraft.type);
+      setShapeRef(emptyDraft.shapeRef);
+      setIsActive(emptyDraft.isActive);
+      return;
+    }
+
+    const draft = getPropEditorDraft(selectedProp);
+    setName(draft.name);
+    setType(draft.type);
+    setShapeRef(draft.shapeRef);
+    setIsActive(draft.isActive);
+  }, [props.propsList, selectedProp, selectedPropId]);
 
   function resetForm() {
+    const emptyDraft = getPropEditorDraft(null);
     setSelectedPropId(null);
-    setName("");
-    setType("component");
-    setShapeRef("");
-    setIsActive(true);
+    setName(emptyDraft.name);
+    setType(emptyDraft.type);
+    setShapeRef(emptyDraft.shapeRef);
+    setIsActive(emptyDraft.isActive);
   }
 
   function handleSelect(prop: PropRecord) {
+    const draft = getPropEditorDraft(prop);
     setSelectedPropId(prop.id);
+    setName(draft.name);
+    setType(draft.type);
+    setShapeRef(draft.shapeRef);
+    setIsActive(draft.isActive);
   }
 
   function handleSubmit() {
