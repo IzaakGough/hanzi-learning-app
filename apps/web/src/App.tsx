@@ -897,11 +897,10 @@ export function PropsSection(props: PropSectionProps) {
                   Clear
                 </button>
               </div>
+              <p className="form-message left">{props.feedback ?? " "}</p>
             </div>
           </div>
         </section>
-
-        <p className="form-message left">{props.feedback ?? " "}</p>
       </article>
     </section>
   );
