@@ -50,6 +50,35 @@ export class PropNotFoundError extends Error {
   }
 }
 
+export class InvalidPropError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InvalidPropError";
+  }
+}
+
+function validatePropInput(database: Database.Database, input: PropAdminInputPayload) {
+  if (input.type !== "known_character") {
+    return;
+  }
+
+  if (!input.shapeRef) {
+    throw new InvalidPropError("Known character props require a shape ref.");
+  }
+
+  const character = database.prepare(`
+    SELECT id
+    FROM characters
+    WHERE hanzi = ?
+  `).get(input.shapeRef) as { id: string } | undefined;
+
+  if (!character) {
+    throw new InvalidPropError(
+      `Known character props must reference an existing character. ${input.shapeRef} was not found.`
+    );
+  }
+}
+
 export function listProps(database: Database.Database, search?: string | null) {
   const trimmedSearch = search?.trim();
 
@@ -94,6 +123,7 @@ export function listProps(database: Database.Database, search?: string | null) {
 }
 
 export function createProp(database: Database.Database, input: PropAdminInputPayload) {
+  validatePropInput(database, input);
   const now = new Date().toISOString();
   const existing = database.prepare(`
     SELECT id
@@ -150,6 +180,7 @@ export function updateProp(
   id: string,
   input: PropAdminInputPayload
 ) {
+  validatePropInput(database, input);
   const existing = getPropRowById(database, id);
 
   if (!existing) {

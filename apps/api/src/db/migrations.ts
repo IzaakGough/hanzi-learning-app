@@ -386,5 +386,24 @@ export const migrations: MigrationDefinition[] = [
       CREATE INDEX IF NOT EXISTS idx_audio_generation_jobs_sentence_id
         ON audio_generation_jobs(sentence_id, created_at DESC);
     `
+  },
+  {
+    id: "009_fix_invalid_known_character_props",
+    description: "Downgrade known-character props that do not reference an imported character",
+    sql: `
+      UPDATE props
+      SET
+        type = 'component',
+        updated_at = CURRENT_TIMESTAMP
+      WHERE type = 'known_character'
+        AND (
+          shape_ref IS NULL
+          OR NOT EXISTS (
+            SELECT 1
+            FROM characters
+            WHERE characters.hanzi = props.shape_ref
+          )
+        );
+    `
   }
 ];

@@ -23,6 +23,10 @@ async function main() {
     path.join(exampleImportsDirectory, "pinyin_mappings.json")
   );
   runNormalizedImport(database, mappingsImport);
+  const charactersImport = loadNormalizedImportFile(
+    path.join(exampleImportsDirectory, "known_characters.json")
+  );
+  runNormalizedImport(database, charactersImport);
 
   const app = createApp(database);
   const server = createServer(app);
@@ -101,6 +105,42 @@ async function main() {
       })
     });
     assert.equal(updatePropResponse.status, 200);
+
+    const invalidKnownCharacterPropResponse = await fetch(`${baseUrl}/props`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: "Goat Horns",
+        type: "known_character",
+        shapeRef: "丷",
+        isActive: true
+      })
+    });
+    assert.equal(invalidKnownCharacterPropResponse.status, 422);
+
+    const invalidShapeRefResponse = await fetch(`${baseUrl}/props`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: "Invalid Shape Ref",
+        type: "component",
+        shapeRef: "AB",
+        isActive: true
+      })
+    });
+    assert.equal(invalidShapeRefResponse.status, 400);
+
+    const validKnownCharacterPropResponse = await fetch(`${baseUrl}/props`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: "You Character",
+        type: "known_character",
+        shapeRef: "你",
+        isActive: true
+      })
+    });
+    assert.equal(validKnownCharacterPropResponse.status, 201);
 
     console.log("Ticket 005 admin verification passed.");
   } finally {

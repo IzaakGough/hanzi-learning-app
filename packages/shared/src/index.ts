@@ -993,6 +993,22 @@ export const normalizedImportSchema = z.discriminatedUnion("importType", [
 export const mappingKindSchema = z.enum(["initial", "final", "tone"]);
 export const propTypeSchema = z.enum(["component", "known_character"]);
 
+const hanOrIdeographicComponentPattern = /^(?:\p{Script=Han}|[\u2E80-\u2EFF\u2F00-\u2FDF\u31C0-\u31EF])$/u;
+
+function isSingleHanziLikeSymbol(value: string) {
+  return Array.from(value).length === 1 && hanOrIdeographicComponentPattern.test(value);
+}
+
+const singleShapeRefSchema = z.string().trim().min(1).refine(
+  isSingleHanziLikeSymbol,
+  "Shape ref must be exactly one Hanzi or ideographic component symbol."
+);
+
+const nullableSingleShapeRefSchema = z.preprocess(
+  nullableTrimmedString,
+  singleShapeRefSchema.nullable()
+);
+
 export const mappingAdminInputSchema = z.object({
   kind: mappingKindSchema,
   symbol: z.string().trim().min(1),
@@ -1006,10 +1022,7 @@ export const mappingAdminInputSchema = z.object({
 export const propAdminInputSchema = z.object({
   name: z.string().trim().min(1),
   type: propTypeSchema,
-  shapeRef: z.preprocess(
-    nullableTrimmedString,
-    z.string().min(1).nullable()
-  ),
+  shapeRef: nullableSingleShapeRefSchema,
   meaningOrImage: z.preprocess(
     nullableTrimmedString,
     z.string().min(1).nullable()
@@ -1093,7 +1106,7 @@ export const decompositionPartResolutionInputSchema = z.discriminatedUnion("acti
   z.object({
     action: z.literal("create_known_character_prop"),
     name: z.string().trim().min(1),
-    shapeRef: z.string().trim().min(1),
+    shapeRef: singleShapeRefSchema,
     meaningOrImage: z.preprocess(
       nullableTrimmedString,
       z.string().min(1).nullable()
@@ -1106,10 +1119,7 @@ export const decompositionPartResolutionInputSchema = z.discriminatedUnion("acti
   z.object({
     action: z.literal("create_new_prop"),
     name: z.string().trim().min(1),
-    shapeRef: z.preprocess(
-      nullableTrimmedString,
-      z.string().min(1).nullable()
-    ),
+    shapeRef: nullableSingleShapeRefSchema,
     meaningOrImage: z.preprocess(
       nullableTrimmedString,
       z.string().min(1).nullable()

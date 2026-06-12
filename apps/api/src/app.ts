@@ -37,6 +37,7 @@ import {
 } from "./services/admin/mappings-service.js";
 import {
   createProp,
+  InvalidPropError,
   listProps,
   PropConflictError,
   PropNotFoundError,
@@ -473,6 +474,11 @@ function sendRouteError(
   }
 
   if (error instanceof InvalidCustomItemError) {
+    response.status(422).json({ error: error.message });
+    return;
+  }
+
+  if (error instanceof InvalidPropError) {
     response.status(422).json({ error: error.message });
     return;
   }

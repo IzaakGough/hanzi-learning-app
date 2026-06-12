@@ -143,6 +143,20 @@ async function main() {
     );
     assert(createdCandidateWorkspace.candidates.length >= 3);
 
+    const invalidShapeResolutionResponse = await postWithBody<{ error: string }>(
+      baseUrl,
+      `/decompositions/parts/${xiWorkspace.candidates[0]?.parts[0]?.id}/resolve`,
+      {
+        action: "create_new_prop",
+        name: "Invalid Resolution",
+        shapeRef: "AB",
+        meaningOrImage: "Invalid test prop",
+        notes: "ticket 010 verification"
+      },
+      400
+    );
+    assert.match(invalidShapeResolutionResponse.error, /Shape ref must be exactly one Hanzi or ideographic component symbol/);
+
     for (const part of xiWorkspace.candidates[0]?.parts ?? []) {
       await postWithBody(baseUrl, `/decompositions/parts/${part.id}/resolve`, {
         action: part.text === HANZI.dot ? "create_known_character_prop" : "create_new_prop",
