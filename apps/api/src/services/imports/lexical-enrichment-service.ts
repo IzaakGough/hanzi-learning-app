@@ -64,8 +64,7 @@ export interface LexicalEnrichmentResult {
 const lexicalDictionaryPath = path.join(
   repoRoot,
   "data",
-  "imports",
-  "examples",
+  "dictionaries",
   "lexical_dictionary.json"
 );
 

@@ -5,8 +5,20 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { ImportDiagnostic } from "@hanzi-learning-app/shared";
 import { loadNormalizedImportFile } from "./load-import-file.js";
-import { exampleImportsDirectory } from "./paths.js";
+import { exampleImportsDirectory, repoRoot } from "./paths.js";
 import { runNormalizedImport } from "../services/imports/import-service.js";
+
+interface LexicalDictionaryEntry {
+  text: string;
+  pinyinDisplay: string;
+  meaningPrimary: string;
+}
+
+interface LexicalDictionaryFile {
+  sourceName: string;
+  characters: LexicalDictionaryEntry[];
+  words: LexicalDictionaryEntry[];
+}
 
 const verificationDatabasePath = path.join(
   os.tmpdir(),
@@ -28,6 +40,11 @@ function loadExampleImport(fileName: string) {
   return loadNormalizedImportFile(path.join(exampleImportsDirectory, fileName));
 }
 
+function loadLexicalDictionary() {
+  const dictionaryPath = path.join(repoRoot, "data", "dictionaries", "lexical_dictionary.json");
+  return JSON.parse(fs.readFileSync(dictionaryPath, "utf8")) as LexicalDictionaryFile;
+}
+
 function expectLoadFailure(filePath: string, expectedPattern: RegExp) {
   assert.throws(
     () => loadNormalizedImportFile(filePath),
@@ -45,8 +62,24 @@ async function main() {
 
   const database = await createVerificationDatabase();
   const invalidImportDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "hanzi-import-invalid-"));
+  const lexicalDictionary = loadLexicalDictionary();
+  const dictionaryCharacter = lexicalDictionary.characters.find((entry) => entry.text === "学");
+  const dictionaryWord = lexicalDictionary.words.find((entry) => entry.text === "学生");
+  const missingCharacterText = "𪚥";
+  const missingWordText = "𪚥学";
 
   try {
+    assert(dictionaryCharacter, "Expected 学 to exist in the generated lexical dictionary.");
+    assert(dictionaryWord, "Expected 学生 to exist in the generated lexical dictionary.");
+    assert(
+      !lexicalDictionary.characters.some((entry) => entry.text === missingCharacterText),
+      `Expected ${missingCharacterText} to be absent from the generated lexical dictionary.`
+    );
+    assert(
+      !lexicalDictionary.words.some((entry) => entry.text === missingWordText),
+      `Expected ${missingWordText} to be absent from the generated lexical dictionary.`
+    );
+
     const firstPassResults = [
       runNormalizedImport(database, loadExampleImport("known_characters.json")),
       runNormalizedImport(database, loadExampleImport("known_words.json")),
@@ -192,28 +225,28 @@ async function main() {
     });
 
     assert.deepEqual(enrichedCharacter, {
-      pinyin_display: "xue2",
+      pinyin_display: dictionaryCharacter.pinyinDisplay,
       pinyin_source: "derived",
-      pinyin_source_ref: "repo_local_dictionary_v1",
+      pinyin_source_ref: "cc_cedict_generated_v2",
       pinyin_initial: "x",
       pinyin_final: "ue",
       tone: "2",
-      meaning_primary: "study",
+      meaning_primary: dictionaryCharacter.meaningPrimary,
       meaning_source: "derived",
-      meaning_source_ref: "repo_local_dictionary_v1",
-      status: "blocked",
+      meaning_source_ref: "cc_cedict_generated_v2",
+      status: "ready",
       blocked_reason: null
     });
 
     assert.deepEqual(enrichedWord, {
-      pinyin_display: "xue2 sheng1",
+      pinyin_display: dictionaryWord.pinyinDisplay,
       pinyin_source: "derived",
-      pinyin_source_ref: "repo_local_dictionary_v1",
-      meaning_primary: "student",
+      pinyin_source_ref: "cc_cedict_generated_v2",
+      meaning_primary: dictionaryWord.meaningPrimary,
       meaning_source: "derived",
-      meaning_source_ref: "repo_local_dictionary_v1",
-      status: "ready",
-      blocked_reason: null
+      meaning_source_ref: "cc_cedict_generated_v2",
+      status: "blocked",
+      blocked_reason: "component_characters_unlearned"
     });
 
     const levelWordLinks = database.prepare(`
@@ -261,8 +294,8 @@ async function main() {
           course: "mandarin-blueprint",
           sequenceNumber: 24,
           title: "Level 24",
-          characters: [{ hanzi: "未" }],
-          words: [{ simplified: "未知" }]
+          characters: [{ hanzi: missingCharacterText }],
+          words: [{ simplified: missingWordText }]
         }
       ]
     });
@@ -272,29 +305,32 @@ async function main() {
       missingLexicalWarning.diagnostics.some(
         (diagnostic: ImportDiagnostic) =>
           diagnostic.code === "character_missing_lexical_data" &&
-          diagnostic.entityKey === "未"
+          diagnostic.entityKey === missingCharacterText
       )
     );
     assert.ok(
       missingLexicalWarning.diagnostics.some(
         (diagnostic: ImportDiagnostic) =>
           diagnostic.code === "word_missing_lexical_data" &&
-          diagnostic.entityKey === "未知"
+          diagnostic.entityKey === missingWordText
       )
     );
 
     const unresolvedRows = database.prepare(`
       SELECT
-        (SELECT blocked_reason FROM characters WHERE hanzi = '未') AS character_blocked_reason,
-        (SELECT blocked_reason FROM words WHERE simplified = '未知') AS word_blocked_reason
-    `).get() as {
+        (SELECT blocked_reason FROM characters WHERE hanzi = @missingCharacterText) AS character_blocked_reason,
+        (SELECT blocked_reason FROM words WHERE simplified = @missingWordText) AS word_blocked_reason
+    `).get({
+      missingCharacterText,
+      missingWordText
+    }) as {
       character_blocked_reason: string | null;
       word_blocked_reason: string | null;
     };
 
     assert.deepEqual(unresolvedRows, {
-      character_blocked_reason: "missing_lexical_data",
-      word_blocked_reason: "missing_lexical_data"
+      character_blocked_reason: "missing_pinyin",
+      word_blocked_reason: "missing_pinyin"
     });
 
     const zeroInitialImport = runNormalizedImport(database, {

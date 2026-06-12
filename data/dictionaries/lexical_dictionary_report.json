@@ -1,0 +1,4526 @@
+{
+  "sourceName": "cc_cedict_generated_v2",
+  "source": {
+    "filePath": "data/dictionaries/raw/cc_cedict.u8",
+    "fileSizeBytes": 9866589,
+    "upstreamEntryCount": 125010
+  },
+  "outputs": {
+    "dictionaryPath": "data/dictionaries/lexical_dictionary.json",
+    "reportPath": "data/dictionaries/lexical_dictionary_report.json",
+    "generatedCharacterCount": 10759,
+    "generatedWordCount": 109651,
+    "dictionaryFileSizeBytes": 16269841
+  },
+  "omittedCounts": {
+    "non_hanzi_headword": 811,
+    "non_standard_pinyin": 13,
+    "invalid_format": 0,
+    "missing_meaning": 0
+  },
+  "omittedPreview": {
+    "totalCount": 13,
+    "truncated": false,
+    "items": [
+      {
+        "text": "兙",
+        "rawPinyin": "shi2ke4",
+        "lineNumber": 10970
+      },
+      {
+        "text": "兛",
+        "rawPinyin": "qian1ke4",
+        "lineNumber": 10971
+      },
+      {
+        "text": "兝",
+        "rawPinyin": "fen1ke4",
+        "lineNumber": 10989
+      },
+      {
+        "text": "兞",
+        "rawPinyin": "hao2ke4",
+        "lineNumber": 10990
+      },
+      {
+        "text": "兡",
+        "rawPinyin": "bai3ke4",
+        "lineNumber": 10993
+      },
+      {
+        "text": "兣",
+        "rawPinyin": "li2ke4",
+        "lineNumber": 10996
+      },
+      {
+        "text": "瓧",
+        "rawPinyin": "shi2wa3",
+        "lineNumber": 74029
+      },
+      {
+        "text": "瓩",
+        "rawPinyin": "qian1wa3",
+        "lineNumber": 74030
+      },
+      {
+        "text": "瓰",
+        "rawPinyin": "fen1wa3",
+        "lineNumber": 74033
+      },
+      {
+        "text": "瓱",
+        "rawPinyin": "hao2wa3",
+        "lineNumber": 74034
+      },
+      {
+        "text": "瓸",
+        "rawPinyin": "bai3wa3",
+        "lineNumber": 74058
+      },
+      {
+        "text": "瓼",
+        "rawPinyin": "li3wa3",
+        "lineNumber": 74060
+      },
+      {
+        "text": "粨",
+        "rawPinyin": "bai3mi3",
+        "lineNumber": 83958
+      }
+    ]
+  },
+  "suspiciousGroupsPreview": {
+    "totalCount": 3061,
+    "truncated": true,
+    "items": [
+      {
+        "kind": "character",
+        "text": "㐷",
+        "selected": {
+          "pinyinDisplay": "ma3",
+          "meaningPrimary": "(Chinese chess) horse; knight (on the red side)",
+          "penaltyTags": [],
+          "lineNumber": 9539
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ma4",
+            "meaningPrimary": "variant of 罵|骂[ma4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 9540
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "㝵",
+        "selected": {
+          "pinyinDisplay": "de2",
+          "meaningPrimary": "to obtain (old variant of 得[de2])",
+          "penaltyTags": [],
+          "lineNumber": 215
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ai4",
+            "meaningPrimary": "variant of 礙|碍[ai4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 214
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "㲈",
+        "selected": {
+          "pinyinDisplay": "shao2",
+          "meaningPrimary": "variant of 韶[shao2]",
+          "penaltyTags": [
+            "redirect"
+          ],
+          "lineNumber": 266
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "tao2",
+            "meaningPrimary": "variant of 鞀|鼗[tao2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 267
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "䕭",
+        "selected": {
+          "pinyinDisplay": "xian2",
+          "meaningPrimary": "a kind of vegetable",
+          "penaltyTags": [],
+          "lineNumber": 319
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "qian2",
+            "meaningPrimary": "variant of 蕁|荨[qian2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 318
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "䴘",
+        "selected": {
+          "pinyinDisplay": "ti1",
+          "meaningPrimary": "used in 鷿鷈|䴙䴘[pi4 ti1]",
+          "penaltyTags": [
+            "redirect"
+          ],
+          "lineNumber": 123064
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ti1",
+            "meaningPrimary": "variant of 鷈|䴘[ti1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 123065
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "䴙",
+        "selected": {
+          "pinyinDisplay": "pi4",
+          "meaningPrimary": "used in 鷿鷈|䴙䴘[pi4 ti1]",
+          "penaltyTags": [
+            "redirect"
+          ],
+          "lineNumber": 123122
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "pi4",
+            "meaningPrimary": "variant of 鷿|䴙[pi4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 123128
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丁",
+        "selected": {
+          "pinyinDisplay": "ding1",
+          "meaningPrimary": "male adult",
+          "penaltyTags": [],
+          "lineNumber": 1030
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ding1",
+            "meaningPrimary": "surname Ding",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 1029
+          },
+          {
+            "pinyinDisplay": "zheng1",
+            "meaningPrimary": "used in 丁丁[zheng1 zheng1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 1031
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "万",
+        "selected": {
+          "pinyinDisplay": "wan4",
+          "meaningPrimary": "ten thousand",
+          "penaltyTags": [],
+          "lineNumber": 94618
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wan4",
+            "meaningPrimary": "surname Wan",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 94617
+          },
+          {
+            "pinyinDisplay": "mo4",
+            "meaningPrimary": "used in 万俟[Mo4 qi2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 1170
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "三",
+        "selected": {
+          "pinyinDisplay": "san1",
+          "meaningPrimary": "three",
+          "penaltyTags": [],
+          "lineNumber": 1182
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "san1",
+            "meaningPrimary": "surname San",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 1181
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "上",
+        "selected": {
+          "pinyinDisplay": "shang4",
+          "meaningPrimary": "(bound form) up; upper; above; previous",
+          "penaltyTags": [],
+          "lineNumber": 1580
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "shang3",
+            "meaningPrimary": "used in 上聲|上声[shang3 sheng1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 1579
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丌",
+        "selected": {
+          "pinyinDisplay": "ji1",
+          "meaningPrimary": "\"pedestal\" component in Chinese characters",
+          "penaltyTags": [],
+          "lineNumber": 2123
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ji1",
+            "meaningPrimary": "surname Ji",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 2122
+          },
+          {
+            "pinyinDisplay": "qi2",
+            "meaningPrimary": "old variant of 其[qi2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 2124
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "与",
+        "selected": {
+          "pinyinDisplay": "yu3",
+          "meaningPrimary": "(formal) and; together with (linking parallel nouns, verbs, or phrases)",
+          "penaltyTags": [],
+          "lineNumber": 92124
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yu4",
+            "meaningPrimary": "to take part in",
+            "penaltyTags": [],
+            "lineNumber": 92125
+          },
+          {
+            "pinyinDisplay": "yu2",
+            "meaningPrimary": "variant of 歟|欤[yu2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 92123
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丐",
+        "selected": {
+          "pinyinDisplay": "gai4",
+          "meaningPrimary": "to beg for alms",
+          "penaltyTags": [],
+          "lineNumber": 2995
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "gai4",
+            "meaningPrimary": "variant of 丐[gai4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 15962
+          },
+          {
+            "pinyinDisplay": "gai4",
+            "meaningPrimary": "variant of 丐[gai4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 15963
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丑",
+        "selected": {
+          "pinyinDisplay": "chou3",
+          "meaningPrimary": "clown",
+          "penaltyTags": [],
+          "lineNumber": 2999
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "chou3",
+            "meaningPrimary": "shameful",
+            "penaltyTags": [],
+            "lineNumber": 110347
+          },
+          {
+            "pinyinDisplay": "chou3",
+            "meaningPrimary": "surname Chou",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 2998
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "专",
+        "selected": {
+          "pinyinDisplay": "zhuan1",
+          "meaningPrimary": "for a particular person, occasion, purpose",
+          "penaltyTags": [],
+          "lineNumber": 33959
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhuan1",
+            "meaningPrimary": "variant of 專|专[zhuan1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 88815
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "世",
+        "selected": {
+          "pinyinDisplay": "shi4",
+          "meaningPrimary": "life",
+          "penaltyTags": [],
+          "lineNumber": 3017
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "shi4",
+            "meaningPrimary": "surname Shi",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 3016
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丘",
+        "selected": {
+          "pinyinDisplay": "qiu1",
+          "meaningPrimary": "hillock; mound (variant of 丘[qiu1])",
+          "penaltyTags": [],
+          "lineNumber": 25464
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "qiu1",
+            "meaningPrimary": "mound",
+            "penaltyTags": [],
+            "lineNumber": 3125
+          },
+          {
+            "pinyinDisplay": "qiu1",
+            "meaningPrimary": "surname Qiu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 3124
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "业",
+        "selected": {
+          "pinyinDisplay": "ye4",
+          "meaningPrimary": "line of business",
+          "penaltyTags": [],
+          "lineNumber": 58523
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ye4",
+            "meaningPrimary": "surname Ye",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 58522
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "东",
+        "selected": {
+          "pinyinDisplay": "dong1",
+          "meaningPrimary": "east",
+          "penaltyTags": [],
+          "lineNumber": 56189
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "dong1",
+            "meaningPrimary": "surname Dong",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 56188
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "严",
+        "selected": {
+          "pinyinDisplay": "yan2",
+          "meaningPrimary": "tight (closely sealed)",
+          "penaltyTags": [],
+          "lineNumber": 23584
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yan2",
+            "meaningPrimary": "surname Yan",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 23583
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丧",
+        "selected": {
+          "pinyinDisplay": "sang1",
+          "meaningPrimary": "mourning",
+          "penaltyTags": [],
+          "lineNumber": 22691
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "sang4",
+            "meaningPrimary": "to lose sth abstract but important (courage, authority, one's life etc)",
+            "penaltyTags": [],
+            "lineNumber": 22692
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丨",
+        "selected": {
+          "pinyinDisplay": "gun3",
+          "meaningPrimary": "radical in Chinese characters (Kangxi radical 2)",
+          "penaltyTags": [],
+          "lineNumber": 3239
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "shu4",
+            "meaningPrimary": "vertical stroke (in Chinese characters), referred to as 豎筆|竖笔[shu4 bi3]",
+            "penaltyTags": [],
+            "lineNumber": 3240
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "个",
+        "selected": {
+          "pinyinDisplay": "ge4",
+          "meaningPrimary": "(classifier used before a noun that has no specific classifier)",
+          "penaltyTags": [],
+          "lineNumber": 8584
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ge3",
+            "meaningPrimary": "used in 自個兒|自个儿[zi4 ge3 r5]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 8583
+          },
+          {
+            "pinyinDisplay": "ge4",
+            "meaningPrimary": "variant of 個|个[ge4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 83159
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "中",
+        "selected": {
+          "pinyinDisplay": "zhong1",
+          "meaningPrimary": "(bound form) China; Chinese",
+          "penaltyTags": [],
+          "lineNumber": 3253
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhong1",
+            "meaningPrimary": "within; among; in",
+            "penaltyTags": [],
+            "lineNumber": 3254
+          },
+          {
+            "pinyinDisplay": "zhong4",
+            "meaningPrimary": "to hit (a target)",
+            "penaltyTags": [],
+            "lineNumber": 3255
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丰",
+        "selected": {
+          "pinyinDisplay": "feng1",
+          "meaningPrimary": "abundant",
+          "penaltyTags": [],
+          "lineNumber": 102536
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "feng1",
+            "meaningPrimary": "luxuriant",
+            "penaltyTags": [],
+            "lineNumber": 3838
+          },
+          {
+            "pinyinDisplay": "feng1",
+            "meaningPrimary": "surname Feng",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 102535
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丱",
+        "selected": {
+          "pinyinDisplay": "guan4",
+          "meaningPrimary": "two tufts of hair",
+          "penaltyTags": [],
+          "lineNumber": 3841
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "kuang4",
+            "meaningPrimary": "old variant of 礦|矿[kuang4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 3842
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "为",
+        "selected": {
+          "pinyinDisplay": "wei2",
+          "meaningPrimary": "as (in the capacity of)",
+          "penaltyTags": [],
+          "lineNumber": 69332
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wei4",
+            "meaningPrimary": "because of",
+            "penaltyTags": [],
+            "lineNumber": 69333
+          },
+          {
+            "pinyinDisplay": "wei2",
+            "meaningPrimary": "variant of 為|为[wei2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 71275
+          },
+          {
+            "pinyinDisplay": "wei4",
+            "meaningPrimary": "variant of 為|为[wei4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 71276
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丼",
+        "selected": {
+          "pinyinDisplay": "dong4",
+          "meaningPrimary": "(Tw) bowl of steamed rice with other food on top (loanword from Japanese \"donburi\")",
+          "penaltyTags": [
+            "register_limited"
+          ],
+          "lineNumber": 4081
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jing3",
+            "meaningPrimary": "old variant of 井[jing3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 4082
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "丽",
+        "selected": {
+          "pinyinDisplay": "li2",
+          "meaningPrimary": "Korea",
+          "penaltyTags": [],
+          "lineNumber": 123317
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "li4",
+            "meaningPrimary": "beautiful",
+            "penaltyTags": [],
+            "lineNumber": 123318
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "举",
+        "selected": {
+          "pinyinDisplay": "ju3",
+          "meaningPrimary": "to lift",
+          "penaltyTags": [],
+          "lineNumber": 92233
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ju3",
+            "meaningPrimary": "variant of 舉|举[ju3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 49661
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乀",
+        "selected": {
+          "pinyinDisplay": "fu2",
+          "meaningPrimary": "stretch",
+          "penaltyTags": [],
+          "lineNumber": 4084
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "pie3",
+            "meaningPrimary": "variant of 丿[pie3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 4085
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乃",
+        "selected": {
+          "pinyinDisplay": "nai3",
+          "meaningPrimary": "to be",
+          "penaltyTags": [],
+          "lineNumber": 4087
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "nai3",
+            "meaningPrimary": "variant of 乃[nai3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 38948
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乇",
+        "selected": {
+          "pinyinDisplay": "zhe2",
+          "meaningPrimary": "\"blade of grass\" component in Chinese characters",
+          "penaltyTags": [],
+          "lineNumber": 4127
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "tuo1",
+            "meaningPrimary": "old variant of 托[tuo1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 4126
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "么",
+        "selected": {
+          "pinyinDisplay": "ma2",
+          "meaningPrimary": "exclamatory final particle",
+          "penaltyTags": [],
+          "lineNumber": 123570
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ma5",
+            "meaningPrimary": "interrogative final particle",
+            "penaltyTags": [],
+            "lineNumber": 123571
+          },
+          {
+            "pinyinDisplay": "me5",
+            "meaningPrimary": "suffix, used to form interrogative 什麼|什么[shen2 me5], what?, indefinite 這麼|这么[zhe4 me5] thus, etc",
+            "penaltyTags": [],
+            "lineNumber": 123572
+          },
+          {
+            "pinyinDisplay": "me5",
+            "meaningPrimary": "variant of 麼|么[me5]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 123575
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "义",
+        "selected": {
+          "pinyinDisplay": "yi4",
+          "meaningPrimary": "justice",
+          "penaltyTags": [],
+          "lineNumber": 88031
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yi4",
+            "meaningPrimary": "(Tw) Italy (abbr. for 義大利|义大利[Yi4 da4 li4])",
+            "penaltyTags": [
+              "register_limited"
+            ],
+            "lineNumber": 88030
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乌",
+        "selected": {
+          "pinyinDisplay": "wu1",
+          "meaningPrimary": "abbr. for country names that begin with 烏|乌[wu1]: Ukraine 烏克蘭|乌克兰[Wu1 ke4 lan2], Uzbekistan 烏茲別克斯坦|乌兹别克斯坦[Wu1 zi1 bie2 ke4 si1 tan3] etc",
+          "penaltyTags": [],
+          "lineNumber": 69409
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wu1",
+            "meaningPrimary": "crow",
+            "penaltyTags": [],
+            "lineNumber": 69410
+          },
+          {
+            "pinyinDisplay": "wu4",
+            "meaningPrimary": "used in 烏拉|乌拉[wu4 la5]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 69411
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乐",
+        "selected": {
+          "pinyinDisplay": "le4",
+          "meaningPrimary": "happy",
+          "penaltyTags": [],
+          "lineNumber": 58929
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yue4",
+            "meaningPrimary": "music",
+            "penaltyTags": [],
+            "lineNumber": 58930
+          },
+          {
+            "pinyinDisplay": "le4",
+            "meaningPrimary": "surname Le",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 58926
+          },
+          {
+            "pinyinDisplay": "yue4",
+            "meaningPrimary": "surname Yue",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 58927
+          },
+          {
+            "pinyinDisplay": "lao4",
+            "meaningPrimary": "used in place names",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 58928
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乔",
+        "selected": {
+          "pinyinDisplay": "qiao2",
+          "meaningPrimary": "tall",
+          "penaltyTags": [],
+          "lineNumber": 22736
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "qiao2",
+            "meaningPrimary": "surname Qiao",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 22735
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乘",
+        "selected": {
+          "pinyinDisplay": "cheng2",
+          "meaningPrimary": "to ride",
+          "penaltyTags": [],
+          "lineNumber": 4194
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "sheng4",
+            "meaningPrimary": "generic term for history books",
+            "penaltyTags": [],
+            "lineNumber": 4195
+          },
+          {
+            "pinyinDisplay": "cheng2",
+            "meaningPrimary": "surname Cheng",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 4193
+          },
+          {
+            "pinyinDisplay": "cheng2",
+            "meaningPrimary": "old variant of 乘[cheng2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 58315
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乙",
+        "selected": {
+          "pinyinDisplay": "yi3",
+          "meaningPrimary": "second of the ten Heavenly Stems 十天干[shi2 tian1 gan1]",
+          "penaltyTags": [],
+          "lineNumber": 4235
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhe2",
+            "meaningPrimary": "turning stroke (in Chinese characters), aka 折[zhe2]",
+            "penaltyTags": [],
+            "lineNumber": 4236
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乜",
+        "selected": {
+          "pinyinDisplay": "mie1",
+          "meaningPrimary": "(Cantonese) what?",
+          "penaltyTags": [],
+          "lineNumber": 4281
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "nie4",
+            "meaningPrimary": "surname Nie",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 4280
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "也",
+        "selected": {
+          "pinyinDisplay": "ye3",
+          "meaningPrimary": "also; too; as well; (not ...) either",
+          "penaltyTags": [],
+          "lineNumber": 4372
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ye3",
+            "meaningPrimary": "surname Ye",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 4371
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "习",
+        "selected": {
+          "pinyinDisplay": "xi2",
+          "meaningPrimary": "(bound form) to practice",
+          "penaltyTags": [],
+          "lineNumber": 88172
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "xi2",
+            "meaningPrimary": "surname Xi",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 88171
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "书",
+        "selected": {
+          "pinyinDisplay": "shu1",
+          "meaningPrimary": "abbr. for 書經|书经[Shu1 jing1]",
+          "penaltyTags": [],
+          "lineNumber": 54389
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "shu1",
+            "meaningPrimary": "book",
+            "penaltyTags": [],
+            "lineNumber": 54390
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乾",
+        "selected": {
+          "pinyinDisplay": "qian2",
+          "meaningPrimary": "one of the Eight Trigrams 八卦[ba1 gua4], symbolizing heaven",
+          "penaltyTags": [],
+          "lineNumber": 4461
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "qian2",
+            "meaningPrimary": "surname Qian",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 4460
+          },
+          {
+            "pinyinDisplay": "qian2",
+            "meaningPrimary": "old variant of 乾[qian2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 4458
+          },
+          {
+            "pinyinDisplay": "qian2",
+            "meaningPrimary": "variant of 乾[qian2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 4547
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "乿",
+        "selected": {
+          "pinyinDisplay": "luan4",
+          "meaningPrimary": "old variant of 亂|乱[luan4]",
+          "penaltyTags": [
+            "redirect"
+          ],
+          "lineNumber": 4544
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhi4",
+            "meaningPrimary": "old variant of 治[zhi4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 4545
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "了",
+        "selected": {
+          "pinyinDisplay": "le5",
+          "meaningPrimary": "(completed action marker)",
+          "penaltyTags": [],
+          "lineNumber": 4601
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "liao3",
+            "meaningPrimary": "(of eyes) bright",
+            "penaltyTags": [],
+            "lineNumber": 78755
+          },
+          {
+            "pinyinDisplay": "liao3",
+            "meaningPrimary": "to finish",
+            "penaltyTags": [],
+            "lineNumber": 4602
+          },
+          {
+            "pinyinDisplay": "liao4",
+            "meaningPrimary": "unofficial variant of 瞭[liao4]",
+            "penaltyTags": [],
+            "lineNumber": 78756
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "予",
+        "selected": {
+          "pinyinDisplay": "yu2",
+          "meaningPrimary": "me",
+          "penaltyTags": [],
+          "lineNumber": 4627
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yu3",
+            "meaningPrimary": "(literary) to give",
+            "penaltyTags": [
+              "register_limited"
+            ],
+            "lineNumber": 4628
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "于",
+        "selected": {
+          "pinyinDisplay": "yu2",
+          "meaningPrimary": "(of time or place) in; at; on",
+          "penaltyTags": [],
+          "lineNumber": 52255
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yu2",
+            "meaningPrimary": "to go",
+            "penaltyTags": [],
+            "lineNumber": 4921
+          },
+          {
+            "pinyinDisplay": "yu2",
+            "meaningPrimary": "surname Yu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 4920
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "云",
+        "selected": {
+          "pinyinDisplay": "yun2",
+          "meaningPrimary": "cloud",
+          "penaltyTags": [],
+          "lineNumber": 116543
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yun2",
+            "meaningPrimary": "short name for Yunnan 雲南|云南[Yun2 nan2]",
+            "penaltyTags": [],
+            "lineNumber": 116542
+          },
+          {
+            "pinyinDisplay": "yun2",
+            "meaningPrimary": "(classical) to say",
+            "penaltyTags": [
+              "register_limited"
+            ],
+            "lineNumber": 4932
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "亓",
+        "selected": {
+          "pinyinDisplay": "qi2",
+          "meaningPrimary": "his",
+          "penaltyTags": [],
+          "lineNumber": 4985
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "qi2",
+            "meaningPrimary": "surname Qi",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 4984
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "井",
+        "selected": {
+          "pinyinDisplay": "jing3",
+          "meaningPrimary": "Jing, one of the 28 constellations of Chinese astronomy",
+          "penaltyTags": [],
+          "lineNumber": 5168
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jing3",
+            "meaningPrimary": "a well",
+            "penaltyTags": [],
+            "lineNumber": 5169
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "亚",
+        "selected": {
+          "pinyinDisplay": "ya4",
+          "meaningPrimary": "Asia",
+          "penaltyTags": [],
+          "lineNumber": 5208
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ya4",
+            "meaningPrimary": "second",
+            "penaltyTags": [],
+            "lineNumber": 5209
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "亟",
+        "selected": {
+          "pinyinDisplay": "qi4",
+          "meaningPrimary": "repeatedly",
+          "penaltyTags": [],
+          "lineNumber": 5348
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ji2",
+            "meaningPrimary": "(literary) urgently; anxiously; earnestly",
+            "penaltyTags": [
+              "register_limited"
+            ],
+            "lineNumber": 5347
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "亡",
+        "selected": {
+          "pinyinDisplay": "wang2",
+          "meaningPrimary": "to die",
+          "penaltyTags": [],
+          "lineNumber": 5352
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wang2",
+            "meaningPrimary": "old variant of 亡[wang2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 6031
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "亢",
+        "selected": {
+          "pinyinDisplay": "kang4",
+          "meaningPrimary": "Kang, one of the 28 constellations",
+          "penaltyTags": [],
+          "lineNumber": 5369
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "kang4",
+            "meaningPrimary": "high",
+            "penaltyTags": [],
+            "lineNumber": 5370
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "产",
+        "selected": {
+          "pinyinDisplay": "chan3",
+          "meaningPrimary": "to give birth",
+          "penaltyTags": [],
+          "lineNumber": 74524
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "chan3",
+            "meaningPrimary": "variant of 產|产[chan3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 74577
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "亩",
+        "selected": {
+          "pinyinDisplay": "mu3",
+          "meaningPrimary": "classifier for fields",
+          "penaltyTags": [],
+          "lineNumber": 75094
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "mu3",
+            "meaningPrimary": "old variant of 畝|亩[mu3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 74955
+          },
+          {
+            "pinyinDisplay": "mu3",
+            "meaningPrimary": "old variant of 畝|亩[mu3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 74957
+          },
+          {
+            "pinyinDisplay": "mu3",
+            "meaningPrimary": "old variant of 畝|亩[mu3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 75231
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "享",
+        "selected": {
+          "pinyinDisplay": "xiang3",
+          "meaningPrimary": "to enjoy",
+          "penaltyTags": [],
+          "lineNumber": 5569
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "xiang3",
+            "meaningPrimary": "old variant of 享[xiang3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 5659
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "京",
+        "selected": {
+          "pinyinDisplay": "jing1",
+          "meaningPrimary": "capital city of a country",
+          "penaltyTags": [],
+          "lineNumber": 5583
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jing1",
+            "meaningPrimary": "short name for Beijing 北京[Bei3 jing1]",
+            "penaltyTags": [],
+            "lineNumber": 5582
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "亲",
+        "selected": {
+          "pinyinDisplay": "qin1",
+          "meaningPrimary": "parent",
+          "penaltyTags": [],
+          "lineNumber": 99752
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "qing4",
+            "meaningPrimary": "parents-in-law of one's offspring",
+            "penaltyTags": [],
+            "lineNumber": 99753
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "亶",
+        "selected": {
+          "pinyinDisplay": "dan3",
+          "meaningPrimary": "sincere",
+          "penaltyTags": [],
+          "lineNumber": 5665
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "dan3",
+            "meaningPrimary": "surname Dan",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 5664
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "亹",
+        "selected": {
+          "pinyinDisplay": "men2",
+          "meaningPrimary": "mountain pass",
+          "penaltyTags": [],
+          "lineNumber": 5667
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wei3",
+            "meaningPrimary": "resolute",
+            "penaltyTags": [],
+            "lineNumber": 5668
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "什",
+        "selected": {
+          "pinyinDisplay": "shen2",
+          "meaningPrimary": "what",
+          "penaltyTags": [],
+          "lineNumber": 6032
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "shi2",
+            "meaningPrimary": "ten (used in fractions, writing checks etc)",
+            "penaltyTags": [],
+            "lineNumber": 6033
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "仆",
+        "selected": {
+          "pinyinDisplay": "pu1",
+          "meaningPrimary": "to fall forward",
+          "penaltyTags": [],
+          "lineNumber": 6101
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "pu2",
+            "meaningPrimary": "servant",
+            "penaltyTags": [],
+            "lineNumber": 10041
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "仇",
+        "selected": {
+          "pinyinDisplay": "chou2",
+          "meaningPrimary": "hatred",
+          "penaltyTags": [],
+          "lineNumber": 6104
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "qiu2",
+            "meaningPrimary": "spouse",
+            "penaltyTags": [],
+            "lineNumber": 6105
+          },
+          {
+            "pinyinDisplay": "qiu2",
+            "meaningPrimary": "surname Qiu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6103
+          },
+          {
+            "pinyinDisplay": "chou2",
+            "meaningPrimary": "variant of 仇[chou2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 102365
+          },
+          {
+            "pinyinDisplay": "chou2",
+            "meaningPrimary": "variant of 仇[chou2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 102368
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "从",
+        "selected": {
+          "pinyinDisplay": "cong2",
+          "meaningPrimary": "from; through; via",
+          "penaltyTags": [],
+          "lineNumber": 40294
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "cong2",
+            "meaningPrimary": "surname Cong",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 40293
+          },
+          {
+            "pinyinDisplay": "cong2",
+            "meaningPrimary": "variant of 從|从[cong2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 6184
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "仑",
+        "selected": {
+          "pinyinDisplay": "lun2",
+          "meaningPrimary": "to arrange",
+          "penaltyTags": [],
+          "lineNumber": 7809
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "lun2",
+            "meaningPrimary": "used in 崑崙|昆仑[Kun1 lun2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 36099
+          },
+          {
+            "pinyinDisplay": "lun2",
+            "meaningPrimary": "variant of 崙|仑[lun2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 36098
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "仔",
+        "selected": {
+          "pinyinDisplay": "zi3",
+          "meaningPrimary": "(bound form) (of domestic animals or fowl) young",
+          "penaltyTags": [],
+          "lineNumber": 6187
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zai3",
+            "meaningPrimary": "(dialect) (bound form) young man",
+            "penaltyTags": [
+              "register_limited"
+            ],
+            "lineNumber": 6185
+          },
+          {
+            "pinyinDisplay": "zi1",
+            "meaningPrimary": "used in 仔肩[zi1 jian1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 6186
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "付",
+        "selected": {
+          "pinyinDisplay": "fu4",
+          "meaningPrimary": "to pay",
+          "penaltyTags": [],
+          "lineNumber": 6231
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "fu4",
+            "meaningPrimary": "surname Fu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6230
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "仙",
+        "selected": {
+          "pinyinDisplay": "xian1",
+          "meaningPrimary": "immortal",
+          "penaltyTags": [],
+          "lineNumber": 6258
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "xian1",
+            "meaningPrimary": "variant of 仙[xian1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 10017
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "仡",
+        "selected": {
+          "pinyinDisplay": "yi4",
+          "meaningPrimary": "strong",
+          "penaltyTags": [],
+          "lineNumber": 6315
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ge1",
+            "meaningPrimary": "Taiwan pr. [qi4]",
+            "penaltyTags": [
+              "pronunciation_note"
+            ],
+            "lineNumber": 6314
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "令",
+        "selected": {
+          "pinyinDisplay": "ling3",
+          "meaningPrimary": "classifier for a ream of paper",
+          "penaltyTags": [],
+          "lineNumber": 6415
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ling4",
+            "meaningPrimary": "to order",
+            "penaltyTags": [],
+            "lineNumber": 6416
+          },
+          {
+            "pinyinDisplay": "ling2",
+            "meaningPrimary": "used in 脊令[ji2 ling2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 6414
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "以",
+        "selected": {
+          "pinyinDisplay": "yi3",
+          "meaningPrimary": "abbr. for Israel 以色列[Yi3 se4 lie4]",
+          "penaltyTags": [],
+          "lineNumber": 6448
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yi3",
+            "meaningPrimary": "to use",
+            "penaltyTags": [],
+            "lineNumber": 6449
+          },
+          {
+            "pinyinDisplay": "yi3",
+            "meaningPrimary": "old variant of 以[yi3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 194
+          },
+          {
+            "pinyinDisplay": "yi3",
+            "meaningPrimary": "old variant of 以[yi3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 225
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "仰",
+        "selected": {
+          "pinyinDisplay": "yang3",
+          "meaningPrimary": "to face upward",
+          "penaltyTags": [],
+          "lineNumber": 6576
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yang3",
+            "meaningPrimary": "surname Yang",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6575
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "仲",
+        "selected": {
+          "pinyinDisplay": "zhong4",
+          "meaningPrimary": "second month of a season",
+          "penaltyTags": [],
+          "lineNumber": 6599
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhong4",
+            "meaningPrimary": "surname Zhong",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6598
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "仵",
+        "selected": {
+          "pinyinDisplay": "wu3",
+          "meaningPrimary": "equal",
+          "penaltyTags": [],
+          "lineNumber": 6611
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wu3",
+            "meaningPrimary": "surname Wu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6610
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "价",
+        "selected": {
+          "pinyinDisplay": "jia4",
+          "meaningPrimary": "price",
+          "penaltyTags": [],
+          "lineNumber": 10108
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jie5",
+            "meaningPrimary": "particle used between an adverb and a verb or adjective",
+            "penaltyTags": [],
+            "lineNumber": 10109
+          },
+          {
+            "pinyinDisplay": "jie4",
+            "meaningPrimary": "(literary) messenger; servant",
+            "penaltyTags": [
+              "register_limited"
+            ],
+            "lineNumber": 6617
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "任",
+        "selected": {
+          "pinyinDisplay": "ren4",
+          "meaningPrimary": "to assign",
+          "penaltyTags": [],
+          "lineNumber": 6619
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ren2",
+            "meaningPrimary": "surname Ren",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6618
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "仿",
+        "selected": {
+          "pinyinDisplay": "fang3",
+          "meaningPrimary": "to imitate",
+          "penaltyTags": [],
+          "lineNumber": 6682
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "fang3",
+            "meaningPrimary": "(Note: While 仿 is not officially designated as the simplified form of 彷, it serves as the de facto simplification when 彷 is pronounced fǎng.)",
+            "penaltyTags": [
+              "editorial_note"
+            ],
+            "lineNumber": 39826
+          },
+          {
+            "pinyinDisplay": "fang3",
+            "meaningPrimary": "variant of 仿[fang3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 8885
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伊",
+        "selected": {
+          "pinyinDisplay": "yi1",
+          "meaningPrimary": "second person singular pronoun (\"you\")",
+          "penaltyTags": [],
+          "lineNumber": 6741
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yi1",
+            "meaningPrimary": "surname Yi",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6740
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伍",
+        "selected": {
+          "pinyinDisplay": "wu3",
+          "meaningPrimary": "squad of five soldiers",
+          "penaltyTags": [],
+          "lineNumber": 6843
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wu3",
+            "meaningPrimary": "surname Wu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6842
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伏",
+        "selected": {
+          "pinyinDisplay": "fu2",
+          "meaningPrimary": "to lean over",
+          "penaltyTags": [],
+          "lineNumber": 6854
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "fu2",
+            "meaningPrimary": "surname Fu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6853
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "休",
+        "selected": {
+          "pinyinDisplay": "xiu1",
+          "meaningPrimary": "to rest",
+          "penaltyTags": [],
+          "lineNumber": 6897
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "xiu1",
+            "meaningPrimary": "surname Xiu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6896
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "众",
+        "selected": {
+          "pinyinDisplay": "zhong4",
+          "meaningPrimary": "(bound form) crowd; multitude",
+          "penaltyTags": [],
+          "lineNumber": 78490
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhong4",
+            "meaningPrimary": "abbr. for 眾議院|众议院[Zhong4 yi4 yuan4], House of Representatives",
+            "penaltyTags": [],
+            "lineNumber": 78489
+          },
+          {
+            "pinyinDisplay": "zhong4",
+            "meaningPrimary": "variant of 眾|众[zhong4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 97873
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伙",
+        "selected": {
+          "pinyinDisplay": "huo3",
+          "meaningPrimary": "companion",
+          "penaltyTags": [],
+          "lineNumber": 27657
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "huo3",
+            "meaningPrimary": "meals (abbr. for 伙食[huo3 shi2])",
+            "penaltyTags": [],
+            "lineNumber": 6940
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "会",
+        "selected": {
+          "pinyinDisplay": "hui4",
+          "meaningPrimary": "can; to have the skill; to know how to",
+          "penaltyTags": [],
+          "lineNumber": 54632
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "kuai4",
+            "meaningPrimary": "(bound form) to reckon accounts",
+            "penaltyTags": [],
+            "lineNumber": 54633
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伞",
+        "selected": {
+          "pinyinDisplay": "san3",
+          "meaningPrimary": "damask silk",
+          "penaltyTags": [],
+          "lineNumber": 87028
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "san3",
+            "meaningPrimary": "umbrella",
+            "penaltyTags": [],
+            "lineNumber": 9589
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "传",
+        "selected": {
+          "pinyinDisplay": "chuan2",
+          "meaningPrimary": "to pass on",
+          "penaltyTags": [],
+          "lineNumber": 9713
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhuan4",
+            "meaningPrimary": "biography",
+            "penaltyTags": [],
+            "lineNumber": 9714
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伪",
+        "selected": {
+          "pinyinDisplay": "wei3",
+          "meaningPrimary": "false",
+          "penaltyTags": [],
+          "lineNumber": 9493
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wei3",
+            "meaningPrimary": "variant of 偽|伪[wei3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 10052
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伫",
+        "selected": {
+          "pinyinDisplay": "zhu4",
+          "meaningPrimary": "to stand for a long time",
+          "penaltyTags": [],
+          "lineNumber": 7115
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhu4",
+            "meaningPrimary": "to stand for a long time (variant of 佇|伫[zhu4])",
+            "penaltyTags": [],
+            "lineNumber": 82479
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伭",
+        "selected": {
+          "pinyinDisplay": "xian2",
+          "meaningPrimary": "(literary) cruel; ruthless",
+          "penaltyTags": [
+            "register_limited"
+          ],
+          "lineNumber": 6954
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "xian2",
+            "meaningPrimary": "surname Xian",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 6953
+          },
+          {
+            "pinyinDisplay": "xuan2",
+            "meaningPrimary": "variant of 玄[xuan2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 6955
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伯",
+        "selected": {
+          "pinyinDisplay": "bai3",
+          "meaningPrimary": "one hundred (old)",
+          "penaltyTags": [],
+          "lineNumber": 6957
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "bo2",
+            "meaningPrimary": "father's elder brother",
+            "penaltyTags": [],
+            "lineNumber": 6958
+          },
+          {
+            "pinyinDisplay": "ba4",
+            "meaningPrimary": "variant of 霸[ba4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 6956
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "估",
+        "selected": {
+          "pinyinDisplay": "gu1",
+          "meaningPrimary": "to estimate",
+          "penaltyTags": [],
+          "lineNumber": 6992
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "gu4",
+            "meaningPrimary": "used in 估衣[gu4 yi5]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 6993
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伲",
+        "selected": {
+          "pinyinDisplay": "ni4",
+          "meaningPrimary": "my",
+          "penaltyTags": [],
+          "lineNumber": 7007
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ni3",
+            "meaningPrimary": "variant of 你[ni3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7006
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伺",
+        "selected": {
+          "pinyinDisplay": "si4",
+          "meaningPrimary": "to watch",
+          "penaltyTags": [],
+          "lineNumber": 7059
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ci4",
+            "meaningPrimary": "used in 伺候[ci4 hou5]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7058
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "似",
+        "selected": {
+          "pinyinDisplay": "si4",
+          "meaningPrimary": "to seem",
+          "penaltyTags": [],
+          "lineNumber": 7067
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "shi4",
+            "meaningPrimary": "used in 似的[shi4 de5]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7066
+          },
+          {
+            "pinyinDisplay": "si4",
+            "meaningPrimary": "old variant of 似[si4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7100
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "伽",
+        "selected": {
+          "pinyinDisplay": "jia1",
+          "meaningPrimary": "traditionally used as phonetic for \"ga\"",
+          "penaltyTags": [],
+          "lineNumber": 7080
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "qie2",
+            "meaningPrimary": "used to transliterate Sanskrit \"gha\"",
+            "penaltyTags": [],
+            "lineNumber": 7081
+          },
+          {
+            "pinyinDisplay": "ga1",
+            "meaningPrimary": "used in the transliteration of Greek letters",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7079
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "佃",
+        "selected": {
+          "pinyinDisplay": "dian4",
+          "meaningPrimary": "to rent farmland from a landlord",
+          "penaltyTags": [],
+          "lineNumber": 7101
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "tian2",
+            "meaningPrimary": "to cultivate",
+            "penaltyTags": [],
+            "lineNumber": 7102
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "体",
+        "selected": {
+          "pinyinDisplay": "ti3",
+          "meaningPrimary": "body",
+          "penaltyTags": [],
+          "lineNumber": 121351
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ti1",
+            "meaningPrimary": "Taiwan pr. [ti3]",
+            "penaltyTags": [
+              "pronunciation_note"
+            ],
+            "lineNumber": 121350
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "何",
+        "selected": {
+          "pinyinDisplay": "he2",
+          "meaningPrimary": "what",
+          "penaltyTags": [],
+          "lineNumber": 7326
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "he2",
+            "meaningPrimary": "surname He",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 7325
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "余",
+        "selected": {
+          "pinyinDisplay": "yu2",
+          "meaningPrimary": "extra",
+          "penaltyTags": [],
+          "lineNumber": 119927
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yu2",
+            "meaningPrimary": "(literary) I; me",
+            "penaltyTags": [
+              "register_limited"
+            ],
+            "lineNumber": 7369
+          },
+          {
+            "pinyinDisplay": "yu2",
+            "meaningPrimary": "surname Yu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 7368
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "佚",
+        "selected": {
+          "pinyinDisplay": "yi4",
+          "meaningPrimary": "(bound form) (of a book, author etc) lost (to the ages)",
+          "penaltyTags": [],
+          "lineNumber": 7374
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yi4",
+            "meaningPrimary": "surname Yi",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 7372
+          },
+          {
+            "pinyinDisplay": "die2",
+            "meaningPrimary": "old variant of 迭[die2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7373
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "佛",
+        "selected": {
+          "pinyinDisplay": "fo2",
+          "meaningPrimary": "Buddha; Buddhism (abbr. for 佛陀[Fo2 tuo2])",
+          "penaltyTags": [],
+          "lineNumber": 7376
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "fu2",
+            "meaningPrimary": "(female) head ornament",
+            "penaltyTags": [],
+            "lineNumber": 121924
+          },
+          {
+            "pinyinDisplay": "fu2",
+            "meaningPrimary": "used in 仿佛[fang3 fu2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7377
+          },
+          {
+            "pinyinDisplay": "fu2",
+            "meaningPrimary": "used in 彷彿|仿佛[fang3 fu2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 39858
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "作",
+        "selected": {
+          "pinyinDisplay": "zuo1",
+          "meaningPrimary": "(bound form) worker",
+          "penaltyTags": [],
+          "lineNumber": 7439
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zuo4",
+            "meaningPrimary": "to do; to engage in",
+            "penaltyTags": [],
+            "lineNumber": 7440
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "佝",
+        "selected": {
+          "pinyinDisplay": "gou1",
+          "meaningPrimary": "Taiwan pr. [kou4]",
+          "penaltyTags": [
+            "pronunciation_note"
+          ],
+          "lineNumber": 7530
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "kou4",
+            "meaningPrimary": "used in 佝瞀[kou4 mao4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7531
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "你",
+        "selected": {
+          "pinyinDisplay": "ni3",
+          "meaningPrimary": "you (Note: In Taiwan, 妳 is used to address females, but in mainland China, it is not commonly used. Instead, 你 is used to address both males and females.)",
+          "penaltyTags": [],
+          "lineNumber": 30424
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ni3",
+            "meaningPrimary": "you (informal, as opposed to courteous 您[nin2])",
+            "penaltyTags": [],
+            "lineNumber": 7538
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "佣",
+        "selected": {
+          "pinyinDisplay": "yong1",
+          "meaningPrimary": "to hire",
+          "penaltyTags": [],
+          "lineNumber": 9685
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yong4",
+            "meaningPrimary": "commission (for middleman)",
+            "penaltyTags": [],
+            "lineNumber": 7554
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "佩",
+        "selected": {
+          "pinyinDisplay": "pei4",
+          "meaningPrimary": "girdle ornaments",
+          "penaltyTags": [],
+          "lineNumber": 73288
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "pei4",
+            "meaningPrimary": "to respect",
+            "penaltyTags": [],
+            "lineNumber": 7561
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "佳",
+        "selected": {
+          "pinyinDisplay": "jia1",
+          "meaningPrimary": "beautiful",
+          "penaltyTags": [],
+          "lineNumber": 7583
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jia1",
+            "meaningPrimary": "surname Jia",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 7582
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "佽",
+        "selected": {
+          "pinyinDisplay": "ci4",
+          "meaningPrimary": "nimble",
+          "penaltyTags": [],
+          "lineNumber": 7635
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ci4",
+            "meaningPrimary": "surname Ci",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 7634
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "侃",
+        "selected": {
+          "pinyinDisplay": "kan3",
+          "meaningPrimary": "upright and honest",
+          "penaltyTags": [],
+          "lineNumber": 7672
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "kan3",
+            "meaningPrimary": "old variant of 侃[kan3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 9177
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "侄",
+        "selected": {
+          "pinyinDisplay": "zhi2",
+          "meaningPrimary": "brother's son; nephew",
+          "penaltyTags": [],
+          "lineNumber": 30625
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhi2",
+            "meaningPrimary": "variant of 姪|侄[zhi2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7679
+          },
+          {
+            "pinyinDisplay": "zhi2",
+            "meaningPrimary": "variant of 姪|侄[zhi2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 30427
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "侗",
+        "selected": {
+          "pinyinDisplay": "dong4",
+          "meaningPrimary": "Dong ethnic group",
+          "penaltyTags": [],
+          "lineNumber": 7810
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "tong2",
+            "meaningPrimary": "ignorant",
+            "penaltyTags": [],
+            "lineNumber": 7811
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "供",
+        "selected": {
+          "pinyinDisplay": "gong1",
+          "meaningPrimary": "to provide; to supply",
+          "penaltyTags": [],
+          "lineNumber": 7817
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "gong4",
+            "meaningPrimary": "to lay (sacrificial offerings)",
+            "penaltyTags": [],
+            "lineNumber": 7818
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "侥",
+        "selected": {
+          "pinyinDisplay": "jiao3",
+          "meaningPrimary": "by mere luck",
+          "penaltyTags": [],
+          "lineNumber": 10055
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yao2",
+            "meaningPrimary": "used in 僬僥|僬侥[jiao1 yao2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 10056
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "侦",
+        "selected": {
+          "pinyinDisplay": "zhen1",
+          "meaningPrimary": "to scout",
+          "penaltyTags": [],
+          "lineNumber": 9398
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhen1",
+            "meaningPrimary": "old variant of 偵|侦[zhen1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 108203
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "侧",
+        "selected": {
+          "pinyinDisplay": "ce4",
+          "meaningPrimary": "the side",
+          "penaltyTags": [],
+          "lineNumber": 9370
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhai1",
+            "meaningPrimary": "lean on one side",
+            "penaltyTags": [],
+            "lineNumber": 9371
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "侯",
+        "selected": {
+          "pinyinDisplay": "hou2",
+          "meaningPrimary": "marquis, second of the five orders of ancient Chinese nobility 五等爵位[wu3 deng3 jue2 wei4]",
+          "penaltyTags": [],
+          "lineNumber": 7915
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "hou2",
+            "meaningPrimary": "surname Hou",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 7914
+          },
+          {
+            "pinyinDisplay": "hou4",
+            "meaningPrimary": "used in 閩侯|闽侯[Min3 hou4] (the name of a place in Fujian)",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7916
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "便",
+        "selected": {
+          "pinyinDisplay": "bian4",
+          "meaningPrimary": "plain",
+          "penaltyTags": [],
+          "lineNumber": 7957
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "pian2",
+            "meaningPrimary": "used in 便宜[pian2 yi5]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 7958
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "俄",
+        "selected": {
+          "pinyinDisplay": "e2",
+          "meaningPrimary": "Russia",
+          "penaltyTags": [],
+          "lineNumber": 8036
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "e2",
+            "meaningPrimary": "suddenly",
+            "penaltyTags": [],
+            "lineNumber": 8037
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "俊",
+        "selected": {
+          "pinyinDisplay": "jun4",
+          "meaningPrimary": "smart",
+          "penaltyTags": [],
+          "lineNumber": 8073
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zun4",
+            "meaningPrimary": "(dialectal pronunciation of 俊[jun4])",
+            "penaltyTags": [],
+            "lineNumber": 8074
+          },
+          {
+            "pinyinDisplay": "jun4",
+            "meaningPrimary": "old variant of 俊[jun4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 184
+          },
+          {
+            "pinyinDisplay": "jun4",
+            "meaningPrimary": "variant of 俊[jun4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 10159
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "俚",
+        "selected": {
+          "pinyinDisplay": "li3",
+          "meaningPrimary": "old name for the 黎[Li2] ethnic group",
+          "penaltyTags": [],
+          "lineNumber": 8119
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "li3",
+            "meaningPrimary": "rustic",
+            "penaltyTags": [],
+            "lineNumber": 8120
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "保",
+        "selected": {
+          "pinyinDisplay": "bao3",
+          "meaningPrimary": "Bulgaria (abbr. for 保加利亞|保加利亚[Bao3 jia1 li4 ya4])",
+          "penaltyTags": [],
+          "lineNumber": 8126
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "bao3",
+            "meaningPrimary": "to defend; to protect; to keep",
+            "penaltyTags": [],
+            "lineNumber": 8127
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "俞",
+        "selected": {
+          "pinyinDisplay": "yu2",
+          "meaningPrimary": "yes (used by Emperor or ruler)",
+          "penaltyTags": [],
+          "lineNumber": 8283
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yu2",
+            "meaningPrimary": "surname Yu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 8281
+          },
+          {
+            "pinyinDisplay": "shu4",
+            "meaningPrimary": "variant of 腧[shu4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 8282
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "俟",
+        "selected": {
+          "pinyinDisplay": "si4",
+          "meaningPrimary": "(literary) to wait for",
+          "penaltyTags": [
+            "register_limited"
+          ],
+          "lineNumber": 8289
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "qi2",
+            "meaningPrimary": "used in 万俟[Mo4 qi2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 8288
+          },
+          {
+            "pinyinDisplay": "si4",
+            "meaningPrimary": "variant of 俟[si4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 82507
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "俩",
+        "selected": {
+          "pinyinDisplay": "lia3",
+          "meaningPrimary": "two (colloquial equivalent of 兩個|两个)",
+          "penaltyTags": [],
+          "lineNumber": 8560
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "liang3",
+            "meaningPrimary": "used in 伎倆|伎俩[ji4 liang3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 8561
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "修",
+        "selected": {
+          "pinyinDisplay": "xiu1",
+          "meaningPrimary": "to decorate",
+          "penaltyTags": [],
+          "lineNumber": 8416
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "xiu1",
+            "meaningPrimary": "surname Xiu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 8415
+          },
+          {
+            "pinyinDisplay": "xiu1",
+            "meaningPrimary": "variant of 修[xiu1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 90501
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "俯",
+        "selected": {
+          "pinyinDisplay": "fu3",
+          "meaningPrimary": "to look down",
+          "penaltyTags": [],
+          "lineNumber": 8501
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "fu3",
+            "meaningPrimary": "variant of 俯[fu3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 8124
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "倏",
+        "selected": {
+          "pinyinDisplay": "shu1",
+          "meaningPrimary": "sudden",
+          "penaltyTags": [],
+          "lineNumber": 8633
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "shu1",
+            "meaningPrimary": "variant of 倏[shu1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 8637
+          },
+          {
+            "pinyinDisplay": "shu1",
+            "meaningPrimary": "variant of 倏[shu1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 10313
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "倒",
+        "selected": {
+          "pinyinDisplay": "dao3",
+          "meaningPrimary": "to fall; to collapse; to lie horizontally",
+          "penaltyTags": [],
+          "lineNumber": 8639
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "dao4",
+            "meaningPrimary": "to invert; to place upside down or frontside back",
+            "penaltyTags": [],
+            "lineNumber": 8640
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "倔",
+        "selected": {
+          "pinyinDisplay": "jue4",
+          "meaningPrimary": "gruff; surly",
+          "penaltyTags": [],
+          "lineNumber": 8758
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jue2",
+            "meaningPrimary": "used in 倔強|倔强[jue2 jiang4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 8757
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "倘",
+        "selected": {
+          "pinyinDisplay": "tang3",
+          "meaningPrimary": "if; supposing; in case",
+          "penaltyTags": [],
+          "lineNumber": 8766
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "chang2",
+            "meaningPrimary": "used in 倘佯[chang2 yang2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 8765
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "倞",
+        "selected": {
+          "pinyinDisplay": "jing4",
+          "meaningPrimary": "strong",
+          "penaltyTags": [],
+          "lineNumber": 8807
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "liang4",
+            "meaningPrimary": "distant",
+            "penaltyTags": [],
+            "lineNumber": 8808
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "借",
+        "selected": {
+          "pinyinDisplay": "jie4",
+          "meaningPrimary": "to borrow",
+          "penaltyTags": [],
+          "lineNumber": 8809
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jie4",
+            "meaningPrimary": "variant of 借[jie4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 96002
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "倥",
+        "selected": {
+          "pinyinDisplay": "kong1",
+          "meaningPrimary": "ignorant",
+          "penaltyTags": [],
+          "lineNumber": 8887
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "kong3",
+            "meaningPrimary": "urgent",
+            "penaltyTags": [],
+            "lineNumber": 8888
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "倦",
+        "selected": {
+          "pinyinDisplay": "juan4",
+          "meaningPrimary": "tired; weary; fatigued",
+          "penaltyTags": [],
+          "lineNumber": 8891
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "juan4",
+            "meaningPrimary": "old variant of 倦[juan4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 15541
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "倪",
+        "selected": {
+          "pinyinDisplay": "ni2",
+          "meaningPrimary": "(literary) small child",
+          "penaltyTags": [
+            "register_limited"
+          ],
+          "lineNumber": 8901
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ni2",
+            "meaningPrimary": "surname Ni",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 8900
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "偃",
+        "selected": {
+          "pinyinDisplay": "yan3",
+          "meaningPrimary": "to lie supine",
+          "penaltyTags": [],
+          "lineNumber": 8953
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yan3",
+            "meaningPrimary": "surname Yan",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 8952
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "假",
+        "selected": {
+          "pinyinDisplay": "jia3",
+          "meaningPrimary": "fake",
+          "penaltyTags": [],
+          "lineNumber": 8959
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jia3",
+            "meaningPrimary": "to borrow",
+            "penaltyTags": [],
+            "lineNumber": 18709
+          },
+          {
+            "pinyinDisplay": "jia4",
+            "meaningPrimary": "vacation",
+            "penaltyTags": [],
+            "lineNumber": 8960
+          },
+          {
+            "pinyinDisplay": "gei1",
+            "meaningPrimary": "used in 假掰[gei1 bai1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 8958
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "偈",
+        "selected": {
+          "pinyinDisplay": "ji4",
+          "meaningPrimary": "Buddhist hymn",
+          "penaltyTags": [],
+          "lineNumber": 9062
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jie2",
+            "meaningPrimary": "forceful",
+            "penaltyTags": [],
+            "lineNumber": 9063
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "偲",
+        "selected": {
+          "pinyinDisplay": "cai1",
+          "meaningPrimary": "(literary) learned; erudite",
+          "penaltyTags": [
+            "register_limited"
+          ],
+          "lineNumber": 9367
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "si1",
+            "meaningPrimary": "used in 偲偲[si1 si1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 9368
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "偻",
+        "selected": {
+          "pinyinDisplay": "lü3",
+          "meaningPrimary": "crookbacked",
+          "penaltyTags": [],
+          "lineNumber": 10004
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "lou2",
+            "meaningPrimary": "used in 佝僂|佝偻[gou1 lou2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 10003
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "傀",
+        "selected": {
+          "pinyinDisplay": "gui1",
+          "meaningPrimary": "grand",
+          "penaltyTags": [],
+          "lineNumber": 9521
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "kui3",
+            "meaningPrimary": "used in 傀儡[kui3 lei3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 9522
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "傅",
+        "selected": {
+          "pinyinDisplay": "fu4",
+          "meaningPrimary": "(bound form) instructor",
+          "penaltyTags": [],
+          "lineNumber": 9527
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "fu4",
+            "meaningPrimary": "surname Fu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 9526
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "傕",
+        "selected": {
+          "pinyinDisplay": "jue2",
+          "meaningPrimary": "surname Jue",
+          "penaltyTags": [
+            "surname_only"
+          ],
+          "lineNumber": 9586
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jue2",
+            "meaningPrimary": "used in old names",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 9587
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "储",
+        "selected": {
+          "pinyinDisplay": "chu3",
+          "meaningPrimary": "(bound form) to store up; to keep in reserve",
+          "penaltyTags": [],
+          "lineNumber": 10286
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "chu3",
+            "meaningPrimary": "surname Chu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 10285
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "傿",
+        "selected": {
+          "pinyinDisplay": "yan1",
+          "meaningPrimary": "name of an immortal",
+          "penaltyTags": [],
+          "lineNumber": 10001
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yan4",
+            "meaningPrimary": "fraudulent price",
+            "penaltyTags": [],
+            "lineNumber": 10002
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "僖",
+        "selected": {
+          "pinyinDisplay": "xi1",
+          "meaningPrimary": "cautious",
+          "penaltyTags": [],
+          "lineNumber": 10046
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "xi1",
+            "meaningPrimary": "surname Xi",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 10045
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "僚",
+        "selected": {
+          "pinyinDisplay": "liao2",
+          "meaningPrimary": "bureaucrat",
+          "penaltyTags": [],
+          "lineNumber": 10048
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "liao2",
+            "meaningPrimary": "surname Liao",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 10047
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "僮",
+        "selected": {
+          "pinyinDisplay": "tong2",
+          "meaningPrimary": "servant boy",
+          "penaltyTags": [],
+          "lineNumber": 10084
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhuang4",
+            "meaningPrimary": "old variant of 壯|壮, Zhuang ethnic group of Guangxi",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 10083
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "僵",
+        "selected": {
+          "pinyinDisplay": "jiang1",
+          "meaningPrimary": "rigid",
+          "penaltyTags": [],
+          "lineNumber": 10096
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jiang1",
+            "meaningPrimary": "variant of 僵[jiang1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 61145
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "儿",
+        "selected": {
+          "pinyinDisplay": "er2",
+          "meaningPrimary": "child",
+          "penaltyTags": [],
+          "lineNumber": 10923
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "r5",
+            "meaningPrimary": "non-syllabic diminutive suffix",
+            "penaltyTags": [],
+            "lineNumber": 10924
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "兀",
+        "selected": {
+          "pinyinDisplay": "wu4",
+          "meaningPrimary": "(literary) rising to a height; towering",
+          "penaltyTags": [
+            "register_limited"
+          ],
+          "lineNumber": 10327
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wu4",
+            "meaningPrimary": "surname Wu",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 10326
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "元",
+        "selected": {
+          "pinyinDisplay": "yuan2",
+          "meaningPrimary": "Yuan dynasty (1279–1368)",
+          "penaltyTags": [],
+          "lineNumber": 10342
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yuan2",
+            "meaningPrimary": "currency unit (esp. Chinese yuan)",
+            "penaltyTags": [],
+            "lineNumber": 10343
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "兆",
+        "selected": {
+          "pinyinDisplay": "zhao4",
+          "meaningPrimary": "(bound form) omen",
+          "penaltyTags": [],
+          "lineNumber": 10471
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhao4",
+            "meaningPrimary": "surname Zhao",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 10470
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "克",
+        "selected": {
+          "pinyinDisplay": "ke4",
+          "meaningPrimary": "Ke (c. 2000 BC), seventh of the legendary Flame Emperors, 炎帝[Yan2 di4] descended from Shennong 神農|神农[Shen2 nong2] Farmer God",
+          "penaltyTags": [],
+          "lineNumber": 14389
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ke4",
+            "meaningPrimary": "abbr. for 克羅地亞|克罗地亚[Ke4 luo2 di4 ya4], Croatia",
+            "penaltyTags": [],
+            "lineNumber": 10763
+          },
+          {
+            "pinyinDisplay": "ke4",
+            "meaningPrimary": "to be able to",
+            "penaltyTags": [],
+            "lineNumber": 10764
+          },
+          {
+            "pinyinDisplay": "ke4",
+            "meaningPrimary": "to subdue",
+            "penaltyTags": [],
+            "lineNumber": 14390
+          },
+          {
+            "pinyinDisplay": "ke4",
+            "meaningPrimary": "variant of 剋|克[ke4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 33922
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "免",
+        "selected": {
+          "pinyinDisplay": "mian3",
+          "meaningPrimary": "to excuse sb",
+          "penaltyTags": [],
+          "lineNumber": 10880
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wen4",
+            "meaningPrimary": "old variant of 絻[wen4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 10881
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "兑",
+        "selected": {
+          "pinyinDisplay": "dui4",
+          "meaningPrimary": "to cash",
+          "penaltyTags": [],
+          "lineNumber": 10874
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "dui4",
+            "meaningPrimary": "surname Dui",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 10873
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "兔",
+        "selected": {
+          "pinyinDisplay": "tu4",
+          "meaningPrimary": "rabbit",
+          "penaltyTags": [],
+          "lineNumber": 10949
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "tu4",
+            "meaningPrimary": "variant of 兔[tu4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 10922
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "党",
+        "selected": {
+          "pinyinDisplay": "dang3",
+          "meaningPrimary": "party",
+          "penaltyTags": [],
+          "lineNumber": 124399
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "dang3",
+            "meaningPrimary": "surname Dang",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 124398
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "兜",
+        "selected": {
+          "pinyinDisplay": "dou1",
+          "meaningPrimary": "pocket",
+          "penaltyTags": [],
+          "lineNumber": 10972
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "dou1",
+            "meaningPrimary": "old variant of 兜[dou1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 10992
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "全",
+        "selected": {
+          "pinyinDisplay": "quan2",
+          "meaningPrimary": "all",
+          "penaltyTags": [],
+          "lineNumber": 11283
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "quan2",
+            "meaningPrimary": "surname Quan",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 11282
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "六",
+        "selected": {
+          "pinyinDisplay": "liu4",
+          "meaningPrimary": "six",
+          "penaltyTags": [],
+          "lineNumber": 12022
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "lu4",
+            "meaningPrimary": "used in place names",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 12023
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "兰",
+        "selected": {
+          "pinyinDisplay": "lan2",
+          "meaningPrimary": "abbr. for Lanzhou 蘭州|兰州[Lan2 zhou1], Gansu",
+          "penaltyTags": [],
+          "lineNumber": 96478
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "lan2",
+            "meaningPrimary": "orchid (蘭花|兰花 Cymbidium goeringii)",
+            "penaltyTags": [],
+            "lineNumber": 96479
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "关",
+        "selected": {
+          "pinyinDisplay": "guan1",
+          "meaningPrimary": "mountain pass",
+          "penaltyTags": [],
+          "lineNumber": 113907
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "guan1",
+            "meaningPrimary": "surname Guan",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 113906
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "兴",
+        "selected": {
+          "pinyinDisplay": "xing1",
+          "meaningPrimary": "to rise",
+          "penaltyTags": [],
+          "lineNumber": 92152
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "xing4",
+            "meaningPrimary": "feeling or desire to do sth",
+            "penaltyTags": [],
+            "lineNumber": 92153
+          },
+          {
+            "pinyinDisplay": "xing1",
+            "meaningPrimary": "surname Xing",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 92151
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "兹",
+        "selected": {
+          "pinyinDisplay": "zi1",
+          "meaningPrimary": "(literary) this",
+          "penaltyTags": [
+            "register_limited"
+          ],
+          "lineNumber": 93763
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ci2",
+            "meaningPrimary": "used in 龜茲|龟兹[Qiu1 ci2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 93762
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冀",
+        "selected": {
+          "pinyinDisplay": "ji4",
+          "meaningPrimary": "short name for Hebei 河北[He2 bei3]",
+          "penaltyTags": [],
+          "lineNumber": 12319
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ji4",
+            "meaningPrimary": "(literary) to hope for",
+            "penaltyTags": [
+              "register_limited"
+            ],
+            "lineNumber": 12320
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冉",
+        "selected": {
+          "pinyinDisplay": "ran3",
+          "meaningPrimary": "edge of a tortoiseshell",
+          "penaltyTags": [],
+          "lineNumber": 12331
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ran3",
+            "meaningPrimary": "surname Ran",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 12330
+          },
+          {
+            "pinyinDisplay": "ran3",
+            "meaningPrimary": "variant of 冉[ran3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 12327
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冒",
+        "selected": {
+          "pinyinDisplay": "mao4",
+          "meaningPrimary": "to emit; to give off; to send out (or up, forth)",
+          "penaltyTags": [],
+          "lineNumber": 12413
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "mao4",
+            "meaningPrimary": "surname Mao",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 12412
+          },
+          {
+            "pinyinDisplay": "mao4",
+            "meaningPrimary": "old variant of 冒[mao4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 12410
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冗",
+        "selected": {
+          "pinyinDisplay": "rong3",
+          "meaningPrimary": "extraneous",
+          "penaltyTags": [],
+          "lineNumber": 12459
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "rong3",
+            "meaningPrimary": "variant of 冗[rong3]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 31819
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冘",
+        "selected": {
+          "pinyinDisplay": "yin2",
+          "meaningPrimary": "to go forward",
+          "penaltyTags": [],
+          "lineNumber": 12484
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "you2",
+            "meaningPrimary": "(bound form) mostly used in either 冘豫[you2 yu4] or 冘疑[you2 yi2]",
+            "penaltyTags": [],
+            "lineNumber": 12485
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "写",
+        "selected": {
+          "pinyinDisplay": "xie3",
+          "meaningPrimary": "to write",
+          "penaltyTags": [],
+          "lineNumber": 33608
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "xie4",
+            "meaningPrimary": "used in 寫意|写意[xie4 yi4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 33609
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "农",
+        "selected": {
+          "pinyinDisplay": "nong2",
+          "meaningPrimary": "(bound form) agriculture",
+          "penaltyTags": [],
+          "lineNumber": 106706
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "nong2",
+            "meaningPrimary": "surname Nong",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 106705
+          },
+          {
+            "pinyinDisplay": "nong2",
+            "meaningPrimary": "variant of 農|农[nong2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 106780
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冠",
+        "selected": {
+          "pinyinDisplay": "guan1",
+          "meaningPrimary": "hat",
+          "penaltyTags": [],
+          "lineNumber": 12490
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "guan4",
+            "meaningPrimary": "to put on a hat",
+            "penaltyTags": [],
+            "lineNumber": 12491
+          },
+          {
+            "pinyinDisplay": "guan4",
+            "meaningPrimary": "surname Guan",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 12489
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冢",
+        "selected": {
+          "pinyinDisplay": "zhong3",
+          "meaningPrimary": "burial mound (variant of 冢[zhong3])",
+          "penaltyTags": [],
+          "lineNumber": 26397
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhong3",
+            "meaningPrimary": "mound",
+            "penaltyTags": [],
+            "lineNumber": 12517
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冤",
+        "selected": {
+          "pinyinDisplay": "yuan1",
+          "meaningPrimary": "injustice",
+          "penaltyTags": [],
+          "lineNumber": 12520
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "yuan1",
+            "meaningPrimary": "old variant of 冤[yuan1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 33030
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冥",
+        "selected": {
+          "pinyinDisplay": "ming2",
+          "meaningPrimary": "dark",
+          "penaltyTags": [],
+          "lineNumber": 12548
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ming2",
+            "meaningPrimary": "old variant of 冥[ming2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 212
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冬",
+        "selected": {
+          "pinyinDisplay": "dong1",
+          "meaningPrimary": "(onom.) beating a drum",
+          "penaltyTags": [],
+          "lineNumber": 124535
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "dong1",
+            "meaningPrimary": "winter",
+            "penaltyTags": [],
+            "lineNumber": 12574
+          },
+          {
+            "pinyinDisplay": "dong1",
+            "meaningPrimary": "surname Dong",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 124534
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冯",
+        "selected": {
+          "pinyinDisplay": "ping2",
+          "meaningPrimary": "to gallop",
+          "penaltyTags": [],
+          "lineNumber": 120684
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "feng2",
+            "meaningPrimary": "surname Feng",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 120683
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冰",
+        "selected": {
+          "pinyinDisplay": "bing1",
+          "meaningPrimary": "ice",
+          "penaltyTags": [],
+          "lineNumber": 12615
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "bing1",
+            "meaningPrimary": "variant of 冰[bing1]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 62478
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冲",
+        "selected": {
+          "pinyinDisplay": "chong1",
+          "meaningPrimary": "(of water) to dash against",
+          "penaltyTags": [],
+          "lineNumber": 63227
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "chong1",
+            "meaningPrimary": "thoroughfare",
+            "penaltyTags": [],
+            "lineNumber": 98169
+          },
+          {
+            "pinyinDisplay": "chong4",
+            "meaningPrimary": "powerful",
+            "penaltyTags": [],
+            "lineNumber": 98170
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "冷",
+        "selected": {
+          "pinyinDisplay": "leng3",
+          "meaningPrimary": "cold",
+          "penaltyTags": [],
+          "lineNumber": 12744
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "leng3",
+            "meaningPrimary": "surname Leng",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 12743
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "净",
+        "selected": {
+          "pinyinDisplay": "jing4",
+          "meaningPrimary": "clean",
+          "penaltyTags": [],
+          "lineNumber": 65979
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "jing4",
+            "meaningPrimary": "variant of 淨|净[jing4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 12860
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凄",
+        "selected": {
+          "pinyinDisplay": "qi1",
+          "meaningPrimary": "intense cold",
+          "penaltyTags": [],
+          "lineNumber": 12848
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "qi1",
+            "meaningPrimary": "intense cold",
+            "penaltyTags": [],
+            "lineNumber": 65858
+          },
+          {
+            "pinyinDisplay": "qi1",
+            "meaningPrimary": "sad",
+            "penaltyTags": [],
+            "lineNumber": 42196
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "准",
+        "selected": {
+          "pinyinDisplay": "zhun3",
+          "meaningPrimary": "accurate",
+          "penaltyTags": [],
+          "lineNumber": 67044
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "zhun3",
+            "meaningPrimary": "to allow",
+            "penaltyTags": [],
+            "lineNumber": 12851
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凉",
+        "selected": {
+          "pinyinDisplay": "liang2",
+          "meaningPrimary": "cool",
+          "penaltyTags": [],
+          "lineNumber": 65773
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "liang2",
+            "meaningPrimary": "the five Liang of the Sixteen Kingdoms, namely: Former Liang 前涼|前凉 (314-376), Later Liang 後涼|后凉 (386-403), Northern Liang 北涼|北凉 (398-439), Southern Liang 南涼|南凉[Nan2 Liang2] (397-414), Western Liang 西涼|西凉 (400-421)",
+            "penaltyTags": [],
+            "lineNumber": 65772
+          },
+          {
+            "pinyinDisplay": "liang4",
+            "meaningPrimary": "to let sth cool down",
+            "penaltyTags": [],
+            "lineNumber": 65774
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凌",
+        "selected": {
+          "pinyinDisplay": "ling2",
+          "meaningPrimary": "to approach",
+          "penaltyTags": [],
+          "lineNumber": 12871
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ling2",
+            "meaningPrimary": "surname Ling",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 12870
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "几",
+        "selected": {
+          "pinyinDisplay": "ji1",
+          "meaningPrimary": "small table",
+          "penaltyTags": [],
+          "lineNumber": 12960
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ji3",
+            "meaningPrimary": "how many; how much",
+            "penaltyTags": [],
+            "lineNumber": 38158
+          },
+          {
+            "pinyinDisplay": "ji1",
+            "meaningPrimary": "(literary) almost",
+            "penaltyTags": [
+              "register_limited"
+            ],
+            "lineNumber": 38157
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凡",
+        "selected": {
+          "pinyinDisplay": "fan2",
+          "meaningPrimary": "ordinary",
+          "penaltyTags": [],
+          "lineNumber": 12962
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "fan2",
+            "meaningPrimary": "variant of 凡[fan2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 12987
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凤",
+        "selected": {
+          "pinyinDisplay": "feng4",
+          "meaningPrimary": "phoenix",
+          "penaltyTags": [],
+          "lineNumber": 122753
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "feng4",
+            "meaningPrimary": "surname Feng",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 122752
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凫",
+        "selected": {
+          "pinyinDisplay": "fu2",
+          "meaningPrimary": "mallard",
+          "penaltyTags": [],
+          "lineNumber": 122735
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "fu2",
+            "meaningPrimary": "old variant of 鳧|凫[fu2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 122749
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凭",
+        "selected": {
+          "pinyinDisplay": "ping2",
+          "meaningPrimary": "to lean against",
+          "penaltyTags": [],
+          "lineNumber": 43244
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "ping2",
+            "meaningPrimary": "variant of 憑|凭[ping2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 13025
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凯",
+        "selected": {
+          "pinyinDisplay": "kai3",
+          "meaningPrimary": "(bound form) triumphal music",
+          "penaltyTags": [],
+          "lineNumber": 12993
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "kai3",
+            "meaningPrimary": "surname Kai",
+            "penaltyTags": [
+              "surname_only"
+            ],
+            "lineNumber": 12992
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凳",
+        "selected": {
+          "pinyinDisplay": "deng4",
+          "meaningPrimary": "bench",
+          "penaltyTags": [],
+          "lineNumber": 13023
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "deng4",
+            "meaningPrimary": "variant of 凳[deng4]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 59811
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凶",
+        "selected": {
+          "pinyinDisplay": "xiong1",
+          "meaningPrimary": "terrible",
+          "penaltyTags": [],
+          "lineNumber": 10480
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "xiong1",
+            "meaningPrimary": "vicious",
+            "penaltyTags": [],
+            "lineNumber": 13027
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "凹",
+        "selected": {
+          "pinyinDisplay": "ao1",
+          "meaningPrimary": "concave; depressed; sunken; indented; female (connector etc)",
+          "penaltyTags": [],
+          "lineNumber": 13070
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "wa1",
+            "meaningPrimary": "(used in names)",
+            "penaltyTags": [],
+            "lineNumber": 13071
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "出",
+        "selected": {
+          "pinyinDisplay": "chu1",
+          "meaningPrimary": "to go out; to come out",
+          "penaltyTags": [],
+          "lineNumber": 13098
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "chu1",
+            "meaningPrimary": "variant of 出[chu1] (classifier for plays or chapters of classical novels)",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 124761
+          }
+        ]
+      },
+      {
+        "kind": "character",
+        "text": "函",
+        "selected": {
+          "pinyinDisplay": "han2",
+          "meaningPrimary": "envelope",
+          "penaltyTags": [],
+          "lineNumber": 13361
+        },
+        "alternates": [
+          {
+            "pinyinDisplay": "han2",
+            "meaningPrimary": "variant of 函[han2]",
+            "penaltyTags": [
+              "redirect"
+            ],
+            "lineNumber": 24189
+          }
+        ]
+      }
+    ]
+  }
+}

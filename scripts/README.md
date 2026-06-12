@@ -1,6 +1,7 @@
 # Raw Export Normalization Scripts
 
 These scripts convert raw Pleco and Notion exports into the normalized JSON files consumed by the app import pipeline.
+The lexical dictionary generator lives here as well, but it outputs to `data/dictionaries/` because that artifact is enrichment data, not a normalized import fixture.
 
 ## Commands
 
@@ -9,6 +10,8 @@ npm run normalize:pleco:characters -- --input data/imports/raw-examples/pleco-ch
 npm run normalize:pleco:words -- --input data/imports/raw-examples/pleco-words.tsv --output data/imports/examples/known_words.json
 npm run normalize:notion:levels -- --input data/imports/raw-examples/notion-levels.csv --output data/imports/examples/levels.json --source-name mandarin-blueprint-levels-normalized
 npm run normalize:notion:mappings -- --input data/imports/raw-examples/notion-pinyin-mappings.csv --output data/imports/examples/pinyin_mappings.json --source-name mandarin-blueprint-pinyin-mappings
+npm run dictionary:generate
+npm run dictionary:verify
 ```
 
 ## Input Assumptions
@@ -50,4 +53,6 @@ These scripts intentionally target one documented personal-export shape instead 
 
 ## Verification
 
-Run `npm run normalize:verify` to normalize the checked-in raw example files and validate the generated payloads against the shared import schemas from ticket `003`.
+Run `npm run normalize:verify` to normalize the checked-in raw example files and validate the generated payloads against the shared import schemas.
+
+Run `npm run dictionary:verify` to validate the checked-in lexical dictionary artifact and report used by lexical enrichment.

@@ -278,6 +278,38 @@ Rules:
 - dictionary-first
 - unresolved items become `missing_lexical_data`
 - Pleco values win for Pleco-imported known items
+- the lexical dictionary is a repo-local derived dataset, not a normalized import payload
+- the lexical dictionary should live under `data/dictionaries/`
+- lexical enrichment should load the dataset offline, match by exact text, and persist selected values onto canonical rows
+
+Current intended dictionary artifact shape:
+
+```json
+{
+  "sourceName": "cc_cedict_generated_v1",
+  "characters": [
+    {
+      "text": "<single_character>",
+      "pinyinDisplay": "<numbered_pinyin>",
+      "meaningPrimary": "<primary_meaning>"
+    }
+  ],
+  "words": [
+    {
+      "text": "<multi_character_word>",
+      "pinyinDisplay": "<numbered_pinyin_sequence>",
+      "meaningPrimary": "<primary_meaning>"
+    }
+  ]
+}
+```
+
+Selection and formatting rules:
+
+- store one chosen primary entry per text for v1
+- characters come only from true single-character dictionary entries
+- numbered pinyin remains the canonical stored format in v1
+- a generation report should be emitted alongside the runtime artifact for ambiguity and omission visibility
 
 ### Decomposition Suggestions
 

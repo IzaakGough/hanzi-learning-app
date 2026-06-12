@@ -1,0 +1,15 @@
+# Hanzi-only valid entries survive.
+學 学 [xue2] /to study/to learn/
+學生 学生 [xue2 sheng5] /student/
+
+# Non-Hanzi headwords are excluded even if the pinyin is otherwise parseable.
+A片 A片 [A pian4] /(slang) adult movie/
+3D打印 3D打印 [san1 D da3 yin4] /to 3D print/
+一不做，二不休 一不做，二不休 [yi1 bu4 zuo4, er4 bu4 xiu1] /in for a penny, in for a pound/
+
+# Hanzi-only entries with non-standard pinyin are omitted instead of cleaned.
+绿帽 绿帽 [lu:4 mao4 !] /green hat/
+
+# Invalid format and missing meanings stay visible in their own categories.
+not a cedict line
+空義 空义 [kong1 yi4] / /

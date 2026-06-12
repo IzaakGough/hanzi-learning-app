@@ -470,3 +470,60 @@ Reason:
 - the reset flow should be scriptable but still hard to trigger accidentally
 - clearing media with the database avoids orphaned local files from old sentence audio state
 - preserving exports and checked-in fixtures makes reset safe for normal development iteration
+
+## 30. Generated Lexical Dictionary Dataset
+
+For the real lexical enrichment dictionary:
+
+- replace the example-only lexical dictionary with a generated derived dataset based on CC-CEDICT
+- do not treat the lexical dictionary as a normalized import payload in this pass
+- do not add a dedicated dictionary SQLite table in this pass
+- keep the existing enrichment architecture: load the local dataset, enrich blank fields, persist onto canonical rows
+
+Dataset placement:
+
+- store the generated runtime artifact under `data/dictionaries/`
+- do not keep the real maintained dictionary under `data/imports/examples/`
+
+Generator implementation:
+
+- implement the generator in the repo's existing Node `mjs` script style
+- do not depend on a third-party parser script at runtime
+- deterministic output is a hard requirement
+
+Data-shape rules for the generated dictionary:
+
+- keep the current enrichment contract:
+  - `sourceName`
+  - `characters[]`
+  - `words[]`
+- each entry should expose exactly one chosen:
+  - `text`
+  - `pinyinDisplay`
+  - `meaningPrimary`
+- use a derived provenance name such as `cc_cedict_generated_v1`
+
+Selection rules:
+
+- characters should be built only from true single-character dictionary entries
+- words should be built from word entries
+- choose one deterministic primary reading/meaning per simplified text
+- do not attempt curriculum-aware disambiguation in this pass
+
+Pinyin rules:
+
+- normalize upstream pinyin into the repo's numbered format during generation
+- keep numbered pinyin as the canonical stored format for now
+- if an entry cannot be converted cleanly, omit it from the runtime artifact and record it in the generation report
+
+Meaning rules:
+
+- apply light heuristic cleaning only
+- prefer a usable primary gloss over classifier-only or obvious variant/see-also senses when possible
+- do not expand this pass into deep lexicographic cleanup
+
+Reporting:
+
+- generate a persisted dictionary report alongside the runtime artifact
+- break omissions and suspicious cases down by reason
+- use the report for visibility rather than blocking generation

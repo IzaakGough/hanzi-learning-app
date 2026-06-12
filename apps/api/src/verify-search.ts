@@ -69,13 +69,17 @@ async function main() {
       simplified: string;
       componentCharacters: Array<{ hanzi: string }>;
       pinyinSource: string | null;
+      pinyinSourceRef: string | null;
       meaningSource: string | null;
+      meaningSourceRef: string | null;
     };
 
     assert.equal(wordDetail.simplified, "学生");
     assert.deepEqual(wordDetail.componentCharacters.map((item) => item.hanzi), ["学", "生"]);
     assert.equal(wordDetail.pinyinSource, "derived");
+    assert.equal(wordDetail.pinyinSourceRef, "cc_cedict_generated_v2");
     assert.equal(wordDetail.meaningSource, "derived");
+    assert.equal(wordDetail.meaningSourceRef, "cc_cedict_generated_v2");
 
     const characterItem = hanziSearch.items.find((item) => item.kind === "character" && item.text === "学");
     assert(characterItem);
@@ -100,7 +104,7 @@ async function main() {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        pinyinDisplay: "xue2 sheng5",
+        pinyinDisplay: "xue2 sheng1",
         meaningPrimary: "learner",
         provenanceNote: "manual verification edit"
       })
@@ -115,14 +119,14 @@ async function main() {
       meaningSourceRef: string | null;
     };
 
-    assert.equal(updatedWord.pinyinDisplay, "xue2 sheng5");
+    assert.equal(updatedWord.pinyinDisplay, "xue2 sheng1");
     assert.equal(updatedWord.pinyinSource, "manual");
     assert.equal(updatedWord.pinyinSourceRef, "manual verification edit");
     assert.equal(updatedWord.meaningPrimary, "learner");
     assert.equal(updatedWord.meaningSource, "manual");
     assert.equal(updatedWord.meaningSourceRef, "manual verification edit");
 
-    const pinyinSearchResponse = await fetch(`${baseUrl}/search?q=${encodeURIComponent("sheng5")}`);
+    const pinyinSearchResponse = await fetch(`${baseUrl}/search?q=${encodeURIComponent("sheng1")}`);
     assert.equal(pinyinSearchResponse.status, 200);
     const pinyinSearch = await pinyinSearchResponse.json() as {
       items: Array<{ id: string; kind: "character" | "word"; text: string }>;

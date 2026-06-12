@@ -1,0 +1,17 @@
+# Redirect loses to a clean lexical sense.
+學生 学生 [xue2 sheng5] /variant of 学员[Xue2 yuan2]/
+學生 学生 [xue2 sheng5] /student/pupil/
+
+# Editorial and pronunciation notes lose to a normal lexical sense.
+行家 行家 [hang2 jia1] /(Note: old trade usage) an expert/
+行家 行家 [xing2 jia1] /expert/connoisseur/
+和 和 [he2] /Taiwan pr. [han4] when part of 和牌[hu2 pai2]/
+和 和 [he2] /and/with/
+
+# Register-limited and classifier-only senses are penalized but retained if needed.
+雅語 雅语 [ya3 yu3] /(literary) elegant language/
+班 班 [ban1] /CL:班[ban1]/
+班 班 [ban1] /class/team/
+
+# Bound-form senses remain eligible.
+素 素 [su4] /(bound form) element/
