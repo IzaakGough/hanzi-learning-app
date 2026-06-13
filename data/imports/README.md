@@ -52,4 +52,5 @@ Usage and input-shape assumptions for those scripts live in `scripts/README.md`.
 - CSV support can be added later if useful
 - repo-example decomposition fixtures are not imported by default; set `HANZI_SEED_EXAMPLE_DECOMPOSITIONS=1` only when you intentionally want the example approved/candidate decomposition data seeded during import
 - repo-local structural decomposition data is seeded automatically after normalized imports so blocked characters can receive candidate decompositions without auto-approval
+- the checked-in `structural/chise_ids.json` is generated from the official CHISE `IDS-UCS-*` abstract-character files rather than from the small raw-example sample
 - lexical dictionary generation and verification are documented in `data/dictionaries/README.md`

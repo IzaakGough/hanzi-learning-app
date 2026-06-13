@@ -6,15 +6,16 @@ import { writeJsonFile } from "./lib/normalization-helpers.mjs";
 const currentFilePath = fileURLToPath(import.meta.url);
 const repoRoot = path.resolve(path.dirname(currentFilePath), "..");
 
-const binaryOperators = new Set(["⿰", "⿱", "⿴", "⿵", "⿶", "⿷", "⿸", "⿹", "⿺", "⿻"]);
+const binaryOperators = new Set(["⿰", "⿱", "⿴", "⿵", "⿶", "⿷", "⿸", "⿹", "⿺", "⿻", "⿼", "⿽"]);
+const extendedBinaryOperators = new Set(["&U-i001+2FF1;", "&U-i001+2FFB;", "&U-i002+2FF1;"]);
 const ternaryOperators = new Set(["⿲", "⿳"]);
-const supportedOperators = new Set([...binaryOperators, ...ternaryOperators]);
+const supportedOperators = new Set([...binaryOperators, ...extendedBinaryOperators, ...ternaryOperators]);
 
 function parseArguments(argv) {
   const options = {
     input: null,
     output: null,
-    sourceName: "chise_ids_curated_v1"
+    sourceName: "chise_ids_ucs_abstract_v1"
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -128,16 +129,21 @@ export function normalizeChiseIds({ inputPath, sourceName }) {
   const characters = [];
 
   for (const line of raw.split(/\r?\n/u)) {
-    const trimmed = line.trim();
+    const normalizedLine = line.replace(/^\uFEFF/u, "");
+    const trimmed = normalizedLine.trim();
 
-    if (trimmed.length === 0 || trimmed.startsWith("#")) {
+    if (trimmed.length === 0 || trimmed.startsWith("#") || trimmed.startsWith(";;")) {
       continue;
     }
 
-    const [codePoint, hanzi, ids] = trimmed.split("\t");
+    const [codePoint, hanzi, idsField, ...extraFields] = trimmed.split("\t");
+    const apparentField = extraFields.find((field) => field.startsWith("@apparent="));
+    const ids = (idsField || apparentField?.slice("@apparent=".length) || "")
+      .replace(/\s*\[[A-Za-z]+\]\s*$/u, "")
+      .trim() || null;
 
     if (!codePoint || !hanzi || !ids) {
-      throw new Error(`Invalid CHISE IDS row: ${line}`);
+      throw new Error(`Invalid CHISE IDS row: ${normalizedLine}`);
     }
 
     characters.push({
