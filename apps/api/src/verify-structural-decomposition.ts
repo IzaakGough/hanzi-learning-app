@@ -68,38 +68,61 @@ async function main() {
       assert.equal(summary.status, "completed");
     }
 
-    const seededParts = database.prepare(`
+    const seededCandidates = database.prepare(`
+      SELECT
+        cd.id,
+        cd.source_ref,
+        GROUP_CONCAT(COALESCE(cdp.literal_text, p.shape_ref), '|') AS parts_signature
+      FROM character_decompositions cd
+      INNER JOIN characters c ON c.id = cd.character_id
+      INNER JOIN character_decomposition_parts cdp ON cdp.decomposition_id = cd.id
+      LEFT JOIN props p ON p.id = cdp.prop_id
+      WHERE c.hanzi = '练'
+        AND cd.status = 'candidate'
+      GROUP BY cd.id, cd.source_ref
+      ORDER BY cd.created_at ASC
+    `).all() as Array<{
+      id: string;
+      source_ref: string | null;
+      parts_signature: string;
+    }>;
+
+    const mappedCandidate = seededCandidates.find((candidate) =>
+      candidate.source_ref?.startsWith("U+")
+      && candidate.parts_signature === "纟|𫠣"
+    );
+
+    assert(mappedCandidate, "Expected 练 to receive a structural candidate from the CHISE UCS dataset.");
+
+    const mappedParts = database.prepare(`
       SELECT
         cd.source_ref,
         cdp.sort_order,
         cdp.prop_id,
         cdp.literal_text
       FROM character_decompositions cd
-      INNER JOIN characters c ON c.id = cd.character_id
       INNER JOIN character_decomposition_parts cdp ON cdp.decomposition_id = cd.id
-      WHERE c.hanzi = '练'
-        AND cd.status = 'candidate'
-        AND cd.source_ref = 'sample:U+7EC3'
+      WHERE cd.id = ?
       ORDER BY cdp.sort_order ASC
-    `).all() as Array<{
+    `).all(mappedCandidate.id) as Array<{
       source_ref: string | null;
       sort_order: number;
       prop_id: string | null;
       literal_text: string | null;
     }>;
 
-    assert.deepEqual(seededParts, [
+    assert.deepEqual(mappedParts, [
       {
-        source_ref: "sample:U+7EC3",
+        source_ref: "U+7EC3",
         sort_order: 0,
         prop_id: silkPropId,
         literal_text: null
       },
       {
-        source_ref: "sample:U+7EC3",
+        source_ref: "U+7EC3",
         sort_order: 1,
         prop_id: null,
-        literal_text: "东"
+        literal_text: "𫠣"
       }
     ]);
 
@@ -107,7 +130,7 @@ async function main() {
     const unresolvedForLian = workspace.unresolvedProps.filter((item) => item.characterHanzi === "练");
 
     assert.equal(unresolvedForLian.length, 1);
-    assert.deepEqual(unresolvedForLian[0]?.literalText, "东");
+    assert.equal(unresolvedForLian[0]?.literalText, "𫠣");
 
     console.log("Structural decomposition verification passed.");
   } finally {

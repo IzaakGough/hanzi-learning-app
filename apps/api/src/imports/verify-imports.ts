@@ -226,6 +226,13 @@ async function main() {
       parts_signature: string;
     }>;
 
+    const hasStructuralCandidate = (hanzi: string, sourceRef: string, partsSignature: string) =>
+      structuralCandidates.some((candidate) =>
+        candidate.hanzi === hanzi
+        && candidate.source_ref === sourceRef
+        && candidate.parts_signature === partsSignature
+      );
+
     assert.deepEqual(learnedCharacter, {
       status: "learned",
       source: "pleco_import",
@@ -268,21 +275,9 @@ async function main() {
       blocked_reason: "component_characters_unlearned"
     });
 
-    assert(structuralCandidates.some((candidate) =>
-      candidate.hanzi === "学"
-      && candidate.source_ref === "sample:U+5B66"
-      && candidate.parts_signature === "⺍|冖|子"
-    ));
-    assert(structuralCandidates.some((candidate) =>
-      candidate.hanzi === "习"
-      && candidate.source_ref === "sample:U+4E60"
-      && candidate.parts_signature === "乙|丶"
-    ));
-    assert(structuralCandidates.some((candidate) =>
-      candidate.hanzi === "练"
-      && candidate.source_ref === "sample:U+7EC3"
-      && candidate.parts_signature === "纟|东"
-    ));
+    assert(hasStructuralCandidate("学", "U+5B66", "𰃮|子"));
+    assert(hasStructuralCandidate("习", "U+4E60", "习"));
+    assert(hasStructuralCandidate("练", "U+7EC3", "纟|𫠣"));
 
     const levelWordLinks = database.prepare(`
       SELECT l.sequence_number, w.simplified
